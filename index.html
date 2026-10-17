@@ -2652,10 +2652,88 @@ navigator.serviceWorker.register('service-worker.js')
     </div>
   </div>
 
+<div class="modal-overlay" id="delete-account-modal">
+  <div class="modal" style="text-align: center;">
+    <h3 style="color: var(--fire);">⚠️ حذف حساب کاربری</h3>
+    <div class="sub" style="font-size: 14px; line-height: 1.8;">
+      آیا مطمئن هستید؟ تمام اطلاعات، آگهی‌ها و پیام‌های شما برای همیشه پاک خواهد شد. این عمل غیرقابل بازگشت است.
+    </div>
+    <div class="field" style="text-align: right;">
+      <label>برای تایید، کلمه <b>حذف</b> را تایپ کنید:</label>
+      <input id="delete-confirm-input" placeholder="حذف" style="text-align: center;">
+    </div>
+    <button type="button" class="btn-red" id="btn-confirm-delete" onclick="executeDeleteAccount()" style="margin-top: 12px; min-height: 56px; font-size: 16px;">تایید و حذف دائمی</button>
+    <button type="button" class="btn-outline" onclick="closeDeleteModal()" style="margin-top: 8px; min-height: 56px; font-size: 16px;">انصراف</button>
+  </div>
+</div>
+
   <div class="toast" id="toast"></div>
 </div>
 
+<div class="modal-overlay" id="delete-account-modal">
+  <div class="modal" style="text-align: center;">
+    <h3 style="color: var(--fire);">⚠️ حذف حساب کاربری</h3>
+    <div class="sub" style="font-size: 14px; line-height: 1.8;">
+      آیا مطمئن هستید؟ تمام اطلاعات، آگهی‌ها و پیام‌های شما برای همیشه پاک خواهد شد. این عمل غیرقابل بازگشت است.
+    </div>
+    <div class="field" style="text-align: right;">
+      <label>برای تایید، کلمه <b>حذف</b> را تایپ کنید:</label>
+      <input id="delete-confirm-input" placeholder="حذف" style="text-align: center;">
+    </div>
+    <button type="button" class="btn-red" id="btn-confirm-delete" onclick="executeDeleteAccount()" style="margin-top: 12px; min-height: 56px; font-size: 16px;">تایید و حذف دائمی</button>
+    <button type="button" class="btn-outline" onclick="closeDeleteModal()" style="margin-top: 8px; min-height: 56px; font-size: 16px;">انصراف</button>
+  </div>
+</div>
+
 <script>
+   
+/* ============ مودال حذف حساب ============ */
+function confirmDeleteAccount() {
+  if (!DB.user) return;
+  var inputEl = document.getElementById('delete-confirm-input');
+  if (inputEl) inputEl.value = '';
+  document.getElementById('delete-account-modal').classList.add('show');
+}
+
+function closeDeleteModal() {
+  document.getElementById('delete-account-modal').classList.remove('show');
+}
+
+async function executeDeleteAccount() {
+  var inputVal = document.getElementById('delete-confirm-input').value.trim();
+  if (inputVal !== 'حذف') {
+    toast('لطفاً کلمه «حذف» را دقیقاً وارد کنید');
+    return;
+  }
+  
+  var btn = document.getElementById('btn-confirm-delete');
+  btn.textContent = 'در حال حذف...';
+  btn.disabled = true;
+  
+  var u = DB.user;
+  try {
+    try { await api.deleteAccount(u.phone); } catch(e) {}
+    
+    ['user','listings','demands','requests','ratings','convs','msgs','trades','interests','notifs','capacities','bookings','missions','userRoles'].forEach(function(k){
+      localStorage.removeItem(DB_VERSION + '.' + k);
+    });
+    
+    DB.user = null;
+    closeDeleteModal();
+    toast('✓ حساب شما با موفقیت حذف شد');
+    
+    setTimeout(function() { 
+      btn.textContent = 'تایید و حذف دائمی';
+      btn.disabled = false;
+      go('auth'); 
+    }, 1500);
+    
+  } catch(err) {
+    toast('خطا در حذف حساب');
+    btn.textContent = 'تایید و حذف دائمی';
+    btn.disabled = false;
+  }
+}
 /* ============================================================
    TARAZ v3.0 — Application Logic
    ============================================================ */
