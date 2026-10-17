@@ -1,5 +1,5 @@
 var CACHE_NAME = 'taraz-v1';
-var urlsToCache = ['./', './index.html', './style.css', './script.js', './manifest.json'];
+var urlsToCache = ['./', './index.html', './manifest.json'];
 
 self.addEventListener('install', function(event){
 event.waitUntil(caches.open(CACHE_NAME).then(function(cache){
