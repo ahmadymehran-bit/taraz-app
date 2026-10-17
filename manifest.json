@@ -1,0 +1,40 @@
+{
+"name": "تاراز",
+"short_name": "تاراز",
+"start_url": "./",
+"display": "standalone",
+"orientation": "portrait",
+"background_color": "#F5F1E8",
+"theme_color": "#2E7D32",
+"lang": "fa",
+"dir": "rtl",
+"icons": [
+{
+"src": "https://i.ibb.co/TMNM2gDf/web-app-manifest-192x192.png",
+"sizes": "192x192",
+"type": "image/png",
+"purpose": "any"
+},
+{
+"src": "https://i.ibb.co/TMNM2gDf/web-app-manifest-192x192.png",
+"sizes": "192x192",
+"type": "image/png",
+"purpose": "maskable"
+},
+{
+"src": "https://i.ibb.co/chyWbLZM/web-app-manifest-512x512.png",
+"sizes": "512x512",
+"type": "image/png",
+"purpose": "any"
+},
+{
+"src": "https://i.ibb.co/chyWbLZM/web-app-manifest-512x512.png",
+"sizes": "512x512",
+"type": "image/png",
+"purpose": "maskable"
+}
+]
+}
+
+
+
