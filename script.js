@@ -1,4 +1,8 @@
 const FA_DIGITS='۰۱۲۳۴۵۶۷۸۹';
+/* ============ Supabase Setup ============ */
+const SUPABASE_URL = 'https://ybtjatkxsagsgathvjoe.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_X8F1n-nhXl3YhDNZ7SeRTg_U280aKuX';
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const faDigits=s=>String(s).replace(/\d/g,d=>FA_DIGITS[d]);
 const faPrice=n=>faDigits(Number(n||0).toLocaleString('en-US'));
 const timeAgo=ts=>{const m=Math.floor((Date.now()-ts)/60000);if(m<1)return'الان';if(m<60)return faDigits(m)+' دقیقه پیش';const h=Math.floor(m/60);if(h<24)return faDigits(h)+' ساعت پیش';return faDigits(Math.floor(h/24))+' روز پیش'};
@@ -799,6 +803,14 @@ thread.forEach(function(m){ var d = new Date(m.createdAt); var dayStr = faDigits
 body.innerHTML = html;
 }
 setTimeout(function(){ body.scrollTop = body.scrollHeight; }, 50); updateChatBadge();
+supabaseClient.channel('chat_' + c.id)
+  .on('broadcast', { event: 'new_message' }, (payload) => {
+    if (payload.payload.fromPhone !== u.phone) {
+      renderChat();
+    }
+  })
+  .subscribe();
+
 }
 async function sendMessage(){
 var u = DB.user; if(!u || !currentConvId) return;
@@ -810,7 +822,12 @@ var msgs = DB.messages; msgs.push({ id: msgData.id, convId: c.id, fromPhone: u.p
 var convs = DB.conversations; var idx = convs.findIndex(function(x){ return x.id === c.id; }); if(idx >= 0){ convs[idx].lastMessageAt = Date.now(); DB.conversations = convs; }
 inp.value = '';
   try { var otherPhone = (u.phone === c.sellerPhone) ? c.buyerPhone : c.sellerPhone; fetch('https://taraz-backend-prog.vercel.app/api/push/send', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ toPhone: otherPhone, title: 'پیام جدید از ' + u.name, body: text, data: { convId: c.id } }) }); } catch(e){}
-renderChat();
+supabaseClient.channel('chat_' + c.id).send({
+  type: 'broadcast',
+  event: 'new_message',
+  payload: { text: text, fromPhone: u.phone }
+});
+  renderChat();
 }
 function createBuyRequest(listingId){
 var u=DB.user;if(!u)return;
