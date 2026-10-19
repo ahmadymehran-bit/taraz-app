@@ -1001,6 +1001,65 @@ el.innerHTML=list.slice(0,10).map(function(m){ return '<div class="card"><b>🎯
 function backFromDetail(){go(detailReturnTo||'home')}
 if(DB.user){ loadFavorites().then(function(){ if(currentScreen==='home')renderHome(); else if(currentScreen==='browse')renderBrowse(); }); }
 console.log('✓ Taraz v3.0 loaded');
+/* ============ ADMIN PANEL LOGIC ============ */
+const ADMIN_PHONE = '09163905174'; // شماره موبایل خودت رو اینجا بذار
+
+// تابع مخفی برای باز کردن پنل ادمین (۵ بار کلیک روی لوگو)
+let logoClicks = 0;
+let logoTimer = null;
+
+document.addEventListener('click', function(e) {
+  // چک میکنیم روی لوگوی "تاراز" کلیک شده یا نه
+  if (e.target.closest('.brand')) {
+    logoClicks++;
+    clearTimeout(logoTimer);
+    logoTimer = setTimeout(() => { logoClicks = 0; }, 2000); // ریست بعد از ۲ ثانیه
+    
+    if (logoClicks >= 5) {
+      logoClicks = 0;
+      if (DB.user && DB.user.phone === ADMIN_PHONE) {
+        renderAdminPanel();
+        go('admin');
+      } else {
+        toast('⛔ دسترسی غیرمجاز');
+      }
+    }
+  }
+});
+
+async function renderAdminPanel() {
+  // آمار
+  var usersRes = await api._fetch('/api/admin/users');
+  var listingsRes = await api.getListings();
+  
+  if (listingsRes && listingsRes.listings) {
+    document.getElementById('admin-stat-listings').textContent = faDigits(listingsRes.listings.length);
+  }
+  
+  // لیست آگهی‌ها (با دکمه حذف)
+  var listEl = document.getElementById('admin-listings-list');
+  if (listingsRes && listingsRes.listings && listingsRes.listings.length > 0) {
+    listEl.innerHTML = listingsRes.listings.map(function(l) {
+      return '<div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">' +
+             '<div><b>' + l.title + '</b><br><small>' + l.seller_name + ' - ' + l.region + '</small></div>' +
+             '<button type="button" class="btn-red" style="width:auto;padding:8px 12px;margin:0" onclick="adminDeleteListing(\'' + l.id + '\')">حذف</button>' +
+             '</div>';
+    }).join('');
+  } else {
+    listEl.innerHTML = '<div class="empty">آگهی‌ای وجود ندارد</div>';
+  }
+}
+
+async function adminDeleteListing(id) {
+  if (!confirm('آیا از حذف این آگهی مطمئن هستید؟')) return;
+  var result = await api.deleteListing(id);
+  if (result && result.ok) {
+    toast('✓ آگهی حذف شد');
+    renderAdminPanel();
+  } else {
+    toast('خطا در حذف');
+  }
+}
 
 /* ============================================================
    API LAYER 
