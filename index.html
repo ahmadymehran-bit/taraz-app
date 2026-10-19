@@ -325,6 +325,29 @@
       <button type="button" onclick="sendMessage()" class="chat-send">↑</button>
     </div>
   </section>
+<!-- ============ ADMIN PANEL (مخفی) ============ -->
+<section class="screen" id="screen-admin">
+  <div class="sub-header">
+    <button type="button" class="back-btn" onclick="go('home')">→</button>
+    <div class="title">👑 داشبورد مدیریت</div>
+  </div>
+  <div style="padding:16px">
+    <div class="stats-box" style="margin:0 0 16px 0">
+      <div class="stats-title">📊 آمار کلی</div>
+      <div class="stats-grid">
+        <div class="stat-item"><div class="stat-val" id="admin-stat-users">۰</div><div class="stat-lbl">👥 کاربران</div></div>
+        <div class="stat-item"><div class="stat-val" id="admin-stat-listings">۰</div><div class="stat-lbl">📦 آگهی‌ها</div></div>
+        <div class="stat-item"><div class="stat-val" id="admin-stat-convs">۰</div><div class="stat-lbl">💬 گفتگوها</div></div>
+      </div>
+    </div>
+    
+    <h2 style="font-size:18px;margin-bottom:12px">📦 آخرین آگهی‌ها</h2>
+    <div id="admin-listings-list"></div>
+    
+    <h2 style="font-size:18px;margin-top:24px;margin-bottom:12px">👥 آخرین کاربران</h2>
+    <div id="admin-users-list"></div>
+  </div>
+</section>
 
   <!-- ============ NAV ============ -->
   <nav class="nav" id="nav">
