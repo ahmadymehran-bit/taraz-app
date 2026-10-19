@@ -1060,6 +1060,32 @@ async function adminDeleteListing(id) {
     toast('خطا در حذف');
   }
 }
+async function askAdminAI() {
+  var input = document.getElementById('admin-ai-input');
+  var responseEl = document.getElementById('admin-ai-response');
+  var prompt = input.value.trim();
+  if (!prompt) return;
+
+  responseEl.textContent = 'در حال فکر کردن...';
+  input.value = '';
+
+  try {
+    var res = await fetch('https://taraz-backend-prog.vercel.app/api/ai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt: prompt })
+    });
+    var data = await res.json();
+    
+    if (data && data.choices && data.choices[0] && data.choices[0].message) {
+      responseEl.textContent = data.choices[0].message.content;
+    } else {
+      responseEl.textContent = 'متأسفانه پاسخی دریافت نشد.';
+    }
+  } catch (e) {
+    responseEl.textContent = 'خطا در ارتباط با هوش مصنوعی.';
+  }
+}
 
 /* ============================================================
    API LAYER 
