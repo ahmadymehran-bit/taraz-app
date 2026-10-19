@@ -1028,25 +1028,32 @@ document.addEventListener('click', function(e) {
 });
 
 async function renderAdminPanel() {
-  // آمار
-  var usersRes = await api._fetch('/api/admin/users');
-  var listingsRes = await api.getListings();
-  
-  if (listingsRes && listingsRes.listings) {
-    document.getElementById('admin-stat-listings').textContent = faDigits(listingsRes.listings.length);
-  }
-  
-  // لیست آگهی‌ها (با دکمه حذف)
-  var listEl = document.getElementById('admin-listings-list');
-  if (listingsRes && listingsRes.listings && listingsRes.listings.length > 0) {
-    listEl.innerHTML = listingsRes.listings.map(function(l) {
-      return '<div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">' +
-             '<div><b>' + l.title + '</b><br><small>' + l.seller_name + ' - ' + l.region + '</small></div>' +
-             '<button type="button" class="btn-red" style="width:auto;padding:8px 12px;margin:0" onclick="adminDeleteListing(\'' + l.id + '\')">حذف</button>' +
-             '</div>';
-    }).join('');
-  } else {
-    listEl.innerHTML = '<div class="empty">آگهی‌ای وجود ندارد</div>';
+  try {
+    // گرفتن آمار کلی از بک‌اند
+    var statsRes = await fetch('https://taraz-backend-prog.vercel.app/api/admin/stats').then(r => r.json());
+    
+    if (statsRes) {
+      document.getElementById('admin-stat-users').textContent = faDigits(statsRes.users || 0);
+      document.getElementById('admin-stat-listings').textContent = faDigits(statsRes.listings || 0);
+      document.getElementById('admin-stat-convs').textContent = faDigits(statsRes.conversations || 0);
+    }
+
+    // گرفتن لیست آگهی‌ها برای نمایش و حذف
+    var listingsRes = await api.getListings();
+    var listEl = document.getElementById('admin-listings-list');
+    
+    if (listingsRes && listingsRes.listings && listingsRes.listings.length > 0) {
+      listEl.innerHTML = listingsRes.listings.map(function(l) {
+        return '<div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">' +
+               '<div><b>' + l.title + '</b><br><small>' + l.seller_name + ' - ' + l.region + '</small></div>' +
+               '<button type="button" class="btn-red" style="width:auto;padding:8px 12px;margin:0" onclick="adminDeleteListing(\'' + l.id + '\')">حذف</button>' +
+               '</div>';
+      }).join('');
+    } else {
+      if (listEl) listEl.innerHTML = '<div class="empty">آگهی‌ای وجود ندارد</div>';
+    }
+  } catch (e) {
+    console.warn('Error rendering admin:', e);
   }
 }
 
