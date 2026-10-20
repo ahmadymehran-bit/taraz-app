@@ -233,6 +233,37 @@
           <option value="livestock">🐑 دام زنده</option><option value="poultry">🐔 طیور و جوجه</option><option value="crops">🌾 محصولات کشاورزی</option><option value="feed">🌰 نهاده</option><option value="forage">🌿 علوفه</option><option value="agri_inputs">🌱 بذر، کود</option><option value="vet_drugs">💉 دارو و واکسن</option><option value="vet_equipment">🩺 تجهیزات دامپزشکی</option><option value="farm_equipment">🔧 تجهیزات دامداری</option><option value="machinery">🚜 ماشین‌آلات</option>
         </select>
       </div>
+      <div id="livestock-fields" style="display:none; background: #f0f8f3; padding: 16px; border-radius: 16px; margin-top: 12px; border: 1px dashed #cfe5da;">
+  <h3 style="font-size: 15px; color: var(--forest); margin: 0 0 12px 0;">🐑 مشخصات تخصصی دام</h3>
+  <div class="field" style="margin-top: 0;">
+    <label>نژاد</label>
+    <select id="sell-breed">
+      <option value="shal">شال</option>
+      <option value="afshari">افشاری</option>
+      <option value="kordi">کردی</option>
+      <option value="lori">لری</option>
+      <option value="bakhtiari">بختیاری</option>
+      <option value="other">سایر</option>
+    </select>
+  </div>
+  <div class="field">
+    <label>وزن تقریبی (کیلوگرم)</label>
+    <input id="sell-weight" type="tel" inputmode="numeric" placeholder="مثلاً: ۴۵" style="direction:ltr;text-align:left">
+  </div>
+  <div class="field">
+    <label>سن (ماه)</label>
+    <input id="sell-age" type="tel" inputmode="numeric" placeholder="مثلاً: ۱۲" style="direction:ltr;text-align:left">
+  </div>
+  <div class="field">
+    <label>واکسیناسیون</label>
+    <select id="sell-vaccine">
+      <option value="yes">کامل (واکسینه شده)</option>
+      <option value="no">بدون واکسن</option>
+      <option value="partial">ناقص</option>
+    </select>
+  </div>
+</div>
+
       <div class="field"><label>چقدر؟</label><input id="sell-qty" placeholder="مثلاً: ۵۰ رأس"></div>
       <div class="field"><label>قیمت واحد (تومان)</label><input id="sell-price" type="tel" inputmode="numeric" placeholder="مثلاً: ۳۸۵۰۰۰" style="direction:ltr;text-align:left"></div>
       <div class="field"><label>کجا؟</label><input id="sell-region" placeholder="مثلاً: اهواز"></div>
