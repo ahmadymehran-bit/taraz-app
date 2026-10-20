@@ -574,13 +574,30 @@ grid.innerHTML = html;
 }
 async function renderHome(){
   renderHomeSkeleton();
-var result = await api.getListings();
-var list = (result && result.listings) ? result.listings : DB.listings;
-list = list.map(function(l){ return { id: l.id, sellerPhone: l.seller_phone, sellerName: l.seller_name, categoryId: l.category_id, title: l.title, qty: l.qty, qtyNum: l.qty_num, price: Number(l.price), oldPrice: l.old_price ? Number(l.old_price) : null, region: l.region, desc: l.description, urgent: l.urgent, urgentReason: l.urgent_reason, productKey: l.product_key, photos: l.photos || [], location: (l.location_lat && l.location_lng) ? { lat: Number(l.location_lat), lng: Number(l.location_lng) } : (l.location || null), createdAt: Number(l.created_at) }; });
-list.sort(function(a,b){return b.createdAt-a.createdAt}); list = list.slice(0,6);
-var el=document.getElementById('home-listings'); if(!el)return;
-el.innerHTML = list.length ? list.map(homeCard).join('') : '<div class="empty"><span class="emoji">🌾</span>آگهی‌ای نیست</div>';
+  
+  var result = await api.getListings();
+  var list = (result && result.listings) ? result.listings : DB.listings;
+  
+  // --- محاسبه نبض بازار (میانگین قیمت) ---
+  try {
+    var sheepListings = list.filter(l => l.title.includes('گوسفند') || l.title.includes('میش'));
+    var wheatListings = list.filter(l => l.title.includes('گندم'));
+    var feedListings = list.filter(l => l.title.includes('کنسانتره'));
+    
+    var avg = (arr) => arr.length ? Math.round(arr.reduce((a,b) => a + Number(b.price), 0) / arr.length) : 0;
+    
+    document.getElementById('pulse-sheep').textContent = sheepListings.length ? faPrice(avg(sheepListings)) + ' تومان' : 'نامشخص';
+    document.getElementById('pulse-wheat').textContent = wheatListings.length ? faPrice(avg(wheatListings)) + ' تومان' : 'نامشخص';
+    document.getElementById('pulse-feed').textContent = feedListings.length ? faPrice(avg(feedListings)) + ' تومان' : 'نامشخص';
+  } catch(e) { console.warn('Pulse error:', e); }
+
+  // --- بقیه کدهای نمایش آگهی‌ها ---
+  list = list.map(function(l){ return { id: l.id, sellerPhone: l.seller_phone, sellerName: l.seller_name, categoryId: l.category_id, title: l.title, qty: l.qty, qtyNum: l.qty_num, price: Number(l.price), oldPrice: l.old_price ? Number(l.old_price) : null, region: l.region, desc: l.description, urgent: l.urgent, urgentReason: l.urgent_reason, productKey: l.product_key, photos: l.photos || [], location: (l.location_lat && l.location_lng) ? { lat: Number(l.location_lat), lng: Number(l.location_lng) } : (l.location || null), createdAt: Number(l.created_at) }; });
+  list.sort(function(a,b){return b.createdAt-a.createdAt}); list = list.slice(0,6);
+  var el=document.getElementById('home-listings'); if(!el)return;
+  el.innerHTML = list.length ? list.map(homeCard).join('') : '<div class="empty"><span class="emoji">🌾</span>آگهی‌ای نیست</div>';
 }
+
 function homeCard(l){
   const cat=catOf(l.categoryId);
   const photo=(l.photos&&l.photos.length)?l.photos[0]:PLACEHOLDER;
