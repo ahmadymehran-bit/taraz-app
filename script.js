@@ -1071,38 +1071,46 @@ function renderMissionChain(m){
   el.innerHTML='<div style="padding:16px 0">'+m.steps.map((s,i)=>'<div class="mission-step"><div class="num">'+faDigits(i+1)+'</div><div class="head"><div class="ic">'+s.icon+'</div><div class="t"><b>'+s.title+'</b><small>'+s.subtitle+'</small></div><span class="status '+s.status+'">'+(s.status==='ok'?'✓':'⚠')+'</span></div><div class="why"><b>چرا؟</b> '+s.why+'</div><div class="price-line"><span class="l">'+faDigits(s.qty)+' '+s.unit+' × '+faPrice(s.price)+'</span><span class="v">'+faPrice(s.total)+'</span></div></div>').join('')+'<div class="mission-total"><div class="row"><span>جمع کل</span><span class="v big">'+faPrice(m.total)+' تومان</span></div></div><button type="button" class="btn-green" style="min-height:64px;font-size:18px" onclick="confirmMission()">✅ تأیید و رزرو همه</button><button type="button" class="btn-outline" onclick="discardMission()">انصراف</button></div>';
 }
 function discardMission(){currentMissionDraft=null;document.getElementById('mission-result').innerHTML='';toast('لغو شد')}
-async function async function confirmMission(){
-  var u=DB.user; if(!u) return; 
-  var m=currentMissionDraft; if(!m) return; 
+async function confirmMission(){
+  var u = DB.user; 
+  if(!u) return; 
   
-  m.status='confirmed';
-  var result=null; 
-  try{ result=await api.createMission(m); }catch(e){}
+  var m = currentMissionDraft; 
+  if(!m) return; 
   
-  var all=DB.missions; all.unshift(m); DB.missions=all;
+  m.status = 'confirmed';
+  var result = null; 
+  try { result = await api.createMission(m); } catch(e) {}
+  
+  var all = DB.missions; 
+  all.unshift(m); 
+  DB.missions = all;
   
   for(var i=0; i<m.steps.length; i++){ 
-    var s=m.steps[i]; 
-    if(s.refType==='capacity' && s.refId){ 
-      var cap=DB.capacities.find(function(c){return c.id===s.refId}); 
+    var s = m.steps[i]; 
+    if(s.refType === 'capacity' && s.refId){ 
+      var cap = DB.capacities.find(function(c){ return c.id === s.refId; }); 
       if(cap){ 
-        var booking={ id:'B'+Date.now()+i, capacityId:cap.id, customerPhone:u.phone, customerName:u.name, qty:s.qty, total:s.total, status:'pending', createdAt:Date.now() }; 
-        var bks=DB.bookings; bks.push(booking); DB.bookings=bks; 
-        try{ await api.createBooking(booking); }catch(e){} 
+        var booking = { id: 'B' + Date.now() + i, capacityId: cap.id, customerPhone: u.phone, customerName: u.name, qty: s.qty, total: s.total, status: 'pending', createdAt: Date.now() }; 
+        var bks = DB.bookings; 
+        bks.push(booking); 
+        DB.bookings = bks; 
+        try { await api.createBooking(booking); } catch(e){} 
       } 
     } 
   }
   
-  addNotification({type:'mission',icon:'🎯',title:'مأموریت تأیید شد',body:faPrice(m.total)+' تومان'}); 
+  addNotification({type: 'mission', icon: '🎯', title: 'مأموریت تأیید شد', body: faPrice(m.total) + ' تومان'}); 
   toast('✓ تأیید شد');
   
-  document.getElementById('mission-input').value=''; 
-  document.getElementById('mission-result').innerHTML=''; 
-  currentMissionDraft=null; 
+  document.getElementById('mission-input').value = ''; 
+  document.getElementById('mission-result').innerHTML = ''; 
+  currentMissionDraft = null; 
   
-  // 👇 این خط رو اضافه کن تا بعد از ثبت، به صفحه مأموریت‌ها برگرده
   setTimeout(function() { go('missions-list'); }, 1500);
 }
+
+
 
 
 
