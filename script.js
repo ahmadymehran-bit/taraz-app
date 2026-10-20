@@ -501,22 +501,29 @@ async function pickListingPhotos(){
         var response = await fetch(base64Data);
         var blob = await response.blob();
 
-        // ۳. ارسال به API آپلود Vercel
-        var uploadRes = await fetch('https://taraz-backend-prog.vercel.app/api/upload', {
-          method: 'POST',
-          body: blob
-        });
+        // ۳. آپلود به Supabase Storage
+        var fileName = 'listing_' + Date.now() + '_' + i + '.jpg';
+        var uploadResult = await supabaseClient.storage
+          .from('listings')
+          .upload(fileName, blob);
 
-        var uploadData = await uploadRes.json();
-        
-        if(uploadData && uploadData.ok && uploadData.url){
-          // لینک عکس رو ذخیره می‌کنیم
-          currentPhotos.push(uploadData.url); 
-        } else {
-          // اگر لینک برنگشت، برای اطمینان فعلاً base64 رو نگه می‌داریم
-          currentPhotos.push(base64Data);
-          console.warn('URL not returned from UUpload, using base64');
+        if(uploadResult.error) {
+          console.error(uploadResult.error);
+          toast('خطا در آپلود عکس');
+          continue;
         }
+
+        // ۴. دریافت لینک عمومی
+        var publicUrlResult = supabaseClient.storage
+          .from('listings')
+          .getPublicUrl(fileName);
+
+        if(publicUrlResult && publicUrlResult.data && publicUrlResult.data.publicUrl) {
+          currentPhotos.push(publicUrlResult.data.publicUrl);
+        } else {
+          currentPhotos.push(base64Data); // فال‌بک در صورت خطا
+        }
+
       } catch(e) {
         console.error(e);
         toast('خطا در پردازش عکس');
@@ -525,7 +532,7 @@ async function pickListingPhotos(){
 
     window._tempListingPhotos = currentPhotos;
     renderSellPhotoPreviews();
-    if(currentPhotos.length > 0) toast('✓ عکس‌ها آماده شدند');
+    if(currentPhotos.length > 0) toast('✓ عکس‌ها با موفقیت آپلود شدند');
   };
   
   inp.click();
