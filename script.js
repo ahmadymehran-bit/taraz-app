@@ -1406,6 +1406,7 @@ async function saveReadyProfile() {
     toast('⚠ فقط محلی ذخیره شد');
   }
 }
+
 async function addWatchCondition() {
   var u = DB.user;
   if (!u) return;
@@ -1448,11 +1449,7 @@ async function addWatchCondition() {
 }
 
 
-  // ذخیره محلی
-  DB._set('ready_profile_' + u.phone, profile);
-
-  // ارسال به بک‌اند
-  try {
+ 
     var res = await fetch('https://taraz-backend-prog.vercel.app/api/ready', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
