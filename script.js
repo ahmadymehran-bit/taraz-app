@@ -1387,10 +1387,8 @@ async function saveReadyProfile() {
     notes: notes
   };
 
-  // ذخیره محلی
   DB._set('ready_profile_' + u.phone, profile);
 
-  // ارسال به بک‌اند
   try {
     var res = await fetch('https://taraz-backend-prog.vercel.app/api/ready', {
       method: 'POST',
@@ -1448,22 +1446,6 @@ async function addWatchCondition() {
   }
 }
 
-
- 
-    var res = await fetch('https://taraz-backend-prog.vercel.app/api/ready', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(profile)
-    });
-    if (res.ok) {
-      toast('✓ اطلاعات با موفقیت ذخیره شد');
-    } else {
-      toast('⚠ فقط محلی ذخیره شد');
-    }
-  } catch(e) {
-    toast('⚠ فقط محلی ذخیره شد');
-  }
-}
 function quickReply(text) {
   var inp = document.getElementById('chat-input');
   if (inp) {
