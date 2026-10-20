@@ -784,7 +784,20 @@ var qtyNum=extractQtyNum(qtyStr); var pk=productKey(title);
 var item={ id:'L'+Date.now(), sellerName:u.name, sellerPhone:u.phone, categoryId:catId, title:title, qty:qtyStr, qtyNum:qtyNum, price:price, region:region, desc:desc, photos: window._tempListingPhotos || [], location: _tempListingLocation || null, productKey:pk, createdAt:Date.now() };
 var uBlock=document.getElementById('sell-urgent-block');
 if(uBlock&&uBlock.style.display==='block'){ item.urgent=true; item.urgentReason=document.getElementById('sell-urgent-reason').value; var op=Number(document.getElementById('sell-old-price').value.replace(/[^\d]/g,'')); if(op&&op>price)item.oldPrice=op; }
-var result = await api.createListing(item);
+// ذخیره فیلدهای تخصصی (اگر دسته دام بود)
+if (catId === 'livestock') {
+  var breedEl = document.getElementById('sell-breed');
+  var weightEl = document.getElementById('sell-weight');
+  var ageEl = document.getElementById('sell-age');
+  var vaccineEl = document.getElementById('sell-vaccine');
+  
+  item.breed = breedEl ? breedEl.value : null;
+  item.weight = weightEl ? Number(weightEl.value.replace(/[^\d]/g, '')) : null;
+  item.age = ageEl ? Number(ageEl.value.replace(/[^\d]/g, '')) : null;
+  item.vaccine = vaccineEl ? vaccineEl.value : null;
+}
+
+  var result = await api.createListing(item);
 var all=DB.listings;all.push(item);DB.listings=all;
 if(result && result.ok){ toast('✓ آگهی منتشر شد'); } else { toast('⚠ آگهی محلی ذخیره شد'); }
   window._tempListingPhotos = []; _tempListingLocation = null; if(_mapMarker){_mapMarker.remove();_mapMarker=null;}
