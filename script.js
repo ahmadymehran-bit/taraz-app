@@ -156,6 +156,15 @@ const SERVICES = [
     {id:'packaging', label:'بسته‌بندی', unit:'کیلو', icon:'📦'},
     {id:'cold_storage', label:'سردخانه', unit:'تن', icon:'❄️'}
   ]},
+  {id:'poultry', icon:'🐔', title:'طیور و ماکیان', types:[
+  {id:'broiler_chick', label:'جوجه یک‌روزه گوشتی', unit:'قطعه', icon:'🐥'},
+  {id:'layer_chick', label:'جوجه یک‌روزه تخم‌گذار', unit:'قطعه', icon:'🐤'},
+  {id:'turkey', label:'بوقلمون', unit:'قطعه', icon:'🦃'},
+  {id:'quail', label:'بلدرچین', unit:'قطعه', icon:'🐦'},
+  {id:'ostrich', label:'شترمرغ', unit:'قطعه', icon:'🦤'},
+  {id:'other_poultry', label:'سایر ماکیان', unit:'قطعه', icon:'❓'}
+]},
+
   {id:'machinery_rent', icon:'🚜', title:'ماشین‌آلات کشاورزی', types:[
     {id:'tractor', label:'تراکتور', unit:'هکتار', icon:'🚜'},
     {id:'harvester', label:'کمباین', unit:'هکتار', icon:'🌾'},
