@@ -1406,6 +1406,67 @@ async function saveReadyProfile() {
     toast('⚠ فقط محلی ذخیره شد');
   }
 }
+async function addWatchCondition() {
+  var u = DB.user;
+  if (!u) return;
+
+  var from = document.getElementById('watch-from').value.trim();
+  var to = document.getElementById('watch-to').value.trim();
+  var notes = document.getElementById('watch-notes').value.trim();
+
+  if (!from && !to) {
+    toast('حداقل یک مسیر (مبدا یا مقصد) را وارد کنید');
+    return;
+  }
+
+  var watchData = {
+    id: 'W' + Date.now(),
+    user_phone: u.phone,
+    service_type: 'transport',
+    route_from: from,
+    route_to: to,
+    notes: notes
+  };
+
+  try {
+    var res = await fetch('https://taraz-backend-prog.vercel.app/api/watches', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(watchData)
+    });
+    if (res.ok) {
+      toast('✓ درخواست شرطی شما ثبت شد. به‌زودی خبرت می‌کنیم!');
+      document.getElementById('watch-from').value = '';
+      document.getElementById('watch-to').value = '';
+      document.getElementById('watch-notes').value = '';
+    } else {
+      toast('خطا در ثبت درخواست');
+    }
+  } catch(e) {
+    toast('خطا در ارتباط با سرور');
+  }
+}
+
+
+  // ذخیره محلی
+  DB._set('ready_profile_' + u.phone, profile);
+
+  // ارسال به بک‌اند
+  try {
+    var res = await fetch('https://taraz-backend-prog.vercel.app/api/ready', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(profile)
+    });
+    if (res.ok) {
+      toast('✓ اطلاعات با موفقیت ذخیره شد');
+    } else {
+      toast('⚠ فقط محلی ذخیره شد');
+    }
+  } catch(e) {
+    toast('⚠ فقط محلی ذخیره شد');
+  }
+}
 function quickReply(text) {
   var inp = document.getElementById('chat-input');
   if (inp) {
