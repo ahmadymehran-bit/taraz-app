@@ -1406,6 +1406,15 @@ async function saveReadyProfile() {
     toast('⚠ فقط محلی ذخیره شد');
   }
 }
+function quickReply(text) {
+  var inp = document.getElementById('chat-input');
+  if (inp) {
+    inp.value = text;
+    // اسکرول خودکار به آخرین پیام
+    var body = document.getElementById('chat-body');
+    if(body) body.scrollTop = body.scrollHeight;
+  }
+}
 
 /* ============================================================
    API LAYER 
