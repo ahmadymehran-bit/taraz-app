@@ -139,45 +139,52 @@ const CATEGORIES_ALL=[
 ];
 const CATEGORIES=CATEGORIES_ALL.filter(c=>c.id!=='all'&&c.id!=='urgent');
 
-const SERVICES=[
-  {id:'transport',icon:'🚛',title:'حمل کالا',types:[
-    {id:'van',label:'وانت',unit:'تن',icon:'🚐'},
-    {id:'nisan',label:'نیسان',unit:'تن',icon:'🚚'},
-    {id:'kamion',label:'کامیون',unit:'تن',icon:'🚛'},
-    {id:'tirili',label:'تریلی',unit:'تن',icon:'🚛'},
-    {id:'live_animal',label:'حمل دام',unit:'رأس',icon:'🐑'},
-    {id:'poultry_transport',label:'حمل جوجه',unit:'قطعه',icon:'🐔'},
-    {id:'cold_chain',label:'سردخانه‌ای',unit:'تن',icon:'❄️'},
-    {id:'shared',label:'اشتراکی',unit:'تن',icon:'🤝'}
+const SERVICES = [
+  {id:'transport', icon:'🚛', title:'حمل و نقل', types:[
+    {id:'van', label:'وانت', unit:'تن', icon:'🚐'},
+    {id:'nisan', label:'نیسان', unit:'تن', icon:'🚚'},
+    {id:'kamion', label:'کامیون', unit:'تن', icon:'🚛'},
+    {id:'tirili', label:'تریلی', unit:'تن', icon:'🚛'},
+    {id:'live_animal', label:'حمل دام', unit:'رأس', icon:'🐑'},
+    {id:'poultry_transport', label:'حمل طیور', unit:'قطعه', icon:'🐔'},
+    {id:'cold_chain', label:'سردخانه‌ای', unit:'تن', icon:'❄️'},
+    {id:'shared', label:'اشتراکی', unit:'تن', icon:'🤝'}
   ]},
-  {id:'slaughter',icon:'🥩',title:'کشتار',types:[
-    {id:'butcher',label:'قصاب',unit:'رأس',icon:'🔪'},
-    {id:'abattoir',label:'کشتارگاه',unit:'رأس',icon:'🏭'},
-    {id:'packaging',label:'بسته‌بندی',unit:'کیلو',icon:'📦'},
-    {id:'cold_storage',label:'سردخانه',unit:'تن',icon:'❄️'}
+  {id:'slaughter', icon:'🥩', title:'کشتار و بسته‌بندی', types:[
+    {id:'butcher', label:'قصاب سیار', unit:'رأس', icon:'🔪'},
+    {id:'abattoir', label:'کشتارگاه', unit:'رأس', icon:'🏭'},
+    {id:'packaging', label:'بسته‌بندی', unit:'کیلو', icon:'📦'},
+    {id:'cold_storage', label:'سردخانه', unit:'تن', icon:'❄️'}
   ]},
-  {id:'machinery_rent',icon:'🚜',title:'ماشین‌آلات',types:[
-    {id:'tractor',label:'تراکتور',unit:'هکتار',icon:'🚜'},
-    {id:'harvester',label:'کمباین',unit:'هکتار',icon:'🌾'},
-    {id:'tillage',label:'شخم',unit:'هکتار',icon:'🌱'},
-    {id:'planting',label:'کاشت',unit:'هکتار',icon:'🌾'},
-    {id:'harvesting',label:'برداشت',unit:'هکتار',icon:'🌾'},
-    {id:'spraying',label:'سمپاشی',unit:'هکتار',icon:'💨'}
+  {id:'machinery_rent', icon:'🚜', title:'ماشین‌آلات کشاورزی', types:[
+    {id:'tractor', label:'تراکتور', unit:'هکتار', icon:'🚜'},
+    {id:'harvester', label:'کمباین', unit:'هکتار', icon:'🌾'},
+    {id:'tillage', label:'شخم', unit:'هکتار', icon:'🌱'},
+    {id:'planting', label:'کاشت', unit:'هکتار', icon:'🌾'},
+    {id:'harvesting', label:'برداشت', unit:'هکتار', icon:'🌾'},
+    {id:'spraying', label:'سمپاشی', unit:'هکتار', icon:'💨'}
   ]},
-  {id:'repairs',icon:'🔧',title:'تعمیرات',types:[
-    {id:'farm_equip_repair',label:'تجهیزات دامی',unit:'ساعت',icon:'🔧'},
-    {id:'machinery_repair',label:'ماشین‌آلات',unit:'ساعت',icon:'🔧'},
-    {id:'ventilation',label:'تهویه',unit:'عدد',icon:'💨'},
-    {id:'milking',label:'شیردوش',unit:'عدد',icon:'🥛'}
+  {id:'repairs', icon:'🔧', title:'تعمیرات و تجهیزات', types:[
+    {id:'farm_equip_repair', label:'تجهیزات دامی', unit:'ساعت', icon:'🔧'},
+    {id:'machinery_repair', label:'ماشین‌آلات', unit:'ساعت', icon:'🔧'},
+    {id:'ventilation', label:'تهویه', unit:'عدد', icon:'💨'},
+    {id:'milking', label:'شیردوش', unit:'عدد', icon:'🥛'}
   ]},
-  {id:'specialist',icon:'🩺',title:'دامپزشک',types:[
-    {id:'vet',label:'دامپزشک',unit:'بازدید',icon:'👨‍⚕️'},
-    {id:'lab',label:'آزمایشگاه',unit:'نمونه',icon:'🧪'},
-    {id:'plant_doctor',label:'گیاه‌پزشک',unit:'بازدید',icon:'🌱'},
-    {id:'insemination',label:'تلقیح',unit:'رأس',icon:'💉'},
-    {id:'diagnosis',label:'تشخیص بیماری',unit:'بازدید',icon:'🩺'}
+  {id:'specialist', icon:'🩺', title:'دامپزشکی و مشاوره', types:[
+    {id:'vet', label:'دامپزشک', unit:'بازدید', icon:'👨‍⚕️'},
+    {id:'lab', label:'آزمایشگاه', unit:'نمونه', icon:'🧪'},
+    {id:'plant_doctor', label:'گیاه‌پزشک', unit:'بازدید', icon:'🌱'},
+    {id:'insemination', label:'تلقیح', unit:'رأس', icon:'💉'},
+    {id:'diagnosis', label:'تشخیص بیماری', unit:'بازدید', icon:'🩺'}
+  ]},
+  {id:'labor', icon:'👷', title:'نیروی کار و خدمات', types:[
+    {id:'shepherd', label:'چوپان', unit:'روز', icon:'🐑'},
+    {id:'gardener', label:'باغبان', unit:'روز', icon:'🌳'},
+    {id:'farm_worker', label:'کارگر کشاورزی', unit:'روز', icon:'👷'},
+    {id:'harvest_worker', label:'کارگر برداشت', unit:'روز', icon:'🌾'}
   ]}
 ];
+
 const URGENT_REASONS={expiry:'نزدیک به انقضا',auction:'حراج',special:'تخفیف ویژه',overstock:'موجودی مازاد'};
 
 function serviceOf(id){return SERVICES.find(s=>s.id===id)||SERVICES[0]}
