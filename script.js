@@ -493,11 +493,11 @@ async function pickListingPhotos(){
 
     for(var i=0; i<toProcess; i++){
       try {
-        // ۱. فشرده‌سازی عکس برای کاهش حجم
+        // ۱. فشرده‌سازی عکس
         var base64Data = await compressImage(files[i], 800, 0.7);
         if(!base64Data) continue;
 
-        // ۲. تبدیل base64 به Blob برای ارسال به بک‌اند
+        // ۲. تبدیل base64 به Blob
         var response = await fetch(base64Data);
         var blob = await response.blob();
 
@@ -509,12 +509,13 @@ async function pickListingPhotos(){
 
         var uploadData = await uploadRes.json();
         
-        if(uploadData && uploadData.ok){
-          // ۴. اگر بک‌اند لینک رو برگردوند (فعلاً به صورت خام)، فعلاً همون base64 رو نگه می‌داریم
-          // تا بعداً لینک واقعی UUpload رو از پاسخ استخراج کنیم.
-          currentPhotos.push(base64Data); 
+        if(uploadData && uploadData.ok && uploadData.url){
+          // لینک عکس رو ذخیره می‌کنیم
+          currentPhotos.push(uploadData.url); 
         } else {
-          toast('خطا در آپلود عکس');
+          // اگر لینک برنگشت، برای اطمینان فعلاً base64 رو نگه می‌داریم
+          currentPhotos.push(base64Data);
+          console.warn('URL not returned from UUpload, using base64');
         }
       } catch(e) {
         console.error(e);
