@@ -346,6 +346,12 @@
           <div class="stat-item"><div class="stat-val" id="stat-bookings">۰</div><div class="stat-lbl">📅 رزرو</div></div>
         </div>
       </div>
+      <div class="profile-menu-item" onclick="go('ready')">
+  <div class="ic">🟢</div>
+  <div class="body"><b>اعلام آمادگی</b><small>من آماده پذیرش مأموریت هستم</small></div>
+  <div class="arrow">‹</div>
+</div>
+
       <div class="profile-menu-item" onclick="go('settings')">
         <div class="ic">⚙️</div><div class="body"><b>تنظیمات</b><small>حالت تاریک، پشتیبان‌گیری</small></div><div class="arrow">‹</div>
       </div>
@@ -376,6 +382,45 @@
       <button type="button" class="btn-green" onclick="go('mission')" style="min-height: 56px; font-size: 16px;">➕ ایجاد مأموریت جدید</button>
     </div>
     <div id="my-missions-container"></div>
+  </div>
+</section>
+  
+<!-- ============ READY STATUS (اعلام آمادگی) ============ -->
+<section class="screen" id="screen-ready">
+  <div class="sub-header">
+    <button type="button" class="back-btn" onclick="go('profile')">→</button>
+    <div class="title">🟢 اعلام آمادگی</div>
+  </div>
+  <div style="padding:16px 0 40px">
+    
+    <div class="card" style="margin:16px; text-align:center; background: #eef8f3; border-color: #cfe5da;">
+      <h3 style="font-size:18px; color:var(--forest); margin-bottom:8px;">وضعیت شما</h3>
+      <div id="ready-status-text" style="font-size:15px; font-weight:800; margin-bottom:16px;">در حال بارگذاری...</div>
+      <button type="button" id="toggle-ready-btn" class="btn-green" onclick="toggleReadyStatus()" style="min-height:60px; font-size:18px; border-radius:100px;">تغییر وضعیت</button>
+    </div>
+
+    <div class="field" style="margin:16px;">
+      <label>نوع خدمت شما</label>
+      <select id="ready-service-type">
+        <option value="transport">🚛 راننده / حمل و نقل</option>
+        <option value="vet">🩺 دامپزشک</option>
+        <option value="butcher">🔪 قصاب</option>
+        <option value="shepherd">🐑 چوپان</option>
+        <option value="labor">👷 کارگر کشاورزی</option>
+      </select>
+    </div>
+
+    <div class="field" style="margin:16px;">
+      <label>محدوده فعالیت (شهر یا استان)</label>
+      <input id="ready-region" placeholder="مثلاً: خوزستان یا اهواز">
+    </div>
+
+    <div class="field" style="margin:16px;">
+      <label>توضیحات یا درخواست شرطی (اختیاری)</label>
+      <textarea id="ready-notes" placeholder="مثلاً: اگر باری از اصفهان به اهواز بود و از ایذه می‌گذشت، من را خبر کن. ظرفیت یک گاو اضافه دارم." style="min-height:100px;"></textarea>
+    </div>
+
+    <button type="button" class="btn-primary" onclick="saveReadyProfile()" style="margin:16px; min-height:64px; font-size:18px;">💾 ذخیره اطلاعات</button>
   </div>
 </section>
 
