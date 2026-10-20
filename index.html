@@ -317,6 +317,12 @@
       <div class="profile-menu-item" onclick="openProfileSection('listings')">
         <div class="ic">📦</div><div class="body"><b>آگهی‌های من</b><small id="cnt-listings">—</small></div><div class="arrow">‹</div>
       </div>
+      <div class="profile-menu-item" onclick="go('missions-list')">
+  <div class="ic">🎯</div>
+  <div class="body"><b>مأموریت‌های من</b><small>مدیریت زنجیره‌های خرید و فروش</small></div>
+  <div class="arrow">‹</div>
+</div>
+
       <div class="profile-menu-item" onclick="openProfileSection('favorites')">
         <div class="ic">❤️</div><div class="body"><b>علاقه‌مندی‌ها</b><small id="cnt-favorites">—</small></div><div class="arrow">‹</div>
       </div>
@@ -359,6 +365,19 @@
     </div>
     <div id="profile-sub-body" style="padding:16px 0 40px"></div>
   </section>
+<!-- ============ MY MISSIONS ============ -->
+<section class="screen" id="screen-missions-list">
+  <div class="sub-header">
+    <button type="button" class="back-btn" onclick="go('profile')">→</button>
+    <div class="title">🎯 مأموریت‌های من</div>
+  </div>
+  <div style="padding:16px 0 40px">
+    <div style="padding: 0 16px 16px">
+      <button type="button" class="btn-green" onclick="go('mission')" style="min-height: 56px; font-size: 16px;">➕ ایجاد مأموریت جدید</button>
+    </div>
+    <div id="my-missions-container"></div>
+  </div>
+</section>
 
   <!-- ============ SETTINGS ============ -->
   <section class="screen" id="screen-settings">
