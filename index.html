@@ -423,6 +423,24 @@
       <label>توضیحات یا درخواست شرطی (اختیاری)</label>
       <textarea id="ready-notes" placeholder="مثلاً: اگر باری از اصفهان به اهواز بود و از ایذه می‌گذشت، من را خبر کن. ظرفیت یک گاو اضافه دارم." style="min-height:100px;"></textarea>
     </div>
+<div class="card" style="margin:16px; background:#fff8e6; border-color:#f0b429;">
+  <h3 style="font-size:16px; color:#8a6400; margin-bottom:8px;">⏰ درخواست شرطی (Watch)</h3>
+  <p style="font-size:12px; color:#8a6400; margin-bottom:12px;">اینجا مشخص کن چه نوع بار یا مسیری رو دنبال می‌کنی تا در صورت ثبت، بهت خبر بدیم.</p>
+  
+  <div class="field" style="margin-top:0;">
+    <label>از کجا؟</label>
+    <input id="watch-from" placeholder="مثلاً: اصفهان">
+  </div>
+  <div class="field">
+    <label>به کجا؟</label>
+    <input id="watch-to" placeholder="مثلاً: اهواز">
+  </div>
+  <div class="field">
+    <label>نوع بار/شرایط</label>
+    <input id="watch-notes" placeholder="مثلاً: فقط دام زنده، وزن بالای ۵۰ کیلو">
+  </div>
+  <button type="button" class="btn-gold" onclick="addWatchCondition()" style="min-height:50px; font-size:14px; margin-top:12px;">🔔 ثبت این درخواست</button>
+</div>
 
     <button type="button" class="btn-primary" onclick="saveReadyProfile()" style="margin:16px; min-height:64px; font-size:18px;">💾 ذخیره اطلاعات</button>
   </div>
