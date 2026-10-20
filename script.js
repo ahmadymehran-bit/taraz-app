@@ -1170,6 +1170,21 @@ async function askAdminAI() {
     responseEl.textContent = 'خطا در ارتباط با هوش مصنوعی.';
   }
 }
+/* ============ نمایش فیلدهای تخصصی دام ============ */
+document.addEventListener('DOMContentLoaded', function() {
+  const categorySelect = document.getElementById('sell-category');
+  const livestockFields = document.getElementById('livestock-fields');
+  
+  if (categorySelect && livestockFields) {
+    categorySelect.addEventListener('change', function() {
+      if (this.value === 'livestock') {
+        livestockFields.style.display = 'block';
+      } else {
+        livestockFields.style.display = 'none';
+      }
+    });
+  }
+});
 
 /* ============================================================
    API LAYER 
