@@ -330,6 +330,8 @@ function go(s){
   if(s==='chat')renderChat();
   if(s==='settings')applyTheme();
   if(s==='notifs')renderNotifs();
+  if(s==='missions-list')renderMyMissions();
+
   renderHeaderAvatars(); updateChatBadge(); updateBellBadge();
 }
 function backFromCapacity(){go(capacityReturnTo||'services')}
@@ -1069,14 +1071,42 @@ function renderMissionChain(m){
   el.innerHTML='<div style="padding:16px 0">'+m.steps.map((s,i)=>'<div class="mission-step"><div class="num">'+faDigits(i+1)+'</div><div class="head"><div class="ic">'+s.icon+'</div><div class="t"><b>'+s.title+'</b><small>'+s.subtitle+'</small></div><span class="status '+s.status+'">'+(s.status==='ok'?'✓':'⚠')+'</span></div><div class="why"><b>چرا؟</b> '+s.why+'</div><div class="price-line"><span class="l">'+faDigits(s.qty)+' '+s.unit+' × '+faPrice(s.price)+'</span><span class="v">'+faPrice(s.total)+'</span></div></div>').join('')+'<div class="mission-total"><div class="row"><span>جمع کل</span><span class="v big">'+faPrice(m.total)+' تومان</span></div></div><button type="button" class="btn-green" style="min-height:64px;font-size:18px" onclick="confirmMission()">✅ تأیید و رزرو همه</button><button type="button" class="btn-outline" onclick="discardMission()">انصراف</button></div>';
 }
 function discardMission(){currentMissionDraft=null;document.getElementById('mission-result').innerHTML='';toast('لغو شد')}
-async function confirmMission(){
-var u=DB.user;if(!u)return; var m=currentMissionDraft;if(!m)return; m.status='confirmed';
-var result=null; try{result=await api.createMission(m)}catch(e){}
-var all=DB.missions;all.unshift(m);DB.missions=all;
-for(var i=0;i<m.steps.length;i++){ var s=m.steps[i]; if(s.refType==='capacity'&&s.refId){ var cap=DB.capacities.find(function(c){return c.id===s.refId}); if(cap){ var booking={ id:'B'+Date.now()+i, capacityId:cap.id, customerPhone:u.phone, customerName:u.name, qty:s.qty, total:s.total, status:'pending', createdAt:Date.now() }; var bks=DB.bookings;bks.push(booking);DB.bookings=bks; try{await api.createBooking(booking)}catch(e){} } } }
-addNotification({type:'mission',icon:'🎯',title:'مأموریت تأیید شد',body:faPrice(m.total)+' تومان'}); toast('✓ تأیید شد');
-document.getElementById('mission-input').value=''; document.getElementById('mission-result').innerHTML=''; currentMissionDraft=null; renderMission();
+async function async function confirmMission(){
+  var u=DB.user; if(!u) return; 
+  var m=currentMissionDraft; if(!m) return; 
+  
+  m.status='confirmed';
+  var result=null; 
+  try{ result=await api.createMission(m); }catch(e){}
+  
+  var all=DB.missions; all.unshift(m); DB.missions=all;
+  
+  for(var i=0; i<m.steps.length; i++){ 
+    var s=m.steps[i]; 
+    if(s.refType==='capacity' && s.refId){ 
+      var cap=DB.capacities.find(function(c){return c.id===s.refId}); 
+      if(cap){ 
+        var booking={ id:'B'+Date.now()+i, capacityId:cap.id, customerPhone:u.phone, customerName:u.name, qty:s.qty, total:s.total, status:'pending', createdAt:Date.now() }; 
+        var bks=DB.bookings; bks.push(booking); DB.bookings=bks; 
+        try{ await api.createBooking(booking); }catch(e){} 
+      } 
+    } 
+  }
+  
+  addNotification({type:'mission',icon:'🎯',title:'مأموریت تأیید شد',body:faPrice(m.total)+' تومان'}); 
+  toast('✓ تأیید شد');
+  
+  document.getElementById('mission-input').value=''; 
+  document.getElementById('mission-result').innerHTML=''; 
+  currentMissionDraft=null; 
+  
+  // 👇 این خط رو اضافه کن تا بعد از ثبت، به صفحه مأموریت‌ها برگرده
+  setTimeout(function() { go('missions-list'); }, 1500);
 }
+
+
+
+
 async function renderMission(){
 var u=DB.user;if(!u)return;
 var result=null; try{result=await api.getMissions(u.phone)}catch(e){}
@@ -1088,6 +1118,40 @@ var el=document.getElementById('mission-history'); if(!el)return;
 if(!list.length){el.innerHTML='<div class="empty" style="padding:30px 20px"><span class="emoji">🎯</span>مأموریتی نساخته‌ای</div>';return}
 el.innerHTML=list.slice(0,10).map(function(m){ return '<div class="card"><b>🎯 '+(m.rawText||'').slice(0,50)+'</b><small>'+faDigits((m.steps||[]).length)+' مرحله · '+faPrice(m.total)+' تومان<br>'+timeAgo(m.createdAt)+'</small></div>'; }).join('');
 }
+async function renderMyMissions() {
+  const u = DB.user;
+  if (!u) return;
+  
+  const container = document.getElementById('my-missions-container');
+  if (!container) return;
+  
+  container.innerHTML = '<div style="text-align:center;padding:20px;">در حال بارگذاری...</div>';
+  
+  try {
+    var result = await api.getMissions(u.phone);
+    var list = (result && result.missions) ? result.missions : [];
+    
+    if (!list.length) {
+      container.innerHTML = '<div class="empty"><span class="emoji">🎯</span>هنوز مأموریتی نساخته‌ای</div>';
+      return;
+    }
+    
+    container.innerHTML = list.map(function(m) {
+      var statusText = m.status === 'confirmed' ? 'تایید شده' : m.status === 'draft' ? 'پیش‌نویس' : 'در حال انجام';
+      var statusColor = m.status === 'confirmed' ? '#16a34a' : '#9a6b00';
+      return '<div class="card" style="margin:12px 16px;">' +
+             '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+             '<b style="color:var(--forest);">' + (m.rawText || 'مأموریت بدون عنوان').substring(0, 40) + '...</b>' +
+             '<span style="background:#e3f6ec;color:' + statusColor + ';padding:4px 10px;border-radius:100px;font-size:12px;font-weight:900;">' + statusText + '</span>' +
+             '</div>' +
+             '<small style="display:block;margin-top:8px;color:var(--muted);">' + faDigits((m.steps||[]).length) + ' مرحله · ' + faPrice(m.total) + ' تومان</small>' +
+             '</div>';
+    }).join('');
+  } catch(e) {
+    container.innerHTML = '<div class="empty">خطا در دریافت مأموریت‌ها</div>';
+  }
+}
+
 function backFromDetail(){go(detailReturnTo||'home')}
 if(DB.user){ loadFavorites().then(function(){ if(currentScreen==='home')renderHome(); else if(currentScreen==='browse')renderBrowse(); }); }
 console.log('✓ Taraz v3.0 loaded');
