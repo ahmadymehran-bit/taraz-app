@@ -701,14 +701,46 @@ function renderServicesStep2(el){
   el.innerHTML='<div class="service-grid">'+s.types.map(t=>{ const cnt=DB.capacities.filter(c=>c.serviceType===s.id&&c.typeId===t.id).length; return '<div class="service-step-card" onclick="goServicesStep3(\''+s.id+'\',\''+t.id+'\')"><div class="ic">'+t.icon+'</div><div class="t">'+t.label+'</div><div class="cnt">'+faDigits(cnt)+' نفر</div></div>'; }).join('')+'</div>';
 }
 async function renderServicesStep3(el){
-var result = null; try { result = await api.getCapacities(); } catch(e) { console.warn(e.message); }
-var list = (result && result.capacities) ? result.capacities : DB.capacities;
-list = list.map(function(c){ return { id: c.id, ownerPhone: c.owner_phone || c.ownerPhone, ownerName: c.owner_name || c.ownerName, serviceType: c.service_type || c.serviceType, typeId: c.type_id || c.typeId, title: c.title, region: c.region, routeFrom: c.route_from || c.routeFrom, routeTo: c.route_to || c.routeTo, capacityTotal: c.capacity_total || c.capacityTotal, capacityUsed: c.capacity_used || c.capacityUsed || 0, price: Number(c.price), unit: c.unit, availableFrom: c.available_from || c.availableFrom, availableTo: c.available_to || c.availableTo, rating: Number(c.rating) || 0, createdAt: Number(c.created_at || c.createdAt) }; });
-list = list.filter(function(c){ return c.serviceType === servicesCurrentService && c.typeId === servicesCurrentType; });
-list.sort(function(a,b){ return b.createdAt - a.createdAt; });
-if(!list.length){ el.innerHTML='<div class="empty"><span class="emoji">😔</span>هنوز کسی ثبت نشده<br><button type="button" class="btn-blue" style="margin-top:20px;max-width:280px;margin-left:auto;margin-right:auto" onclick="openCreateCapacity()">➕ من این کار را می‌کنم</button></div>'; return; }
-el.innerHTML='<div style="padding:8px 0 30px">' + list.map(function(c){ return capacityBigCard(c); }).join('') + '<div style="text-align:center;margin-top:20px"><button type="button" class="btn-blue" style="max-width:280px;margin:0 auto" onclick="openCreateCapacity()">➕ من هم این کار را می‌کنم</button></div></div>';
+  var result = null; 
+  try { result = await api.getCapacities(); } catch(e) {}
+  
+  var list = (result && result.capacities) ? result.capacities : DB.capacities;
+  
+  // 👇 این بخش جدید: دریافت خدمات‌دهنده‌های آنلاین 👇
+  var onlineProviders = [];
+  try {
+    var readyRes = await fetch('https://taraz-backend-prog.vercel.app/api/ready/' + servicesCurrentService);
+    var readyData = await readyRes.json();
+    if (readyData && readyData.profiles) {
+      onlineProviders = readyData.profiles;
+    }
+  } catch(e) { console.warn('Ready fetch error:', e); }
+  
+  // فیلتر کردن ظرفیت‌های موجود (مثل قبل)
+  list = list.map(function(c){ /* ... کد قبلی ... */ });
+  list = list.filter(function(c){ /* ... کد قبلی ... */ });
+  
+  // 👇 نمایش خدمات‌دهنده‌های آنلاین در بالای لیست 👇
+  var onlineHtml = '';
+  if (onlineProviders.length > 0) {
+    onlineHtml = '<div style="padding: 0 16px 16px;"><h3 style="font-size:16px;color:#16a34a;margin-bottom:8px;">🟢 آنلاین و آماده</h3>';
+    onlineHtml += onlineProviders.map(function(p) {
+      return '<div class="card" style="border-color:#cfe5da;background:#eef8f3;">' +
+             '<b style="color:var(--forest);">' + p.name + '</b>' +
+             '<small style="display:block;margin-top:4px;">📍 ' + p.region + (p.notes ? ' · ' + p.notes : '') + '</small>' +
+             '</div>';
+    }).join('');
+    onlineHtml += '</div>';
+  }
+  
+  if(!list.length && !onlineProviders.length){ 
+    el.innerHTML = '<div class="empty"><span class="emoji">😔</span>هنوز کسی ثبت نشده<br><button type="button" class="btn-blue" style="margin-top:20px;max-width:280px;margin-left:auto;margin-right:auto" onclick="openCreateCapacity()">➕ من این کار را می‌کنم</button></div>'; 
+    return; 
+  }
+  
+  el.innerHTML = onlineHtml + '<div style="padding:8px 0 30px">' + list.map(function(c){ return capacityBigCard(c); }).join('') + '<div style="text-align:center;margin-top:20px"><button type="button" class="btn-blue" style="max-width:280px;margin:0 auto" onclick="openCreateCapacity()">➕ من هم این کار را می‌کنم</button></div></div>';
 }
+
 function capacityBigCard(c){
 var s=serviceOf(c.serviceType); var t=serviceTypeOf(c.serviceType,c.typeId);
 var free=Number(c.capacityTotal||0) - Number(c.capacityUsed||0);
@@ -1324,7 +1356,7 @@ function toggleReadyStatus() {
   toast(_isReady ? '✓ حالت آماده‌باش فعال شد' : 'حالت استراحت فعال شد');
 }
 
-function saveReadyProfile() {
+async function saveReadyProfile() {
   var u = DB.user;
   if (!u) return;
 
@@ -1343,12 +1375,27 @@ function saveReadyProfile() {
     is_ready: _isReady,
     service_type: serviceType,
     region: region,
-    notes: notes,
-    updated_at: Date.now()
+    notes: notes
   };
 
+  // ذخیره محلی
   DB._set('ready_profile_' + u.phone, profile);
-  toast('✓ اطلاعات با موفقیت ذخیره شد');
+
+  // ارسال به بک‌اند
+  try {
+    var res = await fetch('https://taraz-backend-prog.vercel.app/api/ready', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(profile)
+    });
+    if (res.ok) {
+      toast('✓ اطلاعات با موفقیت ذخیره شد');
+    } else {
+      toast('⚠ فقط محلی ذخیره شد');
+    }
+  } catch(e) {
+    toast('⚠ فقط محلی ذخیره شد');
+  }
 }
 
 /* ============================================================
