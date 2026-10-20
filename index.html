@@ -468,6 +468,13 @@
       </div>
     </header>
     <div class="chat-body" id="chat-body"></div>
+    <div id="chat-quick-replies" style="display:flex; gap:8px; padding: 8px 16px; overflow-x:auto; background:#fff; border-top: 1px solid var(--line);">
+  <button type="button" onclick="quickReply('سلام، موجود هست؟')" style="flex-shrink:0; padding:8px 16px; border-radius:100px; border:1px solid var(--accent); background:#eef8f3; color:var(--forest); font-size:13px; font-weight:700;">سلام، موجود هست؟</button>
+  <button type="button" onclick="quickReply('قیمت چنده؟')" style="flex-shrink:0; padding:8px 16px; border-radius:100px; border:1px solid var(--accent); background:#eef8f3; color:var(--forest); font-size:13px; font-weight:700;">قیمت چنده؟</button>
+  <button type="button" onclick="quickReply('امکان ارسال به شهر من هست؟')" style="flex-shrink:0; padding:8px 16px; border-radius:100px; border:1px solid var(--accent); background:#eef8f3; color:var(--forest); font-size:13px; font-weight:700;">ارسال دارید؟</button>
+  <button type="button" onclick="quickReply('آدرس دقیق رو می‌فرستید؟')" style="flex-shrink:0; padding:8px 16px; border-radius:100px; border:1px solid var(--accent); background:#eef8f3; color:var(--forest); font-size:13px; font-weight:700;">آدرس؟</button>
+</div>
+
     <div class="chat-input-bar">
       <input id="chat-input" placeholder="پیام..." onkeypress="if(event.key==='Enter')sendMessage()">
       <button type="button" onclick="sendMessage()" class="chat-send">↑</button>
