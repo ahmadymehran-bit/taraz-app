@@ -1270,6 +1270,86 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 });
+/* ============ READY STATUS LOGIC ============ */
+var _isReady = false;
+
+async function renderReadyProfile() {
+  var u = DB.user;
+  if (!u) return;
+
+  // بارگذاری وضعیت از دیتای محلی (برای شروع)
+  var profile = DB._get('ready_profile_' + u.phone, null);
+  
+  if (profile) {
+    _isReady = profile.is_ready || false;
+    var serviceEl = document.getElementById('ready-service-type');
+    var regionEl = document.getElementById('ready-region');
+    var notesEl = document.getElementById('ready-notes');
+    
+    if (serviceEl) serviceEl.value = profile.service_type || 'transport';
+    if (regionEl) regionEl.value = profile.region || '';
+    if (notesEl) notesEl.value = profile.notes || '';
+  }
+
+  var statusEl = document.getElementById('ready-status-text');
+  var btn = document.getElementById('toggle-ready-btn');
+
+  if (!statusEl || !btn) return;
+
+  if (_isReady) {
+    statusEl.innerHTML = '<span style="color:#16a34a">🟢 شما آماده به کار هستید (مأموریت‌ها به شما ارسال می‌شود)</span>';
+    btn.textContent = 'رفتن به حالت استراحت';
+    btn.className = 'btn-outline';
+    btn.style.color = 'var(--fire)';
+    btn.style.borderColor = 'var(--fire)';
+  } else {
+    statusEl.innerHTML = '<span style="color:var(--muted)">⚪ شما در حالت استراحت هستید</span>';
+    btn.textContent = 'فعال‌سازی حالت آماده‌باش';
+    btn.className = 'btn-green';
+    btn.style.color = '';
+    btn.style.borderColor = '';
+  }
+}
+
+function toggleReadyStatus() {
+  var u = DB.user;
+  if (!u) return;
+
+  _isReady = !_isReady;
+  var profile = DB._get('ready_profile_' + u.phone, {}) || {};
+  profile.is_ready = _isReady;
+  DB._set('ready_profile_' + u.phone, profile);
+
+  renderReadyProfile();
+  toast(_isReady ? '✓ حالت آماده‌باش فعال شد' : 'حالت استراحت فعال شد');
+}
+
+function saveReadyProfile() {
+  var u = DB.user;
+  if (!u) return;
+
+  var serviceType = document.getElementById('ready-service-type').value;
+  var region = document.getElementById('ready-region').value.trim();
+  var notes = document.getElementById('ready-notes').value.trim();
+
+  if (!region) {
+    toast('لطفاً محدوده فعالیت را وارد کنید');
+    return;
+  }
+
+  var profile = {
+    phone: u.phone,
+    name: u.name,
+    is_ready: _isReady,
+    service_type: serviceType,
+    region: region,
+    notes: notes,
+    updated_at: Date.now()
+  };
+
+  DB._set('ready_profile_' + u.phone, profile);
+  toast('✓ اطلاعات با موفقیت ذخیره شد');
+}
 
 /* ============================================================
    API LAYER 
