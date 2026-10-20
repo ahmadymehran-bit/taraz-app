@@ -475,16 +475,61 @@ _mapPicker.invalidateSize();
 } else { wrap.style.display='none'; help.style.display='none'; btn.innerHTML='<span>🗺️ انتخاب موقعیت روی نقشه</span>'; }
 }
 async function pickListingPhotos(){
-var inp=document.createElement('input'); inp.type='file'; inp.accept='image/*'; inp.multiple=true;
-inp.onchange=async function(){
-var files=inp.files; if(!files||!files.length)return;
-var currentPhotos=window._tempListingPhotos||[]; var remaining=3-currentPhotos.length; if(remaining<=0){toast('حداکثر ۳ عکس');return}
-var toProcess=Math.min(files.length,remaining); var processed=0;
-for(var i=0;i<toProcess;i++){ try{ var d=await compressImage(files[i],800,0.7); if(d){ currentPhotos.push(d); processed++; } }catch(e){} }
-window._tempListingPhotos=currentPhotos; renderSellPhotoPreviews(); if(processed>0)toast('✓ '+faDigits(processed)+' عکس اضافه شد');
-};
-inp.click();
+  var inp = document.createElement('input');
+  inp.type = 'file';
+  inp.accept = 'image/*';
+  inp.multiple = true;
+  
+  inp.onchange = async function(){
+    var files = inp.files;
+    if(!files || !files.length) return;
+
+    var currentPhotos = window._tempListingPhotos || [];
+    var remaining = 3 - currentPhotos.length;
+    if(remaining <= 0){ toast('حداکثر ۳ عکس'); return; }
+
+    var toProcess = Math.min(files.length, remaining);
+    toast('در حال آپلود عکس...');
+
+    for(var i=0; i<toProcess; i++){
+      try {
+        // ۱. فشرده‌سازی عکس برای کاهش حجم
+        var base64Data = await compressImage(files[i], 800, 0.7);
+        if(!base64Data) continue;
+
+        // ۲. تبدیل base64 به Blob برای ارسال به بک‌اند
+        var response = await fetch(base64Data);
+        var blob = await response.blob();
+
+        // ۳. ارسال به API آپلود Vercel
+        var uploadRes = await fetch('https://taraz-backend-prog.vercel.app/api/upload', {
+          method: 'POST',
+          body: blob
+        });
+
+        var uploadData = await uploadRes.json();
+        
+        if(uploadData && uploadData.ok){
+          // ۴. اگر بک‌اند لینک رو برگردوند (فعلاً به صورت خام)، فعلاً همون base64 رو نگه می‌داریم
+          // تا بعداً لینک واقعی UUpload رو از پاسخ استخراج کنیم.
+          currentPhotos.push(base64Data); 
+        } else {
+          toast('خطا در آپلود عکس');
+        }
+      } catch(e) {
+        console.error(e);
+        toast('خطا در پردازش عکس');
+      }
+    }
+
+    window._tempListingPhotos = currentPhotos;
+    renderSellPhotoPreviews();
+    if(currentPhotos.length > 0) toast('✓ عکس‌ها آماده شدند');
+  };
+  
+  inp.click();
 }
+
 function renderSellPhotoPreviews(){
 var wrap=document.getElementById('sell-photos-preview'); if(!wrap)return;
 var photos=window._tempListingPhotos||[];
