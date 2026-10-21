@@ -1492,7 +1492,6 @@ function renderMissionChainView() {
   var container = document.getElementById('chain-content');
   if (!container) return;
   
-  // ساخت گراف زنجیره‌ای
   var html = '<div style="display:flex; flex-direction:column; align-items:center; gap:0;">';
   
   // گام اول: فروشنده (مبدأ)
@@ -1505,7 +1504,7 @@ function renderMissionChainView() {
   // خط اتصال
   html += '<div style="width:3px; height:30px; background:var(--accent);"></div>';
   
-  // گام‌های میانی (خدمات: راننده، دامپزشک و...)
+  // گام‌های میانی (خدمات)
   var serviceSteps = m.steps.filter(function(s){ return s.type === 'service'; });
   if (serviceSteps.length > 0) {
     serviceSteps.forEach(function(s, idx) {
@@ -1514,11 +1513,14 @@ function renderMissionChainView() {
       html += '<b style="color:#8a6400;">' + s.title + '</b>';
       html += '<div style="font-size:13px; color:var(--muted); margin-top:4px;">' + s.subtitle + '</div>';
       html += '</div>';
-      
-      // خط اتصال
       html += '<div style="width:3px; height:30px; background:var(--accent);"></div>';
     });
   }
+  
+  // 👇 دکمه افزودن خدمت جدید 👇
+  html += '<button type="button" onclick="openAddServiceModal()" style="width:100%; padding:16px; border:2px dashed var(--accent); border-radius:20px; background:#fff; color:var(--accent); font-size:16px; font-weight:900; margin-bottom:20px;">➕ افزودن خدمت (راننده، دامپزشک و...)</button>';
+  html += '<div style="width:3px; height:30px; background:var(--accent);"></div>';
+  // 👆 تا اینجا 👆
   
   // گام آخر: خریدار (مقصد)
   html += '<div class="chain-node" style="background:#e0f0ff; border:2px solid #93c5fd; border-radius:20px; padding:16px; width:100%; text-align:center;">';
@@ -1530,11 +1532,81 @@ function renderMissionChainView() {
   // جمع کل و دکمه تایید
   html += '<div style="margin-top:24px; text-align:center;">';
   html += '<div style="font-size:22px; font-weight:900; color:var(--forest); margin-bottom:16px;">جمع کل: ' + faPrice(m.total) + ' تومان</div>';
-  html += '<button type="button" class="btn-green" style="min-height:64px; font-size:18px; width:100%;">✅ نهایی کردن معامله</button>';
+  html += '<button type="button" class="btn-green" style="min-height:64px; font-size:18px; width:100%;" onclick="finalizeMission()">✅ نهایی کردن معامله</button>';
   html += '</div>';
   
   html += '</div>';
   container.innerHTML = html;
+}
+function openAddServiceModal() {
+  var m = _currentChainMission;
+  if (!m) return;
+  
+  // ساخت HTML مودال
+  var html = '<div class="modal-overlay show" id="add-service-modal" onclick="if(event.target===this)closeAddServiceModal()">';
+  html += '<div class="modal">';
+  html += '<h3 style="color:var(--accent);">افزودن خدمت به مأموریت</h3>';
+  html += '<p style="text-align:center;font-size:14px;color:var(--muted);margin-bottom:16px;">چه کسی را به این زنجیره اضافه می‌کنید؟</p>';
+  
+  html += '<div class="service-grid" style="grid-template-columns:1fr 1fr; gap:12px; padding:0;">';
+  SERVICES.forEach(function(s) {
+    html += '<div class="service-step-card" style="min-height:100px; padding:12px;" onclick="addServiceToChain(\'' + s.id + '\')">';
+    html += '<div class="ic" style="font-size:40px;">' + s.icon + '</div>';
+    html += '<div class="t" style="font-size:14px;">' + s.title + '</div>';
+    html += '</div>';
+  });
+  html += '</div>';
+  
+  html += '<button type="button" class="btn-outline" onclick="closeAddServiceModal()" style="margin-top:16px;">انصراف</button>';
+  html += '</div></div>';
+  
+  document.body.insertAdjacentHTML('beforeend', html);
+}
+
+function closeAddServiceModal() {
+  var el = document.getElementById('add-service-modal');
+  if (el) el.remove();
+}
+
+function addServiceToChain(serviceId) {
+  var m = _currentChainMission;
+  if (!m) return;
+  
+  var s = SERVICES.find(function(x){ return x.id === serviceId; });
+  if (!s) return;
+  
+  // اضافه کردن یک گام خدمت به زنجیره
+  var newStep = {
+    type: 'service',
+    icon: s.icon,
+    title: s.title,
+    subtitle: 'در انتظار انتخاب متخصص',
+    price: 0,
+    unit: 'واحد',
+    qty: 1,
+    total: 0,
+    status: 'alt',
+    refType: null
+  };
+  
+  m.steps.push(newStep);
+  
+  // ذخیره تغییرات در DB
+  var all = DB.missions;
+  var idx = all.findIndex(function(x){ return x.id === m.id; });
+  if (idx >= 0) {
+    all[idx] = m;
+    DB.missions = all;
+  }
+  
+  closeAddServiceModal();
+  renderMissionChainView();
+  toast('✓ ' + s.title + ' به زنجیره اضافه شد');
+}
+
+function finalizeMission() {
+  toast('✅ معامله نهایی شد! (این بخش در آینده به سیستم پرداخت وصل می‌شود)');
+  setTimeout(function(){ go('missions-list'); }, 1500);
 }
 
 /* ============================================================
