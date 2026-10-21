@@ -843,6 +843,21 @@ if (catId === 'livestock') {
   var result = await api.createListing(item);
 var all=DB.listings;all.push(item);DB.listings=all;
 if(result && result.ok){ toast('✓ آگهی منتشر شد'); } else { toast('⚠ آگهی محلی ذخیره شد'); }
+  
+try {
+  await fetch('https://taraz-backend-prog.vercel.app/api/match-alert', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      listing_id: item.id,
+      route_from: item.region,
+      route_to: 'نامشخص', // فعلاً از دیتای آگهی استفاده می‌کنیم
+      title: item.title,
+      region: item.region
+    })
+  });
+} catch(e) { console.warn('Match alert failed:', e); }
+
   window._tempListingPhotos = []; _tempListingLocation = null; if(_mapMarker){_mapMarker.remove();_mapMarker=null;}
 resetSellForm(); go('home');
 }
