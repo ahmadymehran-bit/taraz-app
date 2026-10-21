@@ -342,7 +342,7 @@ function go(s){
   document.querySelectorAll('#nav button').forEach(b=>b.classList.remove('active'));
   const map={home:'home',browse:'browse',services:'services',mission:'mission',profile:'profile',chatlist:'chatlist',buy:'home',sell:'home',settings:'profile',notifs:'home',capacity:'services',detail:'browse'};
   if(map[s]){const b=document.querySelector('#nav button[data-nav="'+map[s]+'"]');if(b)b.classList.add('active')}
-  if(s==='home'){ loadFavorites().then(renderHome); }
+if(s==='home') { loadFavorites().then(renderHome); updateHomeReadyButton(); }
   if(s==='browse'){ loadFavorites().then(renderBrowse); }
   if(s==='services')renderServices();
   if(s==='capacity')renderCapacityDetail();
@@ -1412,6 +1412,40 @@ async function renderReadyProfile() {
     btn.style.color = '';
     btn.style.borderColor = '';
   }
+}
+function updateHomeReadyButton() {
+  var u = DB.user;
+  if (!u) return;
+  
+  var profile = DB._get('ready_profile_' + u.phone, {}) || {};
+  var isReady = profile.is_ready || false;
+  
+  var btn = document.getElementById('ready-toggle-btn');
+  var icon = document.getElementById('ready-hand-icon');
+  
+  if (btn && icon) {
+    if (isReady) {
+      btn.style.background = '#16a34a'; // سبز
+      btn.style.color = '#fff';
+      icon.textContent = '👍';
+    } else {
+      btn.style.background = '#e63946'; // قرمز
+      btn.style.color = '#fff';
+      icon.textContent = '👎';
+    }
+  }
+}
+
+function toggleReadyFromHome() {
+  var u = DB.user;
+  if (!u) { go('auth'); return; }
+  
+  var profile = DB._get('ready_profile_' + u.phone, {}) || {};
+  profile.is_ready = !profile.is_ready;
+  DB._set('ready_profile_' + u.phone, profile);
+  
+  updateHomeReadyButton();
+  toast(profile.is_ready ? '✓ شما آماده به کار شدید' : 'شما به حالت استراحت رفتید');
 }
 
 function toggleReadyStatus() {
