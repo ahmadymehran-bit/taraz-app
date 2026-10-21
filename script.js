@@ -340,6 +340,7 @@ function go(s){
   if(s==='settings')applyTheme();
   if(s==='notifs')renderNotifs();
   if(s==='missions-list')renderMyMissions();
+if(s==='mission-chain') renderMissionChainView();
 
   renderHeaderAvatars(); updateChatBadge(); updateBellBadge();
 }
@@ -1201,16 +1202,17 @@ async function renderMyMissions() {
     }
     
     container.innerHTML = list.map(function(m) {
-      var statusText = m.status === 'confirmed' ? 'تایید شده' : m.status === 'draft' ? 'پیش‌نویس' : 'در حال انجام';
-      var statusColor = m.status === 'confirmed' ? '#16a34a' : '#9a6b00';
-      return '<div class="card" style="margin:12px 16px;">' +
-             '<div style="display:flex;justify-content:space-between;align-items:center;">' +
-             '<b style="color:var(--forest);">' + (m.rawText || 'مأموریت بدون عنوان').substring(0, 40) + '...</b>' +
-             '<span style="background:#e3f6ec;color:' + statusColor + ';padding:4px 10px;border-radius:100px;font-size:12px;font-weight:900;">' + statusText + '</span>' +
-             '</div>' +
-             '<small style="display:block;margin-top:8px;color:var(--muted);">' + faDigits((m.steps||[]).length) + ' مرحله · ' + faPrice(m.total) + ' تومان</small>' +
-             '</div>';
-    }).join('');
+  var statusText = m.status === 'confirmed' ? 'تایید شده' : m.status === 'draft' ? 'پیش‌نویس' : 'در حال انجام';
+  var statusColor = m.status === 'confirmed' ? '#16a34a' : '#9a6b00';
+  return '<div class="card" style="margin:12px 16px; cursor:pointer;" onclick="viewMissionChain(\'' + m.id + '\')">' +
+         '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+         '<b style="color:var(--forest);">' + (m.rawText || 'مأموریت بدون عنوان').substring(0, 40) + '...</b>' +
+         '<span style="background:#e3f6ec;color:' + statusColor + ';padding:4px 10px;border-radius:100px;font-size:12px;font-weight:900;">' + statusText + '</span>' +
+         '</div>' +
+         '<small style="display:block;margin-top:8px;color:var(--muted);">' + faDigits((m.steps||[]).length) + ' مرحله · ' + faPrice(m.total) + ' تومان · مشاهده زنجیره 🔗</small>' +
+         '</div>';
+}).join('');
+
   } catch(e) {
     container.innerHTML = '<div class="empty">خطا در دریافت مأموریت‌ها</div>';
   }
@@ -1469,6 +1471,70 @@ function quickReply(text) {
     var body = document.getElementById('chat-body');
     if(body) body.scrollTop = body.scrollHeight;
   }
+}
+var _currentChainMission = null;
+
+function viewMissionChain(missionId) {
+  var all = DB.missions;
+  var m = all.find(function(x){ return x.id === missionId; });
+  if (!m) { toast('مأموریت یافت نشد'); return; }
+  _currentChainMission = m;
+  go('mission-chain');
+}
+
+function renderMissionChainView() {
+  var m = _currentChainMission;
+  if (!m) { go('missions-list'); return; }
+  
+  var titleEl = document.getElementById('chain-title');
+  if(titleEl) titleEl.textContent = '🔗 ' + (m.rawText || 'زنجیره مأموریت');
+  
+  var container = document.getElementById('chain-content');
+  if (!container) return;
+  
+  // ساخت گراف زنجیره‌ای
+  var html = '<div style="display:flex; flex-direction:column; align-items:center; gap:0;">';
+  
+  // گام اول: فروشنده (مبدأ)
+  html += '<div class="chain-node" style="background:#eef8f3; border:2px solid #cfe5da; border-radius:20px; padding:16px; width:100%; text-align:center;">';
+  html += '<div style="font-size:40px; margin-bottom:8px;">👨‍🌾</div>';
+  html += '<b style="color:var(--forest);">فروشنده / مبدأ</b>';
+  html += '<div style="font-size:13px; color:var(--muted); margin-top:4px;">' + (m.steps[0] ? m.steps[0].subtitle : 'اطلاعات موجود نیست') + '</div>';
+  html += '</div>';
+  
+  // خط اتصال
+  html += '<div style="width:3px; height:30px; background:var(--accent);"></div>';
+  
+  // گام‌های میانی (خدمات: راننده، دامپزشک و...)
+  var serviceSteps = m.steps.filter(function(s){ return s.type === 'service'; });
+  if (serviceSteps.length > 0) {
+    serviceSteps.forEach(function(s, idx) {
+      html += '<div class="chain-node" style="background:#fff8e6; border:2px solid #f0b429; border-radius:20px; padding:16px; width:100%; text-align:center;">';
+      html += '<div style="font-size:40px; margin-bottom:8px;">' + s.icon + '</div>';
+      html += '<b style="color:#8a6400;">' + s.title + '</b>';
+      html += '<div style="font-size:13px; color:var(--muted); margin-top:4px;">' + s.subtitle + '</div>';
+      html += '</div>';
+      
+      // خط اتصال
+      html += '<div style="width:3px; height:30px; background:var(--accent);"></div>';
+    });
+  }
+  
+  // گام آخر: خریدار (مقصد)
+  html += '<div class="chain-node" style="background:#e0f0ff; border:2px solid #93c5fd; border-radius:20px; padding:16px; width:100%; text-align:center;">';
+  html += '<div style="font-size:40px; margin-bottom:8px;">🛒</div>';
+  html += '<b style="color:#1a5fa8;">خریدار / مقصد</b>';
+  html += '<div style="font-size:13px; color:var(--muted); margin-top:4px;">آماده دریافت محصول</div>';
+  html += '</div>';
+  
+  // جمع کل و دکمه تایید
+  html += '<div style="margin-top:24px; text-align:center;">';
+  html += '<div style="font-size:22px; font-weight:900; color:var(--forest); margin-bottom:16px;">جمع کل: ' + faPrice(m.total) + ' تومان</div>';
+  html += '<button type="button" class="btn-green" style="min-height:64px; font-size:18px; width:100%;">✅ نهایی کردن معامله</button>';
+  html += '</div>';
+  
+  html += '</div>';
+  container.innerHTML = html;
 }
 
 /* ============================================================
