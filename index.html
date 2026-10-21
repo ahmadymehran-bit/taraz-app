@@ -66,7 +66,10 @@
   <!-- ============ HOME (جدید) ============ -->
 <section class="screen" id="screen-home">
   <header class="top">
-    <div class="header-bell" id="header-bell" onclick="go('notifs')">🔔<span class="bell-badge" id="bell-badge"></span></div>
+    <!-- دکمه دست (زیر زنگ) -->
+<div id="ready-toggle-btn" onclick="toggleReadyFromHome()" style="margin-top: 8px; width: 36px; height: 36px; border-radius: 50%; background: #ddd; display: flex; align-items: center; justify-content: center; font-size: 18px; border: 2px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.2); cursor: pointer; transition: 0.3s;">
+  <span id="ready-hand-icon">👎</span>
+</div>
 <!-- 👇 کارت پروفایل کوچک و هوشمند 👇 -->
 <div class="header-profile-card" onclick="go('profile')" style="position: absolute; top: 20px; right: 14px; display: flex; align-items: center; gap: 8px; background: #fff; padding: 6px 12px 6px 6px; border-radius: 100px; border: 2px solid var(--line); box-shadow: var(--shadow); cursor: pointer; z-index: 10;">
   <!-- آواتار کوچک -->
@@ -408,8 +411,10 @@
         <div class="ic">🔔</div><div class="body"><b>فعال‌سازی اعلان‌ها</b><small>اعلان پیام‌های جدید</small></div><div class="arrow">‹</div>
       </div>
       <button type="button" class="btn-outline" onclick="logout()" style="margin-top:20px;min-height:60px;font-size:17px">🚪 خروج</button>
-      <button type="button" class="btn-red" onclick="confirmDeleteAccount()" style="margin-top:12px;min-height:60px;font-size:17px;background:linear-gradient(135deg, #e63946, #b91c28); color: #fff;">🗑️ حذف حساب کاربری</button>
-    </div>
+<div style="text-align: center; margin-top: 60px; margin-bottom: 40px;">
+  <button type="button" onclick="confirmDeleteAccount()" style="background: none; border: none; color: var(--muted); font-size: 13px; text-decoration: underline; cursor: pointer;">حذف حساب کاربری</button>
+
+  
   </section>
 
   <!-- ============ PROFILE SUB ============ -->
