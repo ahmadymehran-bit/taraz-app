@@ -62,57 +62,82 @@
       </div>
     </div>
   </section>
-<!-- ============ HOME ============ -->
+
+  <!-- ============ HOME (جدید) ============ -->
 <section class="screen" id="screen-home">
-  <header class="top" style="display: flex; flex-direction: column; align-items: center; padding: 20px 14px 14px; position: relative;">
-    
-    <!-- ردیف بالا: زنگ و دست (چپ) / کارت پروفایل (راست) -->
-    <div style="display: flex; justify-content: space-between; width: 100%; align-items: flex-start; margin-bottom: 10px;">
-      
-      <!-- سمت چپ: زنگ و دکمه دست -->
-      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-        <!-- زنگ -->
-        <div class="header-bell" id="header-bell" onclick="go('notifs')" style="position: relative; width: 52px; height: 52px; border-radius: 50%; background: #fff; border: 2px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; box-shadow: var(--shadow); color: var(--forest);">
-          🔔
-          <span class="bell-badge" id="bell-badge" style="position: absolute; top: -4px; right: -4px; background: var(--fire); color: #fff; font-size: 11px; font-weight: 900; padding: 2px 7px; border-radius: 100px; border: 2px solid #fff; min-width: 22px; text-align: center; display: none;"></span>
-        </div>
-        
-        <!-- دکمه دست (دقیقاً زیر زنگ) -->
-        <div id="ready-toggle-btn" onclick="toggleReadyFromHome()" style="width: 36px; height: 36px; border-radius: 50%; background: #ddd; display: flex; align-items: center; justify-content: center; font-size: 18px; border: 2px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.2); cursor: pointer; transition: 0.3s;">
-          <span id="ready-hand-icon">👎</span>
-        </div>
-      </div>
-
-      <!-- سمت راست: کارت پروفایل -->
-      <div class="header-profile-card" onclick="go('profile')" style="display: flex; align-items: center; gap: 8px; background: #fff; padding: 6px 12px 6px 6px; border-radius: 100px; border: 2px solid var(--line); box-shadow: var(--shadow); cursor: pointer;">
-        <div id="header-avatar" style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg,#1f8062,#123d32); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px; overflow: hidden; flex-shrink: 0;"></div>
-        <div style="display: flex; flex-direction: column; align-items: flex-start; justify-content: center; min-width: 0;">
-          <div id="header-user-name" style="font-size: 12px; font-weight: 900; color: var(--forest); line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80px;">کاربر</div>
-          <div style="display: flex; align-items: center; gap: 4px; margin-top: 2px;">
-            <span id="header-user-role" style="font-size: 10px; color: var(--muted); font-weight: 700;">شغل</span>
-            <span style="font-size: 10px; color: var(--gold); font-weight: 900;">★ <span id="header-user-rating">۰</span></span>
-          </div>
-        </div>
-      </div>
+  <header class="top">
+    <div class="header-bell" id="header-bell" onclick="go('notifs')">🔔<span class="bell-badge" id="bell-badge"></span></div>
+<!-- 👇 کارت پروفایل کوچک و هوشمند 👇 -->
+<div class="header-profile-card" onclick="go('profile')" style="position: absolute; top: 20px; right: 14px; display: flex; align-items: center; gap: 8px; background: #fff; padding: 6px 12px 6px 6px; border-radius: 100px; border: 2px solid var(--line); box-shadow: var(--shadow); cursor: pointer; z-index: 10;">
+  <!-- آواتار کوچک -->
+  <div id="header-avatar" style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg,#1f8062,#123d32); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px; overflow: hidden; flex-shrink: 0;"></div>
+  
+  <!-- اطلاعات متنی -->
+  <div style="display: flex; flex-direction: column; align-items: flex-start; justify-content: center; min-width: 0;">
+    <div id="header-user-name" style="font-size: 12px; font-weight: 900; color: var(--forest); line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80px;">کاربر</div>
+    <div style="display: flex; align-items: center; gap: 4px; margin-top: 2px;">
+      <span id="header-user-role" style="font-size: 10px; color: var(--muted); font-weight: 700;">شغل</span>
+      <span style="font-size: 10px; color: var(--gold); font-weight: 900;">★ <span id="header-user-rating">۰</span></span>
     </div>
-
-    <!-- لوگوی تاراز (فقط یک بار در مرکز) -->
-    <div class="brand" style="text-align: center;">تاراز<small>سوپر اپ کشاورزی و دامپروری</small></div>
+  </div>
+</div>
+<!-- 👆 تا اینجا 👆 -->
+    <div class="brand">تاراز<small>سوپر اپ کشاورزی و دامپروری</small></div>
   </header>
 
-  <!-- دکمه‌های خرید، فروش و فروش فوری -->
-  <div class="action-panel">
-    <div class="trade-actions">
-      <button type="button" class="trade-btn buy-btn" onclick="go('buy')">🛒 خرید</button>
-      <button type="button" class="trade-btn sell-btn" onclick="go('sell')">💰 فروش</button>
+  <!-- دکمه‌های اصلی (بزرگ و آیکونیک) -->
+  <div class="action-panel" style="padding: 20px 16px;">
+    <div style="display: flex; gap: 16px; margin-bottom: 16px;">
+      <button type="button" onclick="go('buy')" style="flex: 1; background: linear-gradient(135deg,#2aa876,#197b55); color: #fff; border-radius: 20px; padding: 24px 10px; display: flex; flex-direction: column; align-items: center; gap: 12px; box-shadow: 0 8px 20px rgba(42,168,118,.3);">
+        <span style="font-size: 56px; line-height: 1;">🛒</span>
+        <span style="font-size: 22px; font-weight: 900;">خرید</span>
+      </button>
+      <button type="button" onclick="go('sell')" style="flex: 1; background: linear-gradient(135deg,#e5a400,#b88200); color: #fff; border-radius: 20px; padding: 24px 10px; display: flex; flex-direction: column; align-items: center; gap: 12px; box-shadow: 0 8px 20px rgba(229,164,0,.3);">
+        <span style="font-size: 56px; line-height: 1;">💰</span>
+        <span style="font-size: 22px; font-weight: 900;">فروش</span>
+      </button>
     </div>
-    <button type="button" class="fire-btn" onclick="goUrgentSell()">
-      <span class="fire-ic">🔥</span>
+    <button type="button" class="fire-btn" onclick="goUrgentSell()" style="width: 100%; padding: 18px; display: flex; align-items: center; justify-content: center; gap: 12px; border-radius: 20px; background: linear-gradient(135deg,#ff4d4d,#c81f1f); color: #fff; font-size: 20px; font-weight: 900; box-shadow: 0 8px 20px rgba(230,57,70,.3);">
+      <span style="font-size: 32px;">🔥</span>
       <span>فروش فوری</span>
     </button>
   </div>
 
-  <!-- بخش آگهی‌ها -->
+  <!-- نبض بازار (مرجع قیمت) -->
+  <section class="section" style="padding-top: 0;">
+    <h2 style="font-size: 20px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">📊 نبض بازار</h2>
+    <div style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;" id="market-pulse-container">
+      <!-- این بخش با جاوااسکریپت پر می‌شه -->
+      <div class="card" style="min-width: 140px; padding: 16px; text-align: center; background: #fff; border-radius: 16px;">
+        <div style="font-size: 32px; margin-bottom: 8px;">🐑</div>
+        <div style="font-size: 14px; font-weight: 800; color: var(--forest);">گوسفند شال</div>
+        <div style="font-size: 16px; font-weight: 900; color: var(--accent); margin-top: 6px;" id="pulse-sheep">در حال بارگذاری...</div>
+      </div>
+      <div class="card" style="min-width: 140px; padding: 16px; text-align: center; background: #fff; border-radius: 16px;">
+        <div style="font-size: 32px; margin-bottom: 8px;">🌾</div>
+        <div style="font-size: 14px; font-weight: 800; color: var(--forest);">گندم</div>
+        <div style="font-size: 16px; font-weight: 900; color: var(--accent); margin-top: 6px;" id="pulse-wheat">در حال بارگذاری...</div>
+      </div>
+      <div class="card" style="min-width: 140px; padding: 16px; text-align: center; background: #fff; border-radius: 16px;">
+        <div style="font-size: 32px; margin-bottom: 8px;">🌰</div>
+        <div style="font-size: 14px; font-weight: 800; color: var(--forest);">کنسانتره</div>
+        <div style="font-size: 16px; font-weight: 900; color: var(--accent); margin-top: 6px;" id="pulse-feed">در حال بارگذاری...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- مأموریت‌های من -->
+  <section class="section">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+      <h2 style="font-size: 20px; margin: 0;">🎯 مأموریت‌های من</h2>
+      <button type="button" onclick="go('mission')" style="background: none; border: none; color: var(--accent); font-size: 14px; font-weight: 800;">مشاهده همه</button>
+    </div>
+    <div id="home-missions-list">
+      <div class="empty" style="padding: 20px; font-size: 14px;">هنوز مأموریتی نساخته‌ای</div>
+    </div>
+  </section>
+
+  <!-- آگهی‌های جدید -->
   <section class="section">
     <h2>📋 آخرین آگهی‌ها</h2>
     <div id="home-listings"></div>
@@ -383,10 +408,8 @@
         <div class="ic">🔔</div><div class="body"><b>فعال‌سازی اعلان‌ها</b><small>اعلان پیام‌های جدید</small></div><div class="arrow">‹</div>
       </div>
       <button type="button" class="btn-outline" onclick="logout()" style="margin-top:20px;min-height:60px;font-size:17px">🚪 خروج</button>
-<div style="text-align: center; margin-top: 60px; margin-bottom: 40px;">
-  <button type="button" onclick="confirmDeleteAccount()" style="background: none; border: none; color: var(--muted); font-size: 13px; text-decoration: underline; cursor: pointer;">حذف حساب کاربری</button>
-
-  
+      <button type="button" class="btn-red" onclick="confirmDeleteAccount()" style="margin-top:12px;min-height:60px;font-size:17px;background:linear-gradient(135deg, #e63946, #b91c28); color: #fff;">🗑️ حذف حساب کاربری</button>
+    </div>
   </section>
 
   <!-- ============ PROFILE SUB ============ -->
