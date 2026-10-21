@@ -1486,7 +1486,6 @@ async function renderMissionChainView() {
   var m = _currentChainMission;
   if (!m) { go('missions-list'); return; }
 
-  // دریافت آخرین نسخه از دیتابیس برای همگام‌سازی
   try {
     var res = await api.getMissions(DB.user.phone);
     if (res && res.missions) {
@@ -1507,17 +1506,15 @@ async function renderMissionChainView() {
   
   var html = '<div style="display:flex; flex-direction:column; align-items:center; gap:0;">';
   
-  // گام اول: فروشنده (مبدأ)
+  // گام اول: فروشنده
   html += '<div class="chain-node" style="background:#eef8f3; border:2px solid #cfe5da; border-radius:20px; padding:16px; width:100%; text-align:center;">';
   html += '<div style="font-size:40px; margin-bottom:8px;">👨‍🌾</div>';
   html += '<b style="color:var(--forest);">فروشنده / مبدأ</b>';
   html += '<div style="font-size:13px; color:var(--muted); margin-top:4px;">' + (m.steps[0] ? m.steps[0].subtitle : 'اطلاعات موجود نیست') + '</div>';
   html += '</div>';
-  
-  // خط اتصال
   html += '<div style="width:3px; height:30px; background:var(--accent);"></div>';
   
-  // گام‌های میانی (خدمات)
+  // گام‌های میانی
   var serviceSteps = m.steps.filter(function(s){ return s.type === 'service'; });
   if (serviceSteps.length > 0) {
     serviceSteps.forEach(function(s, idx) {
@@ -1530,20 +1527,25 @@ async function renderMissionChainView() {
     });
   }
   
-  // دکمه افزودن خدمت جدید
+  // دکمه افزودن خدمت
   html += '<button type="button" onclick="openAddServiceModal()" style="width:100%; padding:16px; border:2px dashed var(--accent); border-radius:20px; background:#fff; color:var(--accent); font-size:16px; font-weight:900; margin-bottom:20px;">➕ افزودن خدمت (راننده، دامپزشک و...)</button>';
   html += '<div style="width:3px; height:30px; background:var(--accent);"></div>';
   
-  // گام آخر: خریدار (مقصد)
+  // گام خریدار
   html += '<div class="chain-node" style="background:#e0f0ff; border:2px solid #93c5fd; border-radius:20px; padding:16px; width:100%; text-align:center;">';
   html += '<div style="font-size:40px; margin-bottom:8px;">🛒</div>';
   html += '<b style="color:#1a5fa8;">خریدار / مقصد</b>';
   html += '<div style="font-size:13px; color:var(--muted); margin-top:4px;">آماده دریافت محصول</div>';
   html += '</div>';
   
-  // جمع کل و دکمه تایید
-  html += '<div style="margin-top:24px; text-align:center;">';
+  // جمع کل و دکمه‌ها
+  html += '<div style="margin-top:24px; text-align:center; width:100%;">';
   html += '<div style="font-size:22px; font-weight:900; color:var(--forest); margin-bottom:16px;">جمع کل: ' + faPrice(m.total) + ' تومان</div>';
+  
+  // 👇 دکمه ثبت بیعانه 👇
+  html += '<button type="button" class="btn-gold" style="min-height:60px; font-size:18px; width:100%; margin-bottom:12px;" onclick="openEscrowModal()">🔒 ثبت بیعانه (پرداخت امن)</button>';
+  // 👆 تا اینجا 👆
+  
   html += '<button type="button" class="btn-green" style="min-height:64px; font-size:18px; width:100%;" onclick="finalizeMission()">✅ نهایی کردن معامله</button>';
   html += '</div>';
   
@@ -1629,6 +1631,65 @@ async function addServiceToChain(serviceId) {
 function finalizeMission() {
   toast('✅ معامله نهایی شد! (این بخش در آینده به سیستم پرداخت وصل می‌شود)');
   setTimeout(function(){ go('missions-list'); }, 1500);
+}
+function openEscrowModal() {
+  var m = _currentChainMission;
+  if (!m) return;
+  
+  var html = '<div class="modal-overlay show" id="escrow-modal" onclick="if(event.target===this)closeEscrowModal()">';
+  html += '<div class="modal" style="text-align:center;">';
+  html += '<h3 style="color:#8a6400;">🔒 پرداخت بیعانه امن</h3>';
+  html += '<p style="font-size:14px;color:var(--muted);line-height:1.9;margin-bottom:16px;">مبلغ بیعانه تا زمان تحویل کالا نزد سیستم تاراز نگهداری می‌شود و پس از تایید شما، به فروشنده پرداخت می‌شود.</p>';
+  html += '<div class="field" style="text-align:right;">';
+  html += '<label>مبلغ بیعانه (تومان)</label>';
+  html += '<input id="escrow-amount" type="tel" inputmode="numeric" placeholder="مثلاً: ۵۰۰۰۰۰۰" style="direction:ltr;text-align:left">';
+  html += '</div>';
+  html += '<button type="button" class="btn-gold" onclick="submitEscrow()" style="margin-top:12px;min-height:60px;font-size:16px;">تایید و ثبت بیعانه</button>';
+  html += '<button type="button" class="btn-outline" onclick="closeEscrowModal()" style="margin-top:8px;">انصراف</button>';
+  html += '</div></div>';
+  
+  document.body.insertAdjacentHTML('beforeend', html);
+}
+
+function closeEscrowModal() {
+  var el = document.getElementById('escrow-modal');
+  if (el) el.remove();
+}
+
+async function submitEscrow() {
+  var m = _currentChainMission;
+  if (!m) return;
+  
+  var amountInput = document.getElementById('escrow-amount');
+  var amount = Number(amountInput.value.replace(/[^\d]/g, ''));
+  
+  if (!amount || amount <= 0) {
+    toast('لطفاً مبلغ بیعانه را وارد کنید');
+    return;
+  }
+  
+  var escrowData = {
+    mission_id: m.id,
+    buyer_phone: DB.user.phone,
+    seller_phone: m.steps[0] ? m.steps[0].refId : 'unknown',
+    amount: amount
+  };
+  
+  try {
+    var res = await fetch('https://taraz-backend-prog.vercel.app/api/escrow', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(escrowData)
+    });
+    if (res.ok) {
+      toast('✓ بیعانه با موفقیت ثبت شد');
+      closeEscrowModal();
+    } else {
+      toast('خطا در ثبت بیعانه');
+    }
+  } catch(e) {
+    toast('خطا در ارتباط با سرور');
+  }
 }
 
 /* ============================================================
