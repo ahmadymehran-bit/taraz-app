@@ -1482,10 +1482,23 @@ function viewMissionChain(missionId) {
   go('mission-chain');
 }
 
-function renderMissionChainView() {
+async function renderMissionChainView() {
   var m = _currentChainMission;
   if (!m) { go('missions-list'); return; }
-  
+
+  // دریافت آخرین نسخه از دیتابیس برای همگام‌سازی
+  try {
+    var res = await api.getMissions(DB.user.phone);
+    if (res && res.missions) {
+      var freshM = res.missions.find(function(x){ return x.id === m.id; });
+      if (freshM) {
+        m.steps = freshM.steps || m.steps;
+        m.total = freshM.total || m.total;
+        _currentChainMission = m;
+      }
+    }
+  } catch(e) { console.warn('Sync error:', e); }
+
   var titleEl = document.getElementById('chain-title');
   if(titleEl) titleEl.textContent = '🔗 ' + (m.rawText || 'زنجیره مأموریت');
   
@@ -1517,10 +1530,9 @@ function renderMissionChainView() {
     });
   }
   
-  // 👇 دکمه افزودن خدمت جدید 👇
+  // دکمه افزودن خدمت جدید
   html += '<button type="button" onclick="openAddServiceModal()" style="width:100%; padding:16px; border:2px dashed var(--accent); border-radius:20px; background:#fff; color:var(--accent); font-size:16px; font-weight:900; margin-bottom:20px;">➕ افزودن خدمت (راننده، دامپزشک و...)</button>';
   html += '<div style="width:3px; height:30px; background:var(--accent);"></div>';
-  // 👆 تا اینجا 👆
   
   // گام آخر: خریدار (مقصد)
   html += '<div class="chain-node" style="background:#e0f0ff; border:2px solid #93c5fd; border-radius:20px; padding:16px; width:100%; text-align:center;">';
@@ -1538,6 +1550,7 @@ function renderMissionChainView() {
   html += '</div>';
   container.innerHTML = html;
 }
+
 function openAddServiceModal() {
   var m = _currentChainMission;
   if (!m) return;
@@ -1568,14 +1581,13 @@ function closeAddServiceModal() {
   if (el) el.remove();
 }
 
-function addServiceToChain(serviceId) {
+async function addServiceToChain(serviceId) {
   var m = _currentChainMission;
   if (!m) return;
   
   var s = SERVICES.find(function(x){ return x.id === serviceId; });
   if (!s) return;
   
-  // اضافه کردن یک گام خدمت به زنجیره
   var newStep = {
     type: 'service',
     icon: s.icon,
@@ -1591,7 +1603,7 @@ function addServiceToChain(serviceId) {
   
   m.steps.push(newStep);
   
-  // ذخیره تغییرات در DB
+  // ذخیره محلی
   var all = DB.missions;
   var idx = all.findIndex(function(x){ return x.id === m.id; });
   if (idx >= 0) {
@@ -1602,7 +1614,17 @@ function addServiceToChain(serviceId) {
   closeAddServiceModal();
   renderMissionChainView();
   toast('✓ ' + s.title + ' به زنجیره اضافه شد');
+
+  // 👇 ارسال به بک‌اند برای ذخیره دائمی 👇
+  try {
+    await fetch('https://taraz-backend-prog.vercel.app/api/missions/' + m.id, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ steps: m.steps, total: m.total })
+    });
+  } catch(e) { console.warn('Sync mission chain failed:', e); }
 }
+
 
 function finalizeMission() {
   toast('✅ معامله نهایی شد! (این بخش در آینده به سیستم پرداخت وصل می‌شود)');
