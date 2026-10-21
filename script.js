@@ -341,7 +341,13 @@ function go(s){
   if(s==='notifs')renderNotifs();
   if(s==='missions-list')renderMyMissions();
 if(s==='mission-chain') renderMissionChainView();
-
+if (s === 'mission') {
+  var roleEl = document.getElementById('mission-user-role');
+  if (roleEl && DB.user) {
+    roleEl.textContent = DB.user.role || 'کاربر';
+  }
+  renderMission();
+}
   renderHeaderAvatars(); updateChatBadge(); updateBellBadge();
 }
 function backFromCapacity(){go(capacityReturnTo||'services')}
@@ -1109,12 +1115,37 @@ function buildMissionChain(parsed){
   return{id:'M'+Date.now(),ownerPhone:u.phone,rawText:parsed.raw,steps:steps,total:total,status:'draft',createdAt:Date.now()};
 }
 function setMission(text){document.getElementById('mission-input').value=text}
-function startMission(){
-  const u=DB.user;if(!u){go('auth');return}
-  const text=document.getElementById('mission-input').value.trim(); if(text.length<8){toast('دستور را کامل‌تر بنویس');return}
-  const parsed=parseMissionText(text); if(!parsed.product&&!parsed.services.length){toast('چیزی تشخیص نداده‌ام');return}
+function startMission() {
+  var u = DB.user;
+  if (!u) { go('auth'); return; }
+  
+  var input = document.getElementById('mission-input').value.trim();
+  var region = document.getElementById('mission-region').value.trim();
+  
+  if (input.length < 5) { toast('لطفاً درخواست خود را کامل بنویسید'); return; }
+  if (!region) { toast('لطفاً منطقه خود را وارد کنید'); return; }
+  
+  // جمع‌آوری آپشن‌های فعال
+  var activeOptions = [];
+  document.querySelectorAll('.chip-big.active').forEach(function(btn) {
+    activeOptions.push(btn.textContent.trim());
+  });
+  
+  // ساخت متن نهایی برای پردازش
+  var finalText = input + ' در ' + region;
+  if (activeOptions.length > 0) {
+    finalText += ' (' + activeOptions.join('، ') + ')';
+  }
+  
+  var parsed = parseMissionText(finalText);
+  if (!parsed.product && !parsed.services.length) {
+    toast('متأسفانه چیزی تشخیص ندادیم. لطفاً واضح‌تر بنویسید.');
+    return;
+  }
+  
   showMissionThinking(parsed);
 }
+
 function showMissionThinking(parsed){
   const steps=['می‌فهمم چی می‌خواهی','دنبال محصول می‌گردم','دنبال خدمت می‌گردم','قیمت حساب می‌کنم'];
   const el=document.getElementById('mission-result');
@@ -1716,6 +1747,17 @@ async function submitEscrow() {
     }
   } catch(e) {
     toast('خطا در ارتباط با سرور');
+  }
+}
+function toggleMissionOption(btn, option) {
+  if (btn.classList.contains('active')) {
+    btn.classList.remove('active');
+    btn.style.background = '#fff';
+    btn.style.color = 'var(--forest)';
+  } else {
+    btn.classList.add('active');
+    btn.style.background = 'var(--accent)';
+    btn.style.color = '#fff';
   }
 }
 
