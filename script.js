@@ -236,14 +236,28 @@ let servicesCurrentType=null;
 
 /* HEADER AVATARS */
 async function renderHeaderAvatars(){
-  const u=DB.user;if(!u)return;
+  const u = DB.user;
+  if (!u) return;
+  
   var r = await avgRating(u.phone);
-  ['header-avatar'].forEach(id=>{
-    const el=document.getElementById(id);if(!el)return;
-    setAvatar(el,u);
-    if(r.count){const o=el.querySelector('.badge');if(o)o.remove();el.insertAdjacentHTML('beforeend','<span class="badge">★ '+faDigits(r.avg.toFixed(1))+'</span>')}
-  });
+  
+  // آواتار
+  const avatarEl = document.getElementById('header-avatar');
+  if (avatarEl) setAvatar(avatarEl, u);
+  
+  // نام کاربر
+  const nameEl = document.getElementById('header-user-name');
+  if (nameEl) nameEl.textContent = u.name ? u.name.split(' ')[0] : 'کاربر';
+  
+  // شغل
+  const roleEl = document.getElementById('header-user-role');
+  if (roleEl) roleEl.textContent = u.role || 'کاربر';
+  
+  // امتیاز
+  const ratingEl = document.getElementById('header-user-rating');
+  if (ratingEl) ratingEl.textContent = r.count > 0 ? faDigits(r.avg.toFixed(1)) : '۰';
 }
+
 
 /* NOTIFICATIONS */
 async function updateBellBadge(){
