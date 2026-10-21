@@ -1628,10 +1628,37 @@ async function addServiceToChain(serviceId) {
 }
 
 
-function finalizeMission() {
-  toast('✅ معامله نهایی شد! (این بخش در آینده به سیستم پرداخت وصل می‌شود)');
-  setTimeout(function(){ go('missions-list'); }, 1500);
+async function finalizeMission() {
+  var m = _currentChainMission;
+  if (!m) return;
+
+  if (!confirm('آیا از نهایی کردن این معامله مطمئن هستید؟')) return;
+
+  m.status = 'completed';
+
+  try {
+    // ارسال به بک‌اند
+    await fetch('https://taraz-backend-prog.vercel.app/api/missions/' + m.id, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ steps: m.steps, total: m.total, status: 'completed' })
+    });
+
+    // آپدیت در دیتابیس محلی
+    var all = DB.missions;
+    var idx = all.findIndex(function(x){ return x.id === m.id; });
+    if (idx >= 0) {
+      all[idx] = m;
+      DB.missions = all;
+    }
+
+    toast('✅ معامله با موفقیت نهایی شد!');
+    setTimeout(function(){ go('missions-list'); }, 1500);
+  } catch(e) {
+    toast('خطا در نهایی کردن معامله');
+  }
 }
+
 function openEscrowModal() {
   var m = _currentChainMission;
   if (!m) return;
