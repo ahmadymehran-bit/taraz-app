@@ -1914,16 +1914,31 @@ async function submitRatingForMission(toPhone) {
    ============================================================ */
 var API_BASE = 'https://taraz-backend-prog.vercel.app';
 var api = {
-  _fetch: async function(path, options) {
-    try {
-      var url = API_BASE + path;
-      var config = { headers: { 'Content-Type': 'application/json' } };
-      if (options) { if (options.method) config.method = options.method; if (options.body) config.body = options.body; }
-      var res = await fetch(url, config);
-      if (!res.ok) { return null; }
-      return await res.json();
-    } catch (e) { return null; }
-  },
+  _fetch: async function(path, options, retries = 2) {
+  try {
+    var url = API_BASE + path;
+    var config = { headers: { 'Content-Type': 'application/json' } };
+    if (options) { 
+      if (options.method) config.method = options.method; 
+      if (options.body) config.body = options.body; 
+    }
+    
+    var res = await fetch(url, config);
+    if (!res.ok) { 
+      return null; 
+    }
+    return await res.json();
+  } catch (e) {
+    // 👇 اگر خطا داد و هنوز فرصت تلاش داریم، دوباره امتحان کن 👇
+    if (retries > 0) {
+      console.warn('Retrying request in 2 seconds:', path);
+      await new Promise(r => setTimeout(r, 2000)); // ۲ ثانیه صبر کن
+      return this._fetch(path, options, retries - 1);
+    }
+    return null;
+  }
+},
+
   health: async function() { return this._fetch('/'); },
   login: async function(phone, name, role, avatar) { return this._fetch('/api/users/login', { method: 'POST', body: JSON.stringify({ phone: phone, name: name, role: role, avatar: avatar }) }); },
   register: async function(phone, name, role, password) { return this._fetch('/api/auth/register', { method: 'POST', body: JSON.stringify({ phone: phone, name: name, role: role, password: password }) }); },
