@@ -1682,14 +1682,12 @@ async function finalizeMission() {
   m.status = 'completed';
 
   try {
-    // ارسال به بک‌اند
     await fetch('https://taraz-backend-prog.vercel.app/api/missions/' + m.id, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ steps: m.steps, total: m.total, status: 'completed' })
     });
 
-    // آپدیت در دیتابیس محلی
     var all = DB.missions;
     var idx = all.findIndex(function(x){ return x.id === m.id; });
     if (idx >= 0) {
@@ -1698,7 +1696,13 @@ async function finalizeMission() {
     }
 
     toast('✅ معامله با موفقیت نهایی شد!');
-    setTimeout(function(){ go('missions-list'); }, 1500);
+    
+    // 👇 بعد از تایید، مودال امتیازدهی باز میشه 👇
+    setTimeout(function(){ 
+      openRatingModalForMission(m); 
+    }, 1000);
+    // 👆 تا اینجا 👆
+
   } catch(e) {
     toast('خطا در نهایی کردن معامله');
   }
@@ -1797,6 +1801,77 @@ function fillMissionInput(text) {
     input.value = text;
     input.focus();
     hideSuggestions(); // بعد از انتخاب، منو بسته میشه
+  }
+}
+function openRatingModalForMission(mission) {
+  // پیدا کردن طرف مقابل (فروشنده یا خریدار)
+  var u = DB.user;
+  var otherPhone = mission.steps[0] && mission.steps[0].refId ? mission.steps[0].refId : 'unknown';
+  var otherName = mission.steps[0] ? mission.steps[0].subtitle : 'طرف مقابل';
+  
+  var html = '<div class="modal-overlay show" id="rating-modal-new" onclick="if(event.target===this)closeRatingModalNew()">';
+  html += '<div class="modal">';
+  html += '<h3 style="color:var(--gold);">⭐ امتیاز به طرف مقابل</h3>';
+  html += '<p style="text-align:center;font-size:14px;color:var(--muted);margin-bottom:16px;">تجربه شما با ' + otherName + ' چطور بود؟</p>';
+  html += '<div class="stars-row" id="new-rating-stars" style="direction:ltr;">';
+  for (var i = 1; i <= 5; i++) {
+    html += '<span class="star-btn" data-v="' + i + '">★</span>';
+  }
+  html += '</div>';
+  html += '<div class="field" style="text-align:right;">';
+  html += '<label>نظر شما (اختیاری)</label>';
+  html += '<textarea id="new-rating-comment" placeholder="..."></textarea>';
+  html += '</div>';
+  html += '<button type="button" class="btn-gold" onclick="submitRatingForMission(\'' + otherPhone + '\')" style="margin-top:12px;min-height:60px;font-size:16px;">ثبت امتیاز</button>';
+  html += '<button type="button" class="btn-outline" onclick="closeRatingModalNew()" style="margin-top:8px;">بعداً</button>';
+  html += '</div></div>';
+  
+  document.body.insertAdjacentHTML('beforeend', html);
+  
+  // فعال کردن ستاره‌ها
+  document.querySelectorAll('#new-rating-stars .star-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var val = Number(this.dataset.v);
+      document.querySelectorAll('#new-rating-stars .star-btn').forEach(function(s) {
+        s.classList.toggle('on', Number(s.dataset.v) <= val);
+      });
+    });
+  });
+}
+
+function closeRatingModalNew() {
+  var el = document.getElementById('rating-modal-new');
+  if (el) el.remove();
+}
+
+async function submitRatingForMission(toPhone) {
+  var u = DB.user;
+  if (!u) return;
+  
+  var activeStars = document.querySelectorAll('#new-rating-stars .star-btn.on');
+  var score = activeStars.length;
+  if (score === 0) { toast('لطفاً امتیاز بدهید'); return; }
+  
+  var comment = document.getElementById('new-rating-comment').value.trim();
+  
+  try {
+    await fetch('https://taraz-backend-prog.vercel.app/api/ratings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: 'Rt' + Date.now(),
+        fromPhone: u.phone,
+        fromName: u.name,
+        toPhone: toPhone,
+        score: score,
+        comment: comment
+      })
+    });
+    toast('✓ امتیاز شما ثبت شد');
+    closeRatingModalNew();
+    go('missions-list');
+  } catch(e) {
+    toast('خطا در ثبت امتیاز');
   }
 }
 
