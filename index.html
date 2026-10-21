@@ -175,23 +175,49 @@
     <div id="capacity-detail-body" style="padding:16px 0 40px"></div>
   </section>
 
-  <!-- ============ MISSION ============ -->
-  <section class="screen" id="screen-mission" style="padding-bottom:110px">
-    <div class="sub-header"><div class="title">🎯 بگو چی می‌خواهی</div></div>
-    <div class="mission-input-wrap">
-      <div class="label"><span class="dot"></span> به زبان خودت بنویس</div>
-      <textarea id="mission-input" placeholder="مثلاً: ۵۰ رأس گوسفند از اهواز می‌خواهم به تهران برسد"></textarea>
-      <div class="mission-examples">
-        <button type="button" onclick="setMission('۵۰ رأس گوسفند از اهواز به تهران')">🐑 دام</button>
-        <button type="button" onclick="setMission('۵۰ هکتار برداشت گندم با کمباین در فارس')">🚜 برداشت گندم</button>
-        <button type="button" onclick="setMission('۲۰۰۰۰ جوجه از تهران به اهواز با کامیون')">🐔 جوجه</button>
-        <button type="button" onclick="setMission('۱۰ تن کنسانتره از کرج به دزفول با کامیون')">🌰 نهاده</button>
-      </div>
-      <button type="button" class="btn-gold" onclick="startMission()" style="margin-top:20px;min-height:60px;font-size:18px">🎯 پیدا کن</button>
+ <!-- ============ MISSION (Snap-like) ============ -->
+<section class="screen" id="screen-mission" style="padding-bottom:110px">
+  <div class="sub-header">
+    <div class="title">🎯 چه می‌خواهم؟</div>
+  </div>
+  
+  <div style="padding: 20px 16px;">
+    <!-- قدم اول: شغل کاربر -->
+    <div class="card" style="background: #eef8f3; border-color: #cfe5da; text-align: center;">
+      <h3 style="color: var(--forest); margin-bottom: 8px;">شغل شما</h3>
+      <p style="font-size: 14px; color: var(--muted); margin-bottom: 12px;">سیستم بر اساس شغل شما، بهترین پیشنهادها را می‌دهد.</p>
+      <div id="mission-user-role" style="font-size: 18px; font-weight: 900; color: var(--accent);">در حال بارگذاری...</div>
     </div>
-    <div id="mission-result"></div>
-    <section class="section"><h2>مأموریت‌های من</h2><div id="mission-history"></div></section>
-  </section>
+
+    <!-- قدم دوم: درخواست -->
+    <div class="field" style="margin-top: 24px;">
+      <label style="font-size: 18px;">چه کاری برایتان انجام دهیم؟</label>
+      <textarea id="mission-input" placeholder="مثلاً: ۵۰ رأس گوسفند از اصفهان به اهواز، یا نیاز به دامپزشک برای مرغداری در کرج..." style="min-height: 120px; font-size: 16px;"></textarea>
+    </div>
+
+    <!-- قدم سوم: منطقه -->
+    <div class="field">
+      <label style="font-size: 18px;">در کدام منطقه؟</label>
+      <input id="mission-region" placeholder="مثلاً: اصفهان، یا شهرستان..." style="font-size: 16px;">
+    </div>
+
+    <!-- قدم چهارم: آپشن‌ها -->
+    <div style="margin-top: 20px;">
+      <label style="font-size: 16px; font-weight: 900; color: var(--forest); margin-bottom: 12px; display: block;">آپشن‌های بیشتر:</label>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+        <button type="button" class="chip-big" onclick="toggleMissionOption(this, 'اشتراکی')" style="border-color: var(--accent); background: #fff; color: var(--forest);">🤝 اشتراکی</button>
+        <button type="button" class="chip-big" onclick="toggleMissionOption(this, 'فوری')" style="border-color: var(--accent); background: #fff; color: var(--forest);">⚡ فوری</button>
+        <button type="button" class="chip-big" onclick="toggleMissionOption(this, 'فقط نزدیک من')" style="border-color: var(--accent); background: #fff; color: var(--forest);">📍 فقط نزدیک من</button>
+        <button type="button" class="chip-big" onclick="toggleMissionOption(this, 'بالای ۱۰هزار')" style="border-color: var(--accent); background: #fff; color: var(--forest);">📦 بالای ۱۰هزار</button>
+      </div>
+    </div>
+
+    <button type="button" class="btn-gold" onclick="startMission()" style="margin-top: 24px; min-height: 64px; font-size: 18px;">🚀 شروع جستجو</button>
+  </div>
+  
+  <div id="mission-result"></div>
+</section>
+
 
   <!-- ============ BUY ============ -->
   <section class="screen" id="screen-buy">
@@ -542,15 +568,33 @@
 </section>
 
   <!-- ============ NAV ============ -->
-  <nav class="nav" id="nav">
-    <button type="button" data-nav="home" onclick="go('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>خانه</button>
-    <button type="button" data-nav="browse" onclick="go('browse')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>بازار</button>
-    <button type="button" data-nav="services" class="nav-center" onclick="go('services')"><span class="big-ic">🚛</span><span>خدمات</span></button>
-    <button type="button" data-nav="mission" onclick="go('mission')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>مأموریت</button>
-    <button type="button" data-nav="chatlist" onclick="go('chatlist')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>چت<span class="nav-badge" id="nav-chat-badge"></span></button>
-  </nav>
+<nav class="nav" id="nav">
+  <button type="button" data-nav="home" onclick="go('home')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+    خانه
+  </button>
+  <button type="button" data-nav="browse" onclick="go('browse')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+    بازار
+  </button>
+  
+  <!-- 👇 دکمه وسط: تغییر از خدمات به مأموریت 👇 -->
+  <button type="button" data-nav="mission" class="nav-center" onclick="go('mission')">
+    <span class="big-ic">🎯</span>
+    <span>چه می‌خواهم؟</span>
+  </button>
+  <!-- 👆 تا اینجا 👆 -->
 
-  <div class="ai-toast" id="ai-toast"></div>
+  <button type="button" data-nav="services" onclick="go('services')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+    خدمات
+  </button>
+  <button type="button" data-nav="chatlist" onclick="go('chatlist')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+    چت
+    <span class="nav-badge" id="nav-chat-badge"></span>
+  </button>
+</nav>
 
   <!-- ============ مودال‌ها ============ -->
   <div class="modal-overlay" id="rating-modal">
