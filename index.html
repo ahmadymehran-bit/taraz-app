@@ -175,58 +175,51 @@
     <div id="capacity-detail-body" style="padding:16px 0 40px"></div>
   </section>
 
- <!-- ============ MISSION (Snap-like) ============ -->
-<section class="screen" id="screen-mission" style="padding-bottom:110px">
-  <div class="sub-header">
-    <div class="title">🎯 چه می‌خواهم؟</div>
-  </div>
+<!-- ============ MISSION (Snap & Digikala Style) ============ -->
+<section class="screen" id="screen-mission" style="padding-bottom:110px; background: #f7f5ef;">
   
   <div style="padding: 20px 16px;">
-    <!-- قدم اول: شغل کاربر -->
-    <div class="card" style="background: #eef8f3; border-color: #cfe5da; text-align: center;">
-      <h3 style="color: var(--forest); margin-bottom: 8px;">شغل شما</h3>
-      <p style="font-size: 14px; color: var(--muted); margin-bottom: 12px;">سیستم بر اساس شغل شما، بهترین پیشنهادها را می‌دهد.</p>
-      <div id="mission-user-role" style="font-size: 18px; font-weight: 900; color: var(--accent);">در حال بارگذاری...</div>
-    </div>
-
-    <!-- قدم دوم: درخواست -->
-    <div class="field" style="margin-top: 24px;">
-      <label style="font-size: 18px;">چه کاری برایتان انجام دهیم؟</label>
-      <textarea id="mission-input" placeholder="مثلاً: ۵۰ رأس گوسفند از اصفهان به اهواز، یا نیاز به دامپزشک برای مرغداری در کرج..." style="min-height: 120px; font-size: 16px;"></textarea>
-    </div>
-<div class="field" style="margin-top: 24px; position: relative;">
-  <label style="font-size: 18px;">چه کاری برایتان انجام دهیم؟</label>
-  <textarea id="mission-input" placeholder="مثلاً: ۵۰ رأس گوسفند..." style="min-height: 120px; font-size: 16px;" onfocus="showSuggestions()" onblur="setTimeout(hideSuggestions, 200)"></textarea>
-  
-  <!-- 👇 منوی کشویی پیشنهادات (در ابتدا مخفی است) 👇 -->
-  <div id="mission-suggestions" style="display:none; position:absolute; top:100%; left:0; right:0; background:#fff; border:1px solid var(--line); border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); z-index:10; max-height:150px; overflow-y:auto;">
-    <div onclick="fillMissionInput('خرید گوسفند زنده')" style="padding:12px 16px; border-bottom:1px solid #f0f0eb; cursor:pointer; font-size:14px; color:var(--forest);">🐑 خرید گوسفند زنده</div>
-    <div onclick="fillMissionInput('نیاز به دامپزشک')" style="padding:12px 16px; border-bottom:1px solid #f0f0eb; cursor:pointer; font-size:14px; color:var(--forest);">🩺 نیاز به دامپزشک</div>
-    <div onclick="fillMissionInput('حمل بار به شهر دیگر')" style="padding:12px 16px; border-bottom:1px solid #f0f0eb; cursor:pointer; font-size:14px; color:var(--forest);">🚛 حمل بار به شهر دیگر</div>
-    <div onclick="fillMissionInput('خرید نهاده و کنسانتره')" style="padding:12px 16px; cursor:pointer; font-size:14px; color:var(--forest);">🌰 خرید نهاده و کنسانتره</div>
-  </div>
-  <!-- 👆 تا اینجا 👆 -->
-</div>
-
-
-    <!-- قدم سوم: منطقه -->
-    <div class="field">
-      <label style="font-size: 18px;">در کدام منطقه؟</label>
-      <input id="mission-region" placeholder="مثلاً: اصفهان، یا شهرستان..." style="font-size: 16px;">
-    </div>
-
-    <!-- قدم چهارم: آپشن‌ها -->
-    <div style="margin-top: 20px;">
-      <label style="font-size: 16px; font-weight: 900; color: var(--forest); margin-bottom: 12px; display: block;">آپشن‌های بیشتر:</label>
-      <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-        <button type="button" class="chip-big" onclick="toggleMissionOption(this, 'اشتراکی')" style="border-color: var(--accent); background: #fff; color: var(--forest);">🤝 اشتراکی</button>
-        <button type="button" class="chip-big" onclick="toggleMissionOption(this, 'فوری')" style="border-color: var(--accent); background: #fff; color: var(--forest);">⚡ فوری</button>
-        <button type="button" class="chip-big" onclick="toggleMissionOption(this, 'فقط نزدیک من')" style="border-color: var(--accent); background: #fff; color: var(--forest);">📍 فقط نزدیک من</button>
-        <button type="button" class="chip-big" onclick="toggleMissionOption(this, 'بالای ۱۰هزار')" style="border-color: var(--accent); background: #fff; color: var(--forest);">📦 بالای ۱۰هزار</button>
+    <!-- کارت شغل کاربر (به سبک دیجی‌کالا) -->
+    <div class="card" style="background: #fff; border-radius: 20px; padding: 20px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+      <div style="width: 60px; height: 60px; border-radius: 16px; background: #eef8f3; display: flex; align-items: center; justify-content: center; font-size: 32px;">
+        👨‍🌾
+      </div>
+      <div>
+        <div style="font-size: 13px; color: var(--muted); font-weight: 700;">شغل شما در تاراز</div>
+        <div id="mission-user-role" style="font-size: 20px; font-weight: 900; color: var(--forest); margin-top: 4px;">در حال بارگذاری...</div>
       </div>
     </div>
 
-    <button type="button" class="btn-gold" onclick="startMission()" style="margin-top: 24px; min-height: 64px; font-size: 18px;">🚀 شروع جستجو</button>
+    <!-- کادر درخواست (به سبک اسنپ) -->
+    <h3 style="font-size: 18px; font-weight: 900; color: var(--forest); margin-bottom: 12px;">چه کاری برایتان انجام دهیم؟</h3>
+    <div style="position: relative; margin-bottom: 24px;">
+      <textarea id="mission-input" placeholder="مثلاً: ۵۰ رأس گوسفند از اصفهان به اهواز..." style="width: 100%; min-height: 120px; padding: 20px; border-radius: 20px; border: 2px solid var(--line); font-size: 16px; line-height: 1.8; box-shadow: 0 4px 12px rgba(0,0,0,0.03); outline: none; resize: none;" onfocus="showSuggestions()" onblur="setTimeout(hideSuggestions, 200)"></textarea>
+      
+      <!-- منوی پیشنهادات (به سبک دیوار) -->
+      <div id="mission-suggestions" style="display:none; position:absolute; top:100%; left:0; right:0; background:#fff; border:1px solid var(--line); border-radius:16px; box-shadow:0 12px 24px rgba(0,0,0,0.1); z-index:10; overflow:hidden; margin-top: 8px;">
+        <div onclick="fillMissionInput('خرید گوسفند زنده')" style="padding:16px 20px; border-bottom:1px solid #f0f0eb; cursor:pointer; font-size:15px; color:var(--forest); display:flex; align-items:center; gap:12px;"><span>🐑</span> خرید گوسفند زنده</div>
+        <div onclick="fillMissionInput('نیاز به دامپزشک')" style="padding:16px 20px; border-bottom:1px solid #f0f0eb; cursor:pointer; font-size:15px; color:var(--forest); display:flex; align-items:center; gap:12px;"><span>🩺</span> نیاز به دامپزشک</div>
+        <div onclick="fillMissionInput('حمل بار به شهر دیگر')" style="padding:16px 20px; border-bottom:1px solid #f0f0eb; cursor:pointer; font-size:15px; color:var(--forest); display:flex; align-items:center; gap:12px;"><span>🚛</span> حمل بار به شهر دیگر</div>
+        <div onclick="fillMissionInput('خرید نهاده و کنسانتره')" style="padding:16px 20px; cursor:pointer; font-size:15px; color:var(--forest); display:flex; align-items:center; gap:12px;"><span>🌰</span> خرید نهاده و کنسانتره</div>
+      </div>
+    </div>
+
+    <!-- منطقه -->
+    <h3 style="font-size: 18px; font-weight: 900; color: var(--forest); margin-bottom: 12px;">در کدام منطقه؟</h3>
+    <div style="position: relative; margin-bottom: 24px;">
+      <input id="mission-region" placeholder="مثلاً: اصفهان، یا شهرستان..." style="width: 100%; padding: 20px; border-radius: 20px; border: 2px solid var(--line); font-size: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); outline: none;">
+    </div>
+
+    <!-- آپشن‌ها (به سبک فیلترهای دیوار) -->
+    <h3 style="font-size: 16px; font-weight: 900; color: var(--forest); margin-bottom: 12px;">آپشن‌های بیشتر:</h3>
+    <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 32px;">
+      <button type="button" class="chip-big" onclick="toggleMissionOption(this, 'اشتراکی')" style="border:2px solid var(--line); background: #fff; color: var(--forest); padding: 12px 20px; border-radius: 100px; font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 8px;">🤝 اشتراکی</button>
+      <button type="button" class="chip-big" onclick="toggleMissionOption(this, 'فوری')" style="border:2px solid var(--line); background: #fff; color: var(--forest); padding: 12px 20px; border-radius: 100px; font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 8px;">⚡ فوری</button>
+      <button type="button" class="chip-big" onclick="toggleMissionOption(this, 'فقط نزدیک من')" style="border:2px solid var(--line); background: #fff; color: var(--forest); padding: 12px 20px; border-radius: 100px; font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 8px;">📍 فقط نزدیک من</button>
+      <button type="button" class="chip-big" onclick="toggleMissionOption(this, 'بالای ۱۰هزار')" style="border:2px solid var(--line); background: #fff; color: var(--forest); padding: 12px 20px; border-radius: 100px; font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 8px;">📦 بالای ۱۰هزار</button>
+    </div>
+
+    <button type="button" class="btn-gold" onclick="startMission()" style="width: 100%; min-height: 64px; font-size: 18px; font-weight: 900; border-radius: 20px; box-shadow: 0 8px 20px rgba(240,180,41,0.3);">🚀 شروع جستجو</button>
   </div>
   
   <div id="mission-result"></div>
@@ -386,12 +379,14 @@
           <div class="stat-item"><div class="stat-val" id="stat-bookings">۰</div><div class="stat-lbl">📅 رزرو</div></div>
         </div>
       </div>
-      <div class="profile-menu-item" onclick="go('ready')">
-  <div class="ic">🟢</div>
-  <div class="body"><b>اعلام آمادگی</b><small>من آماده پذیرش مأموریت هستم</small></div>
-  <div class="arrow">‹</div>
+     <div class="profile-menu-item" onclick="go('ready')" style="background: linear-gradient(135deg, #eef8f3, #fff); border-color: #cfe5da;">
+  <div class="ic" style="background: #2aa876; color: #fff;">🟢</div>
+  <div class="body">
+    <b style="color: var(--forest);">اعلام آمادگی</b>
+    <small style="color: var(--accent);">من آماده پذیرش مأموریت هستم</small>
+  </div>
+  <div class="arrow" style="color: var(--accent);">‹</div>
 </div>
-
       <div class="profile-menu-item" onclick="go('settings')">
         <div class="ic">⚙️</div><div class="body"><b>تنظیمات</b><small>حالت تاریک، پشتیبان‌گیری</small></div><div class="arrow">‹</div>
       </div>
@@ -592,12 +587,13 @@
     بازار
   </button>
   
-  <!-- 👇 دکمه وسط: تغییر از خدمات به مأموریت 👇 -->
-  <button type="button" data-nav="mission" class="nav-center" onclick="go('mission')">
-    <span class="big-ic">🎯</span>
-    <span>چه می‌خواهم؟</span>
-  </button>
-  <!-- 👆 تا اینجا 👆 -->
+ <!-- 👇 دکمه وسط (چه می‌خواهم) - طراحی جدید 👇 -->
+<button type="button" data-nav="mission" class="nav-center" onclick="go('mission')" style="background: linear-gradient(135deg, #2563eb, #1e40af); border: 4px solid #fff; box-shadow: 0 8px 24px rgba(37,99,235,0.5); transform: translateY(-15px); transition: 0.2s;">
+  <span style="font-size: 36px; line-height: 1; margin-bottom: 4px;">🎯</span>
+  <span style="font-size: 14px; font-weight: 900; color: #fff;">چه می‌خواهم؟</span>
+</button>
+<!-- 👆 تا اینجا 👆 -->
+
 
   <button type="button" data-nav="services" onclick="go('services')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
