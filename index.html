@@ -65,64 +65,29 @@
 
   <!-- ============ HOME (جدید) ============ -->
 <section class="screen" id="screen-home">
-<header class="top" style="display: flex; flex-direction: column; align-items: center; padding: 20px 14px 14px; position: relative;">
+  <header class="top">
+  <!-- زنگ اعلان‌ها -->
+  <div class="header-bell" id="header-bell" onclick="go('notifs')" style="top: 20px; left: 14px; display: flex; flex-direction: column; justify-content: center; height: 60px; width: 52px; background: transparent; border: none; box-shadow: none;">
+    <span style="font-size: 26px; line-height: 1;">🔔</span>
+    <!-- دکمه آماده‌باش (دست) دقیقاً زیر زنگ -->
+    <div id="ready-toggle-btn" onclick="event.stopPropagation(); toggleReadyFromHome()" style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 32px; height: 32px; border-radius: 50%; background: #ddd; display: flex; align-items: center; justify-content: center; font-size: 16px; border: 2px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.2); cursor: pointer; transition: 0.3s;">
+      <span id="ready-hand-icon">✋</span>
+    </div>
+  </div>
   
-  <!-- ردیف بالا: زنگ و دست (چپ) / کارت پروفایل (راست) -->
-  <div style="display: flex; justify-content: space-between; width: 100%; align-items: flex-start; margin-bottom: 10px;">
-    
-    <!-- سمت چپ: زنگ و دکمه دست -->
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-      <!-- زنگ -->
-      <div class="header-bell" id="header-bell" onclick="go('notifs')" style="position: relative; width: 52px; height: 52px; border-radius: 50%; background: #fff; border: 2px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; box-shadow: var(--shadow); color: var(--forest);">
-        🔔
-        <span class="bell-badge" id="bell-badge" style="position: absolute; top: -4px; right: -4px; background: var(--fire); color: #fff; font-size: 11px; font-weight: 900; padding: 2px 7px; border-radius: 100px; border: 2px solid #fff; min-width: 22px; text-align: center; display: none;"></span>
-      </div>
-      
-      <!-- دکمه دست -->
-      <div id="ready-toggle-btn" onclick="toggleReadyFromHome()" style="width: 36px; height: 36px; border-radius: 50%; background: #ddd; display: flex; align-items: center; justify-content: center; font-size: 18px; border: 2px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.2); cursor: pointer; transition: 0.3s;">
-        <span id="ready-hand-icon">👎</span>
-      </div>
-    </div>
-
-    <!-- سمت راست: کارت پروفایل -->
-    <div class="header-profile-card" onclick="go('profile')" style="display: flex; align-items: center; gap: 8px; background: #fff; padding: 6px 12px 6px 6px; border-radius: 100px; border: 2px solid var(--line); box-shadow: var(--shadow); cursor: pointer;">
-      <div id="header-avatar" style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg,#1f8062,#123d32); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px; overflow: hidden; flex-shrink: 0;"></div>
-      <div style="display: flex; flex-direction: column; align-items: flex-start; justify-content: center; min-width: 0;">
-        <div id="header-user-name" style="font-size: 12px; font-weight: 900; color: var(--forest); line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80px;">کاربر</div>
-        <div style="display: flex; align-items: center; gap: 4px; margin-top: 2px;">
-          <span id="header-user-role" style="font-size: 10px; color: var(--muted); font-weight: 700;">شغل</span>
-          <span style="font-size: 10px; color: var(--gold); font-weight: 900;">★ <span id="header-user-rating">۰</span></span>
-        </div>
+  <!-- کارت پروفایل (سمت راست) -->
+  <div class="header-profile-card" onclick="go('profile')" style="position: absolute; top: 20px; right: 14px; display: flex; align-items: center; gap: 8px; background: #fff; padding: 6px 12px 6px 6px; border-radius: 100px; border: 2px solid var(--line); box-shadow: var(--shadow); cursor: pointer; z-index: 10;">
+    <div id="header-avatar" style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg,#1f8062,#123d32); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px; overflow: hidden; flex-shrink: 0;"></div>
+    <div style="display: flex; flex-direction: column; align-items: flex-start; justify-content: center; min-width: 0;">
+      <div id="header-user-name" style="font-size: 12px; font-weight: 900; color: var(--forest); line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80px;">کاربر</div>
+      <div style="display: flex; align-items: center; gap: 4px; margin-top: 2px;">
+        <span id="header-user-role" style="font-size: 10px; color: var(--muted); font-weight: 700;">شغل</span>
+        <span style="font-size: 10px; color: var(--gold); font-weight: 900;">★ <span id="header-user-rating">۰</span></span>
       </div>
     </div>
   </div>
 
-  <!-- لوگوی تاراز (فقط یک بار در مرکز) -->
-  <div class="brand" style="text-align: center;">تاراز<small>سوپر اپ کشاورزی و دامپروری</small></div>
-</header>
-
-      
-      <!-- دکمه دست (زیر زنگ) -->
-      <div id="ready-toggle-btn" onclick="toggleReadyFromHome()" style="margin-top: 10px; width: 36px; height: 36px; border-radius: 50%; background: #ddd; display: flex; align-items: center; justify-content: center; font-size: 18px; border: 2px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.2); cursor: pointer; transition: 0.3s;">
-        <span id="ready-hand-icon">👎</span>
-      </div>
-    </div>
-
-    <!-- سمت راست: کارت پروفایل -->
-    <div class="header-profile-card" onclick="go('profile')" style="display: flex; align-items: center; gap: 8px; background: #fff; padding: 6px 12px 6px 6px; border-radius: 100px; border: 2px solid var(--line); box-shadow: var(--shadow); cursor: pointer;">
-      <div id="header-avatar" style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg,#1f8062,#123d32); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px; overflow: hidden; flex-shrink: 0;"></div>
-      <div style="display: flex; flex-direction: column; align-items: flex-start; justify-content: center; min-width: 0;">
-        <div id="header-user-name" style="font-size: 12px; font-weight: 900; color: var(--forest); line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80px;">کاربر</div>
-        <div style="display: flex; align-items: center; gap: 4px; margin-top: 2px;">
-          <span id="header-user-role" style="font-size: 10px; color: var(--muted); font-weight: 700;">شغل</span>
-          <span style="font-size: 10px; color: var(--gold); font-weight: 900;">★ <span id="header-user-rating">۰</span></span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- لوگوی تاراز (حالا در مرکز و بدون تداخل) -->
-  <div class="brand" style="position: relative; margin-top: 10px;">تاراز<small>سوپر اپ کشاورزی و دامپروری</small></div>
+  <div class="brand">تاراز<small>سوپر اپ کشاورزی و دامپروری</small></div>
 </header>
 
 <!-- 👇 کارت پروفایل کوچک و هوشمند 👇 -->
@@ -140,7 +105,8 @@
   </div>
 </div>
 <!-- 👆 تا اینجا 👆 -->
- 
+    <div class="brand">تاراز<small>سوپر اپ کشاورزی و دامپروری</small></div>
+  </header>
 
   <!-- دکمه‌های اصلی (بزرگ و آیکونیک) -->
   <div class="action-panel" style="padding: 20px 16px;">
@@ -450,21 +416,23 @@
           <div class="stat-item"><div class="stat-val" id="stat-bookings">۰</div><div class="stat-lbl">📅 رزرو</div></div>
         </div>
       </div>
-    
+     <div class="profile-menu-item" onclick="go('ready')" style="background: linear-gradient(135deg, #eef8f3, #fff); border-color: #cfe5da;">
+  <div class="ic" style="background: #2aa876; color: #fff;">🟢</div>
+  <div class="body">
+    <b style="color: var(--forest);">اعلام آمادگی</b>
+    <small style="color: var(--accent);">من آماده پذیرش مأموریت هستم</small>
+  </div>
+  <div class="arrow" style="color: var(--accent);">‹</div>
+</div>
       <div class="profile-menu-item" onclick="go('settings')">
         <div class="ic">⚙️</div><div class="body"><b>تنظیمات</b><small>حالت تاریک، پشتیبان‌گیری</small></div><div class="arrow">‹</div>
       </div>
       <div class="profile-menu-item" onclick="enablePushNotifications()">
         <div class="ic">🔔</div><div class="body"><b>فعال‌سازی اعلان‌ها</b><small>اعلان پیام‌های جدید</small></div><div class="arrow">‹</div>
       </div>
-      <!-- دکمه خروج (جدا شده و در جای امن) -->
-<button type="button" class="btn-outline" onclick="logout()" style="margin-top:24px;min-height:60px;font-size:17px; width: 100%;">🚪 خروج از حساب</button>
-
-<!-- دکمه حذف حساب (بسیار دور، کوچک و غیرجذاب در پایین‌ترین نقطه) -->
-<div style="text-align: center; margin-top: 60px; margin-bottom: 40px;">
-  <button type="button" onclick="confirmDeleteAccount()" style="background: none; border: none; color: var(--muted); font-size: 13px; text-decoration: underline; cursor: pointer;">حذف حساب کاربری</button>
-</div>
-
+      <button type="button" class="btn-outline" onclick="logout()" style="margin-top:20px;min-height:60px;font-size:17px">🚪 خروج</button>
+      <button type="button" class="btn-red" onclick="confirmDeleteAccount()" style="margin-top:12px;min-height:60px;font-size:17px;background:linear-gradient(135deg, #e63946, #b91c28); color: #fff;">🗑️ حذف حساب کاربری</button>
+    </div>
   </section>
 
   <!-- ============ PROFILE SUB ============ -->
