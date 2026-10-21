@@ -1767,6 +1767,24 @@ function fillMissionInput(text) {
     input.focus(); // فوکوس روی کادر تا کاربر بتونه ادامه بده
   }
 }
+function showSuggestions() {
+  var el = document.getElementById('mission-suggestions');
+  if (el) el.style.display = 'block';
+}
+
+function hideSuggestions() {
+  var el = document.getElementById('mission-suggestions');
+  if (el) el.style.display = 'none';
+}
+
+function fillMissionInput(text) {
+  var input = document.getElementById('mission-input');
+  if (input) {
+    input.value = text;
+    input.focus();
+    hideSuggestions(); // بعد از انتخاب، منو بسته میشه
+  }
+}
 
 /* ============================================================
    API LAYER 
