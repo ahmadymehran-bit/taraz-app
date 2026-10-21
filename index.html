@@ -430,9 +430,14 @@
       <div class="profile-menu-item" onclick="enablePushNotifications()">
         <div class="ic">🔔</div><div class="body"><b>فعال‌سازی اعلان‌ها</b><small>اعلان پیام‌های جدید</small></div><div class="arrow">‹</div>
       </div>
-      <button type="button" class="btn-outline" onclick="logout()" style="margin-top:20px;min-height:60px;font-size:17px">🚪 خروج</button>
-      <button type="button" class="btn-red" onclick="confirmDeleteAccount()" style="margin-top:12px;min-height:60px;font-size:17px;background:linear-gradient(135deg, #e63946, #b91c28); color: #fff;">🗑️ حذف حساب کاربری</button>
-    </div>
+      <!-- دکمه خروج (جدا شده و در جای امن) -->
+<button type="button" class="btn-outline" onclick="logout()" style="margin-top:24px;min-height:60px;font-size:17px; width: 100%;">🚪 خروج از حساب</button>
+
+<!-- دکمه حذف حساب (بسیار دور، کوچک و غیرجذاب در پایین‌ترین نقطه) -->
+<div style="text-align: center; margin-top: 60px; margin-bottom: 40px;">
+  <button type="button" onclick="confirmDeleteAccount()" style="background: none; border: none; color: var(--muted); font-size: 13px; text-decoration: underline; cursor: pointer;">حذف حساب کاربری</button>
+</div>
+
   </section>
 
   <!-- ============ PROFILE SUB ============ -->
