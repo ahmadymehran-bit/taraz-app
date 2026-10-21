@@ -1760,6 +1760,13 @@ function toggleMissionOption(btn, option) {
     btn.style.color = '#fff';
   }
 }
+function fillMissionInput(text) {
+  var input = document.getElementById('mission-input');
+  if (input) {
+    input.value = text;
+    input.focus(); // فوکوس روی کادر تا کاربر بتونه ادامه بده
+  }
+}
 
 /* ============================================================
    API LAYER 
