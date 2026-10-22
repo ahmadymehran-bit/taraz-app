@@ -398,6 +398,71 @@ function updateBottomNav(screenId) {
     });
 }
 
+// --- MAP SYSTEM ---
+
+// متغیر سراسری برای ذخیره شیء نقشه
+let map = null;
+let geojsonLayer = null;
+
+/**
+ * مقداردهی اولیه نقشه و لود کردن مرزهای استان‌ها
+ */
+async function initMapHome() {
+    // اگر نقشه از قبل وجود دارد، دوباره آن را از اول نساز (برای جلوگیری از سنگین شدن)
+    if (map) return;
+
+    console.log("Initializing Map...");
+
+    // ۱. ایجاد شیء نقشه با مرکز ایران
+    map = L.map('map-container').setView([32.4279, 53.6880], 5);
+
+    // ۲. اضافه کردن لایه نقشه OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // ۳. لود کردن مرزهای استان‌ها از فایل GeoJSON
+    try {
+        const response = await fetch('ir_states_boundaries_coordinates.geojson');
+        if (!response.ok) throw new Error("GeoJSON file not found!");
+        
+        const geojsonData = await response.json();
+
+        // ۴. اضافه کردن لایه GeoJSON به نقشه
+        geojsonLayer = L.geoJSON(geojsonData, {
+            style: function(feature) {
+                return {
+                    color: "#2ecc71", // رنگ سبز برای مرزها (رنگ Taraz)
+                    weight: 2,
+                    fillOpacity: 0.1
+                };
+            },
+            onEachFeature: function(feature, layer) {
+                // وقتی روی یک استان کلیک می‌شود
+                layer.on('click', function(e) {
+                    const provinceName = feature.properties.name || feature.properties.NAME;
+                    handleProvinceClick(provinceName, e.latlng);
+                });
+            }
+        }).addTo(map);
+
+        console.log("Map and GeoJSON loaded successfully.");
+    } catch (error) {
+        console.error("Error loading map boundaries:", error);
+    }
+}
+
+/**
+ * مدیریت کلیک روی استان‌ها
+ * @param {string} provinceName - نام استان
+ * @param {L.LatLng} latlng - مختصات کلیک شده
+ */
+function handleProvinceClick(provinceName, latlng) {
+    console.log(`Clicked on province: ${provinceName}`);
+    // در مراحل بعد، اینجا Bottom Sheet را برای انتخاب شهر باز می‌کنیم
+    // فعلاً فقط برای تست یک پیام نمایش می‌دهیم
+    alert(`شما روی استان ${provinceName} کلیک کردید.`);
+}
 
 function backFromCapacity(){go(capacityReturnTo||'services')}
 function goUrgentSell(){go('sell');setTimeout(()=>enableUrgentSellMode(),50)}
