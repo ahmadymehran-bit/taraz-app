@@ -564,4 +564,29 @@ body, html {
 
 /* --- انتهای بخش جدید --- */
 
+/* استایل دکمه تأیید مبدأ در پایین صفحه */
+#confirm-origin-btn {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px); /* شروع از پایین صفحه خارج از دید */
+    width: 90%;
+    max-width: 400px;
+    padding: 15px;
+    background-color: #28a745; /* سبز اسنپی */
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 9999;
+    cursor: pointer;
+}
+
+#confirm-origin-btn.active {
+    transform: translateX(-50%) translateY(0); /* حرکت به سمت بالا و نمایش در صفحه */
+}
+
 
