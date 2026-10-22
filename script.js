@@ -2022,11 +2022,15 @@ const cities = [
     { name: 'آبادان', lat: 30.5458, lng: 48.2477 }
 ];
 
-    if(cityContainer) {
-      cityContainer.innerHTML = cities.map(city => 
-        `<div onclick="selectCityFromMap('${city}')" style="padding: 16px; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-size: 16px; color: #123d32;">${city}</div>`
-      ).join('');
-    }
+   if(cityContainer) {
+  cityContainer.innerHTML = cities.map(city =>
+    `<div onclick="selectCityFromMap('${city.name}', ${city.lat}, ${city.lng})" style="padding: 16px; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-size: 16px; color: #123d32; display: flex; justify-content: space-between; align-items: center;">
+       <span>${city.name}</span>
+       <span style="color: #94a3b8; font-size: 14px;">❯</span>
+     </div>`
+  ).join('');
+}
+
 
     // تعریف توابع سراسری برای استفاده در HTML
     window.openBottomSheet = function() {
@@ -2047,20 +2051,40 @@ const cities = [
 }
 
 // انتخاب شهر از لیست
-window.selectCityFromMap = function(cityName) {
+let currentOriginMarker = null;
+
+window.selectCityFromMap = function(cityName, lat, lng) {
   const input = document.querySelector('#origin-search-box input');
   if (input) input.value = cityName;
-  if (window.closeBottomSheet) window.closeBottomSheet();
-  toast('مبدأ ' + cityName + ' انتخاب شد');
-  // در آینده: پین روی نقشه برای شهر انتخابی
+
+  if (window.map && Number.isFinite(Number(lat)) && Number.isFinite(Number(lng))) {
+    const point = [Number(lat), Number(lng)];
+
+    window.map.setView(point, 13, {
+      animate: true,
+      duration: 1.2
+    });
+
+    if (currentOriginMarker) {
+      window.map.removeLayer(currentOriginMarker);
+    }
+
+    currentOriginMarker = L.marker(point).addTo(window.map);
+  }
+
+  if (window.closeBottomSheet) {
+    window.closeBottomSheet();
+  }
+
+  const confirmBtn = document.getElementById('confirm-origin-btn');
+  if (confirmBtn) {
+    confirmBtn.classList.add('active');
+  }
+
+  toast('مبدأ انتخاب شد: ' + cityName);
 };
 
-// انتخاب شهر از لیست
-window.selectCityFromMap = function(cityName) {
-  const input = document.querySelector('#origin-search-box input');
-  if (input) input.value = cityName;
-  if (window.closeBottomSheet) window.closeBottomSheet();
-  
+
   const cityCoords = {
     'تهران': [35.6892, 51.3890],
     'اصفهان': [32.6546, 51.6680],
