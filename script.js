@@ -1910,85 +1910,111 @@ async function submitRatingForMission(toPhone) {
     toast('خطا در ثبت امتیاز');
   }
 }
-/* ============ MAP HOME LOGIC ============ */
-var _mainMap = null;
-var _mainMarker = null;
-var _selectedCity = null;
-
-// شهرهای اصلی برای لیست
-var IRAN_CITIES_LIST = ['تهران', 'اصفهان', 'مشهد', 'شیراز', 'تبریز', 'کرج', 'اهواز', 'قم', 'کرمانشاه', 'رشت', 'یزد', 'کرمان', 'بندرعباس', 'زاهدان', 'اراک', 'همدان', 'سنندج', 'بوشهر', 'قزوین', 'گرگان', 'ساری', 'خرم‌آباد', 'ایلام', 'زنجان', 'ارومیه', 'اردبیل', 'سمنان', 'بیرجند', 'یاسوج', 'شهرکرد'];
+/* ============ MAP HOME LOGIC (Cursor Version) ============ */
+let _mainMap = null;
+let _provincesLayer = null;
 
 function initMapHome() {
-  if (_mainMap) return; // اگر قبلاً ساخته شده، دوباره نساز
-  
-  _mainMap = L.map('main-map').setView([32.4279, 53.6880], 5); // مرکز ایران
-  
+  if (_mainMap) return; // جلوگیری از ساخت مجدد
+
+  // ۱. راه‌اندازی نقشه با مرکزیت ایران
+  _mainMap = L.map('main-map', {
+    zoomControl: false,
+    attributionControl: false
+  }).setView([32.4279, 53.6880], 5);
+
+  // افزودن لایه پایه OpenStreetMap
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 18,
-    attribution: '© OpenStreetMap'
+    minZoom: 4
   }).addTo(_mainMap);
 
-  // نشانگر موقعیت کاربر (با GPS)
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function(position) {
-      var lat = position.coords.latitude;
-      var lng = position.coords.longitude;
-      _mainMap.setView([lat, lng], 12);
-      
-      if (_mainMarker) _mainMarker.remove();
-      _mainMarker = L.marker([lat, lng]).addTo(_mainMap).bindPopup('موقعیت شما').openPopup();
-    });
-  }
-  
-  // کلیک روی نقشه برای انتخاب مبدأ
-  _mainMap.on('click', function(e) {
-    var lat = e.latlng.lat;
-    var lng = e.latlng.lng;
-    
-    if (_mainMarker) _mainMarker.remove();
-    _mainMarker = L.marker([lat, lng]).addTo(_mainMap);
-    
-    document.querySelector('#screen-map-home input').value = 'مبدأ انتخاب شد: ' + lat.toFixed(4) + ', ' + lng.toFixed(4);
-  });
+  // کنترل زوم
+  L.control.zoom({ position: 'bottomleft' }).addTo(_mainMap);
+
+  // ۲. لود کردن و نمایش مرزبندی استان‌های ایران
+  const iranProvincesUrl = 'https://raw.githubusercontent.com/codehotkeys/iran-provinces-geojson/main/iran_provinces.json';
+
+  fetch(iranProvincesUrl)
+    .then(response => response.json())
+    .then(data => {
+      _provincesLayer = L.geoJSON(data, {
+        style: {
+          color: '#123d32',
+          weight: 1.5,
+          fillColor: '#1f8062',
+          fillOpacity: 0.15
+        },
+        onEachFeature: function (feature, layer) {
+          if (feature.properties && (feature.properties.name || feature.properties.NAME_1)) {
+            const provinceName = feature.properties.name || feature.properties.NAME_1;
+            layer.bindTooltip(provinceName, { direction: 'center', permanent: false, className: 'province-tooltip' });
+          }
+
+          layer.on({
+            mouseover: function (e) {
+              var l = e.target;
+              l.setStyle({ fillColor: '#f0b429', fillOpacity: 0.4, weight: 2 });
+            },
+            mouseout: function (e) {
+              _provincesLayer.resetStyle(e.target);
+            },
+            click: function (e) {
+              _mainMap.fitBounds(e.target.getBounds());
+              console.log("استان انتخاب شده:", feature.properties.name || feature.properties.NAME_1);
+              // در آینده: انتخاب استان به عنوان مبدأ
+            }
+          });
+        }
+      }).addTo(_mainMap);
+    })
+    .catch(error => console.error('خطا در بارگذاری نقشه استان‌ها:', error));
+
+  // ۳. مدیریت Bottom Sheet
+  setTimeout(function() {
+    const searchBox = document.getElementById('origin-search-box');
+    const bottomSheet = document.getElementById('locationBottomSheet');
+    const sheetBackdrop = document.getElementById('sheetBackdrop');
+    const closeSheetBtn = document.getElementById('closeSheetBtn');
+    const cityContainer = document.getElementById('city-list-container');
+
+    if (!searchBox) return; // اگر صفحه هنوز لود نشده
+
+    // پر کردن لیست شهرها
+    const cities = ['تهران', 'اصفهان', 'مشهد', 'شیراز', 'تبریز', 'کرج', 'اهواز', 'قم', 'کرمانشاه', 'رشت', 'یزد', 'کرمان', 'بندرعباس', 'زاهدان', 'اراک', 'همدان', 'سنندج', 'بوشهر', 'قزوین', 'گرگان', 'ساری', 'خرم‌آباد', 'ایلام', 'زنجان', 'ارومیه', 'اردبیل', 'سمنان', 'بیرجند', 'یاسوج', 'شهرکرد'];
+    if(cityContainer) {
+      cityContainer.innerHTML = cities.map(city => 
+        `<div onclick="selectCityFromMap('${city}')" style="padding: 16px; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-size: 16px; color: #123d32;">${city}</div>`
+      ).join('');
+    }
+
+    // تعریف توابع سراسری برای استفاده در HTML
+    window.openBottomSheet = function() {
+      bottomSheet.classList.add('active');
+      sheetBackdrop.classList.add('active');
+    };
+
+    window.closeBottomSheet = function() {
+      bottomSheet.classList.remove('active');
+      sheetBackdrop.classList.remove('active');
+    };
+
+    searchBox.addEventListener('click', window.openBottomSheet);
+    if(closeSheetBtn) closeSheetBtn.addEventListener('click', window.closeBottomSheet);
+    if(sheetBackdrop) sheetBackdrop.addEventListener('click', window.closeBottomSheet);
+
+  }, 200);
 }
 
-function openCityList() {
-  var sheet = document.getElementById('city-bottom-sheet');
-  var backdrop = document.getElementById('sheet-backdrop');
-  var container = document.getElementById('city-list-container');
-  
-  // پر کردن لیست شهرها
-  container.innerHTML = IRAN_CITIES_LIST.map(function(city) {
-    return '<div onclick="selectCity(\'' + city + '\')" style="padding: 16px; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-size: 16px; color: var(--taraz-dark);">' + city + '</div>';
-  }).join('');
-  
-  sheet.classList.add('active');
-  backdrop.classList.add('active');
-}
-
-function closeCityList() {
-  var sheet = document.getElementById('city-bottom-sheet');
-  var backdrop = document.getElementById('sheet-backdrop');
-  sheet.classList.remove('active');
-  backdrop.classList.remove('active');
-}
-
-function selectCity(cityName) {
-  _selectedCity = cityName;
-  document.querySelector('#screen-map-home input').value = 'مبدأ: ' + cityName;
-  
-  // بستن Bottom Sheet
-  closeCityList();
-  
-  // زوم کردن روی شهر انتخابی (برای سادگی، فقط پیام می‌دیم)
-  if (_mainMap) {
-    _mainMap.setView([32.4279, 53.6880], 5); // در آینده با مختصات دقیق شهر جایگزین می‌شه
-  }
-  
-  // ذخیره مبدأ در متغیر سراسری برای استفاده در مراحل بعدی
-  window._missionOrigin = cityName;
+// انتخاب شهر از لیست
+window.selectCityFromMap = function(cityName) {
+  const input = document.querySelector('#origin-search-box input');
+  if (input) input.value = cityName;
+  if (window.closeBottomSheet) window.closeBottomSheet();
   toast('مبدأ ' + cityName + ' انتخاب شد');
-}
+  // در آینده: پین روی نقشه برای شهر انتخابی
+};
+
 
 /* ============================================================
    API LAYER 
