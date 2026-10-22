@@ -2107,6 +2107,91 @@ function goToDestinationStep(originCity) {
   }, 300);
 }
 
+/**
+ * بخش مدیریت انتخاب مبدأ (مشابه اسنپ)
+ * این کد باید با توابع نقشه شما هماهنگ باشد
+ */
+
+// ۱. تعریف متغیر برای نگهداری پین (Marker)
+let originMarker = null;
+
+// ۲. تابع اصلی برای انتخاب شهر از لیست یا نقشه
+window.selectCityFromMap = function(cityName, lat, lng) {
+    // اگر نام شهر خالی بود، از مختصات استفاده کن
+    const finalName = cityName || "مبدأ انتخاب شده";
+
+    // الف) زوم کردن نقشه روی نقطه انتخاب شده
+    if (window.map) {
+        const point = [Number(lat), Number(lng)];
+        window.map.setView(point, 13, {
+            animate: true,
+            duration: 1.2
+        });
+
+        // ب) حذف پین قبلی و گذاشتن پین جدید
+        if (originMarker) {
+            window.map.removeLayer(originMarker);
+        }
+        originMarker = L.marker(point).addTo(window.map);
+    }
+
+    // ج) نمایش دکمه تأیید در پایین صفحه (Bottom Sheet)
+    showConfirmOriginButton(finalName);
+
+    // د) نمایش پیام کوچک (Toast)
+    if (typeof toast === 'function') {
+        toast('مبدأ انتخاب شد: ' + finalName);
+    }
+};
+
+// ۳. تابع نمایش دکمه تأیید (که در پایین صفحه ظاهر می‌شود)
+function showConfirmOriginButton(cityName) {
+    // بررسی اینکه آیا دکمه از قبل وجود دارد یا خیر
+    let confirmBtn = document.getElementById('confirm-origin-btn');
+    
+    if (!confirmBtn) {
+        confirmBtn = document.createElement('button');
+        confirmBtn.id = 'confirm-origin-btn';
+        confirmBtn.className = 'confirm-btn-bottom'; // کلاس استایل شما
+        confirmBtn.innerHTML = '✅ تأیید مبدأ و ادامه';
+        
+        // اضافه کردن رویداد کلیک
+        confirmBtn.onclick = function() {
+            proceedToDestination(cityName);
+        };
+
+        // اضافه کردن دکمه به بدنه اصلی یا کانتینر نقشه
+        document.body.appendChild(confirmBtn);
+    }
+
+    // ذخیره نام شهر در متغیر سراسری برای مرحله بعد
+    window._selectedOriginName = cityName;
+    
+    // انیمیشن ورود دکمه
+    confirmBtn.style.display = 'block';
+    setTimeout(() => confirmBtn.classList.add('active'), 10);
+}
+
+// ۴. تابع رفتن به مرحله بعد (انتخاب مقصد)
+function proceedToDestination(cityName) {
+    const btn = document.getElementById('confirm-origin-btn');
+    if (btn) {
+        btn.classList.remove('active');
+        setTimeout(() => btn.remove(), 300);
+    }
+    
+    console.log("مبدأ تایید شد:", cityName);
+    
+    // اینجا باید تابع انتقال به مرحله بعدی (مثلاً انتخاب مقصد) را صدا بزنی
+    // مثال:
+    if (typeof goToDestinationStep === 'function') {
+        goToDestinationStep(cityName);
+    } else {
+        // اگر تابع مشخصی نداری، اینجا منطق انتقال مرحله را بنویس
+        toast('مبدأ تایید شد. حالا مقصد را انتخاب کنید.');
+    }
+}
+
 
 /* ============================================================
    API LAYER 
