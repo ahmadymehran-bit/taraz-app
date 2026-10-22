@@ -125,6 +125,19 @@
       </div>
     </div>
   </section>
+<!-- ============ MAP HOME (جدید) ============ -->
+<section class="screen" id="screen-map-home" style="display: none;">
+  <!-- کانتینر اصلی نقشه - ارتفاع باید کامل باشد -->
+  <div id="map-container" style="width: 100%; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1;"></div>
+
+  <!-- لایه روی نقشه برای کنترل‌ها (مثل دکمه‌های فیلتر یا جستجو) -->
+  <div class="map-overlay" style="position: absolute; top: 60px; left: 14px; right: 14px; z-index: 10; pointer-events: none;">
+    <div class="search-bar-fake" style="background: white; padding: 12px; border-radius: 12px; box-shadow: var(--shadow); pointer-events: auto; display: flex; align-items: center; gap: 10px;">
+       <span style="color: #888;">🔍</span>
+       <span style="color: #333; font-size: 14px;">جستجوی محصولات یا خدمات...</span>
+    </div>
+  </div>
+</section>
 
   <!-- مأموریت‌های من -->
   <section class="section">
