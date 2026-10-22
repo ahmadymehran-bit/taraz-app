@@ -332,6 +332,7 @@ var all=DB.notifications; all.forEach(function(n){n.read=true}); DB.notification
 /* NAVIGATION */
 function go(s){
   if(!DB.user&&s!=='auth')s='auth';
+  if(!s) s = 'map-home'; // اگر صفحه‌ای مشخص نشد، صفحه نقشه باز شود
   if(s==='detail'&&!currentDetailId)s='browse';
   if(s==='chat'&&!currentConvId)s='chatlist';
   if(s==='capacity'&&!currentCapacityId)s='services';
@@ -343,7 +344,7 @@ function go(s){
   const map={home:'home',browse:'browse',services:'services',mission:'mission',profile:'profile',chatlist:'chatlist',buy:'home',sell:'home',settings:'profile',notifs:'home',capacity:'services',detail:'browse'};
   if(map[s]){const b=document.querySelector('#nav button[data-nav="'+map[s]+'"]');if(b)b.classList.add('active')}
 if(s==='home') { loadFavorites().then(renderHome); updateHomeReadyButton(); }
-  if(s==='map-home') initMapHome();
+if(s==='map-home') setTimeout(initMapHome, 100);
   if(s==='browse'){ loadFavorites().then(renderBrowse); }
   if(s==='services')renderServices();
   if(s==='capacity')renderCapacityDetail();
@@ -393,7 +394,7 @@ var result = null; try { result = await api.loginWithPassword(phone, password); 
 if(result && result.ok && result.user){
 DB.user = { phone: result.user.phone, name: result.user.name, role: result.user.role, avatar: result.user.avatar || null, joinedAt: Number(result.user.joined_at) || Date.now() };
 if(result.user.avatar && result.user.avatar.length < 100000){ DB.user.avatar = result.user.avatar; }
-toast('✓ خوش آمدید ' + result.user.name); go('home');
+toast('✓ خوش آمدید ' + result.user.name); go('map-home');
 } else if(result && result.error){ toast(result.error); } else { toast('خطا در ورود'); }
 }
 async function doRegister(){
@@ -407,7 +408,7 @@ var result = null; try { result = await api.register(phone, name, role, password
 if(result && result.ok && result.user){
 DB.user = { phone: result.user.phone, name: result.user.name, role: result.user.role, avatar: result.user.avatar || null, joinedAt: Number(result.user.joined_at) || Date.now() };
 var roles = DB.userRoles; if(!roles[phone]) roles[phone] = []; if(roles[phone].indexOf(role) < 0) roles[phone].push(role); DB.userRoles = roles;
-toast('✓ ثبت‌نام موفق'); go('home');
+toast('✓ ثبت‌نام موفق'); go('map-home');
 } else if(result && result.error){ toast(result.error); } else { toast('خطا در ثبت‌نام'); }
 }
 async function changePasswordDialog(){
