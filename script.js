@@ -2134,7 +2134,7 @@ window.selectCityFromMap = function(cityName, lat, lng) {
   
   toast('مبدأ ' + cityName + ' انتخاب شد');
   showConfirmOriginButton(cityName);
-  }
+};
 
 // تابع نمایش دکمه تایید مبدأ (با استفاده از کلاس CSS)
 function showConfirmOriginButton(cityName) {
