@@ -1,702 +1,123 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>تاراز</title>
-<link rel="stylesheet" href="style.css">
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#2E7D32">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="تاراز">
-<link rel="apple-touch-icon" href="https://i.ibb.co/TMNM2gDf/web-app-manifest-192x192.png">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Taraz | طراز</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <!-- Leaflet CSS for Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-<div id="app">
 
-  <!-- ============ AUTH ============ -->
-  <section class="screen active" id="screen-auth">
-    <div class="auth-hero">
-      <div class="logo">تاراز</div>
-      <div class="tag">سوپر اپ کشاورزی و دامپروری</div>
-    </div>
-    <div class="auth-tabs">
-      <button type="button" class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">ورود</button>
-      <button type="button" class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">ثبت‌نام</button>
-    </div>
-    <div class="auth-form">
-      <!-- فرم ورود -->
-      <div id="form-login" style="display:block">
-        <div class="field">
-          <label>شماره موبایل</label>
-          <input id="auth-phone" type="tel" inputmode="numeric" placeholder="09123456789" maxlength="11">
-        </div>
-        <div class="field">
-          <label>پسورد</label>
-          <input id="auth-password" type="password" placeholder="••••••">
-          <div style="text-align:left;margin-top:-8px;margin-bottom:12px">
-            <a href="#" onclick="event.preventDefault();forgotPasswordDialog()" style="color:var(--muted);font-size:13px;text-decoration:none">پسورد رو فراموش کردی؟</a>
-          </div>
-        </div>
-        <button type="button" class="btn-primary" onclick="doLoginWithPassword()" style="margin-top:20px;min-height:64px;font-size:19px">ورود به تاراز</button>
-        <div style="text-align:center;margin-top:16px;font-size:14px;color:var(--muted)">
-          حساب نداری؟ <a href="#" onclick="event.preventDefault();switchAuthTab('register')" style="color:var(--forest);font-weight:700;text-decoration:none">ثبت‌نام کن</a>
-        </div>
-      </div>
-      <!-- فرم ثبت‌نام -->
-      <div id="form-register" style="display:none">
-        <div class="field"><label>شماره موبایل</label><input id="reg-phone" type="tel" inputmode="numeric" placeholder="09123456789" maxlength="11"></div>
-        <div class="field"><label>نام و نام خانوادگی</label><input id="reg-name" placeholder="مثلاً: رضا احمدی"></div>
-        <div class="field">
-          <label>شغل شما</label>
-          <select id="reg-role"><option>دامدار</option><option>کشاورز</option><option>دامپزشک</option><option>گیاه‌پزشک</option><option>راننده</option><option>قصاب</option><option>خریدار</option></select>
-        </div>
-        <div class="field"><label>پسورد (حداقل ۶ کاراکتر)</label><input id="reg-password" type="password" placeholder="••••••"></div>
-        <div class="field"><label>تکرار پسورد</label><input id="reg-password2" type="password" placeholder="••••••"></div>
-        <button type="button" class="btn-green" onclick="doRegister()" style="margin-top:20px;min-height:64px;font-size:19px">ثبت‌نام در تاراز</button>
-        <div style="text-align:center;margin-top:16px;font-size:14px;color:var(--muted)">
-          قبلاً ثبت‌نام کردی؟ <a href="#" onclick="event.preventDefault();switchAuthTab('login')" style="color:var(--forest);font-weight:700;text-decoration:none">وارد شو</a>
-        </div>
-      </div>
-    </div>
-  </section>
+    <div id="app">
+        <!-- Screen 1: Home (Dashboard) -->
+        <section id="screen-home" class="screen active">
+            <header class="app-header">
+                <div class="user-info">
+                    <div class="avatar"></div>
+                    <div class="user-text">
+                        <span class="user-name">کاربر گرامی</span>
+                        <span class="user-status">در دسترس</span>
+                    </div>
+                </div>
+                <button class="icon-btn"><i class="fas fa-bell"></i></button>
+            </header>
 
-  <!-- ============ HOME (جدید) ============ -->
-<section class="screen" id="screen-home">
-  <header class="top">
-    <div class="header-bell" id="header-bell" onclick="go('notifs')">🔔<span class="bell-badge" id="bell-badge"></span></div>
-<!-- 👇 کارت پروفایل کوچک و هوشمند 👇 -->
-<div class="header-profile-card" onclick="go('profile')" style="position: absolute; top: 20px; right: 14px; display: flex; align-items: center; gap: 8px; background: #fff; padding: 6px 12px 6px 6px; border-radius: 100px; border: 2px solid var(--line); box-shadow: var(--shadow); cursor: pointer; z-index: 10;">
-  <!-- آواتار کوچک -->
-  <div id="header-avatar" style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg,#1f8062,#123d32); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px; overflow: hidden; flex-shrink: 0;"></div>
-  
-  <!-- اطلاعات متنی -->
-  <div style="display: flex; flex-direction: column; align-items: flex-start; justify-content: center; min-width: 0;">
-    <div id="header-user-name" style="font-size: 12px; font-weight: 900; color: var(--forest); line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80px;">کاربر</div>
-    <div style="display: flex; align-items: center; gap: 4px; margin-top: 2px;">
-      <span id="header-user-role" style="font-size: 10px; color: var(--muted); font-weight: 700;">شغل</span>
-      <span style="font-size: 10px; color: var(--gold); font-weight: 900;">★ <span id="header-user-rating">۰</span></span>
-    </div>
-  </div>
-</div>
-<!-- 👆 تا اینجا 👆 -->
-    <div class="brand">تاراز<small>سوپر اپ کشاورزی و دامپروری</small></div>
-  </header>
+            <main class="content">
+                <div class="market-pulse">
+                    <h3><i class="fas fa-chart-line"></i> نبض بازار</h3>
+                    <div class="pulse-card">
+                        <span>گوشت گوسفندی: <strong>۲۸۰,۰۰۰</strong> تومان</span>
+                        <span class="trend up"><i class="fas fa-arrow-up"></i> ۲٪</span>
+                    </div>
+                </div>
 
-  <!-- دکمه‌های اصلی (بزرگ و آیکونیک) -->
-  <div class="action-panel" style="padding: 20px 16px;">
-    <div style="display: flex; gap: 16px; margin-bottom: 16px;">
-      <button type="button" onclick="go('buy')" style="flex: 1; background: linear-gradient(135deg,#2aa876,#197b55); color: #fff; border-radius: 20px; padding: 24px 10px; display: flex; flex-direction: column; align-items: center; gap: 12px; box-shadow: 0 8px 20px rgba(42,168,118,.3);">
-        <span style="font-size: 56px; line-height: 1;">🛒</span>
-        <span style="font-size: 22px; font-weight: 900;">خرید</span>
-      </button>
-      <button type="button" onclick="go('sell')" style="flex: 1; background: linear-gradient(135deg,#e5a400,#b88200); color: #fff; border-radius: 20px; padding: 24px 10px; display: flex; flex-direction: column; align-items: center; gap: 12px; box-shadow: 0 8px 20px rgba(229,164,0,.3);">
-        <span style="font-size: 56px; line-height: 1;">💰</span>
-        <span style="font-size: 22px; font-weight: 900;">فروش</span>
-      </button>
-    </div>
-    <button type="button" class="fire-btn" onclick="goUrgentSell()" style="width: 100%; padding: 18px; display: flex; align-items: center; justify-content: center; gap: 12px; border-radius: 20px; background: linear-gradient(135deg,#ff4d4d,#c81f1f); color: #fff; font-size: 20px; font-weight: 900; box-shadow: 0 8px 20px rgba(230,57,70,.3);">
-      <span style="font-size: 32px;">🔥</span>
-      <span>فروش فوری</span>
-    </button>
-  </div>
+                <div class="quick-actions">
+                    <button class="action-card" onclick="go('listings')">
+                        <i class="fas fa-list"></i>
+                        <span>لیست‌ها</span>
+                    </button>
+                    <button class="action-card" onclick="go('missions')">
+                        <i class="fas fa-truck-loading"></i>
+                        <span>مأموریت‌ها</span>
+                    </button>
+                </div>
+            </main>
+        </section>
 
-  <!-- نبض بازار (مرجع قیمت) -->
-  <section class="section" style="padding-top: 0;">
-    <h2 style="font-size: 20px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">📊 نبض بازار</h2>
-    <div style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;" id="market-pulse-container">
-      <!-- این بخش با جاوااسکریپت پر می‌شه -->
-      <div class="card" style="min-width: 140px; padding: 16px; text-align: center; background: #fff; border-radius: 16px;">
-        <div style="font-size: 32px; margin-bottom: 8px;">🐑</div>
-        <div style="font-size: 14px; font-weight: 800; color: var(--forest);">گوسفند شال</div>
-        <div style="font-size: 16px; font-weight: 900; color: var(--accent); margin-top: 6px;" id="pulse-sheep">در حال بارگذاری...</div>
-      </div>
-      <div class="card" style="min-width: 140px; padding: 16px; text-align: center; background: #fff; border-radius: 16px;">
-        <div style="font-size: 32px; margin-bottom: 8px;">🌾</div>
-        <div style="font-size: 14px; font-weight: 800; color: var(--forest);">گندم</div>
-        <div style="font-size: 16px; font-weight: 900; color: var(--accent); margin-top: 6px;" id="pulse-wheat">در حال بارگذاری...</div>
-      </div>
-      <div class="card" style="min-width: 140px; padding: 16px; text-align: center; background: #fff; border-radius: 16px;">
-        <div style="font-size: 32px; margin-bottom: 8px;">🌰</div>
-        <div style="font-size: 14px; font-weight: 800; color: var(--forest);">کنسانتره</div>
-        <div style="font-size: 16px; font-weight: 900; color: var(--accent); margin-top: 6px;" id="pulse-feed">در حال بارگذاری...</div>
-      </div>
-    </div>
-  </section>
+        <!-- Screen 2: Map Home (The Snap-like Experience) -->
+        <section id="screen-map-home" class="screen">
+            <div id="main-map"></div>
+            
+            <!-- Map Overlays (Search/Filter) -->
+            <div class="map-overlay-top">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="جستجوی مأموریت یا مکان...">
+                </div>
+            </div>
 
-  <!-- مأموریت‌های من -->
-  <section class="section">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-      <h2 style="font-size: 20px; margin: 0;">🎯 مأموریت‌های من</h2>
-      <button type="button" onclick="go('mission')" style="background: none; border: none; color: var(--accent); font-size: 14px; font-weight: 800;">مشاهده همه</button>
-    </div>
-    <div id="home-missions-list">
-      <div class="empty" style="padding: 20px; font-size: 14px;">هنوز مأموریتی نساخته‌ای</div>
-    </div>
-  </section>
+            <!-- Snap-like Mission Selection (Bottom Sheet) -->
+            <div class="mission-bottom-sheet">
+                <div class="drag-handle"></div>
+                <div class="sheet-content">
+                    <h4>مأموریت‌های نزدیک</h4>
+                    <div class="mission-item">
+                        <div class="item-info">
+                            <span class="title">انتقال گوسفند (تلی)</span>
+                            <span class="loc"><i class="fas fa-map-marker-alt"></i> تهران ➔ اصفهان</span>
+                        </div>
+                        <button class="btn-select">مشاهده</button>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-  <!-- آگهی‌های جدید -->
-  <section class="section">
-    <h2>📋 آخرین آگهی‌ها</h2>
-    <div id="home-listings"></div>
-  </section>
-</section>
-<!-- ============ MAP HOME ============ -->
-<section class="screen" id="screen-map-home">
-  
-  <!-- ۱. لایه نقشه (زیر همه چیز) -->
-  <div id="main-map"></div>
+        <!-- Screen 3: Listings -->
+        <section id="screen-listings" class="screen">
+            <header class="app-header">
+                <button class="back-btn" onclick="go('home')"><i class="fas fa-chevron-right"></i></button>
+                <h1>لیست‌های موجود</h1>
+            </header>
+            <div class="content">
+                <!-- Dynamic Content -->
+            </div>
+        </section>
 
-  <!-- ۲. کادر جستجوی شناور -->
-  <div class="search-overlay">
-    <div class="search-box" id="origin-search-box">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-      <input type="text" placeholder="مبدأ را جستجو کنید..." readonly style="cursor: pointer;">
-    </div>
-  </div>
-
-  <!-- ۳. منوی پایین شناور -->
-  <div style="position: absolute; bottom: 20px; left: 16px; right: 16px; z-index: 1000; background: #fff; border-radius: 24px; box-shadow: 0 -4px 20px rgba(0,0,0,0.05); display: flex; justify-content: space-around; padding: 12px 8px;">
-    <button type="button" onclick="go('map-home')" style="display: flex; flex-direction: column; align-items: center; gap: 4px; background: none; border: none; color: var(--taraz-primary);">
-      <span style="font-size: 24px;">🗺️</span>
-      <span style="font-size: 11px; font-weight: 700;">نقشه</span>
-    </button>
-    <button type="button" onclick="go('browse')" style="display: flex; flex-direction: column; align-items: center; gap: 4px; background: none; border: none; color: var(--muted);">
-      <span style="font-size: 24px;">🏪</span>
-      <span style="font-size: 11px; font-weight: 700;">بازار</span>
-    </button>
-    <!-- دکمه وسط (مأموریت) -->
-    <button type="button" onclick="go('mission')" style="display: flex; flex-direction: column; align-items: center; gap: 4px; background: var(--taraz-primary); color: #fff; padding: 12px 20px; border-radius: 20px; border: 4px solid #fff; box-shadow: 0 6px 16px rgba(31,128,98,0.4); transform: translateY(-20px);">
-      <span style="font-size: 28px;">🎯</span>
-      <span style="font-size: 12px; font-weight: 900;">مأموریت</span>
-    </button>
-    <button type="button" onclick="go('services')" style="display: flex; flex-direction: column; align-items: center; gap: 4px; background: none; border: none; color: var(--muted);">
-      <span style="font-size: 24px;">🚛</span>
-      <span style="font-size: 11px; font-weight: 700;">خدمات</span>
-    </button>
-    <button type="button" onclick="go('profile')" style="display: flex; flex-direction: column; align-items: center; gap: 4px; background: none; border: none; color: var(--muted);">
-      <span style="font-size: 24px;">👤</span>
-      <span style="font-size: 11px; font-weight: 700;">پروفایل</span>
-    </button>
-  </div>
-
-  <!-- Bottom Sheet (لیست شهرها) -->
-  <div class="sheet-backdrop" id="sheetBackdrop" onclick="closeBottomSheet()"></div>
-  <div class="bottom-sheet" id="locationBottomSheet">
-    <div class="sheet-handle-bar"></div>
-    <div class="sheet-header">
-      <h3>انتخاب شهر (مبدأ)</h3>
-      <button class="sheet-close-btn" id="closeSheetBtn">✕</button>
-    </div>
-    <div class="sheet-content" id="city-list-container">
-      <!-- لیست شهرها با جاوااسکریپت پر می‌شه -->
-    </div>
-  </div>
-
-</section>
-
-
-  <!-- ============ BROWSE ============ -->
-  <section class="screen" id="screen-browse" style="padding-bottom:110px">
-    <div class="browse-header">
-      <div class="browse-search-big">
-        <span class="ic">🔍</span>
-        <input id="browse-search" placeholder="جستجو..." oninput="filterBrowse(this.value)">
-        <span class="clear-x" onclick="clearBrowseSearch()" id="browse-clear" hidden>×</span>
-      </div>
-      <button type="button" onclick="toggleFilterPanel()" style="width:100%;padding:12px;margin-top:10px;background:#eef8f3;color:var(--forest);border:2px solid var(--line);border-radius:14px;font-size:14px;font-weight:700;cursor:pointer">⚙️ فیلتر پیشرفته</button>
-      <div class="chips-row" id="browse-chips"></div>
-      <div class="filter-panel" id="browse-filter-panel" style="display:none">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-          <div><label style="font-size:12px;color:var(--muted);font-weight:700">قیمت از (تومان)</label><input id="filter-price-min" type="tel" inputmode="numeric" placeholder="۰" style="width:100%;padding:12px;border:2px solid var(--line);border-radius:12px;font-size:14px;direction:ltr;text-align:left;margin-top:4px"></div>
-          <div><label style="font-size:12px;color:var(--muted);font-weight:700">قیمت تا (تومان)</label><input id="filter-price-max" type="tel" inputmode="numeric" placeholder="∞" style="width:100%;padding:12px;border:2px solid var(--line);border-radius:12px;font-size:14px;direction:ltr;text-align:left;margin-top:4px"></div>
-        </div>
-        <div style="margin-bottom:10px"><label style="font-size:12px;color:var(--muted);font-weight:700">منطقه</label><input id="filter-region" type="text" placeholder="مثلاً: اهواز" style="width:100%;padding:12px;border:2px solid var(--line);border-radius:12px;font-size:14px;margin-top:4px"></div>
-        <div style="display:flex;gap:10px">
-          <button type="button" class="btn-green" onclick="applyFilters()" style="flex:1;min-height:50px;font-size:15px">اعمال فیلتر</button>
-          <button type="button" class="btn-outline" onclick="clearFilters()" style="flex:1;min-height:50px;font-size:15px">پاک کردن</button>
-        </div>
-      </div>
-    </div>
-    <div class="browse-grid" id="browse-grid"></div>
-  </section>
-
- <!-- ============ SERVICES ============ -->
-<section class="screen" id="screen-services" style="padding-bottom:110px">
-  <div class="sub-header">
-    <button type="button" class="back-btn" id="services-back" onclick="servicesBack()" style="display:none">→</button>
-    <div class="title" id="services-title">🛠️ خدمات و مشاغل</div>
-  </div>
-  <div id="services-content"></div>
-</section>
-
-
-  <!-- ============ CAPACITY DETAIL ============ -->
-  <section class="screen" id="screen-capacity">
-    <div class="sub-header">
-      <button type="button" class="back-btn" onclick="backFromCapacity()">→</button>
-      <div class="title" id="capacity-title">جزئیات</div>
-    </div>
-    <div id="capacity-detail-body" style="padding:16px 0 40px"></div>
-  </section>
-
-<!-- ============ MISSION (Snap & Digikala Style) ============ -->
-<section class="screen" id="screen-mission" style="padding-bottom:110px; background: #f7f5ef;">
-  
-  <div style="padding: 20px 16px;">
-    <!-- کارت شغل کاربر (به سبک دیجی‌کالا) -->
-    <div class="card" style="background: #fff; border-radius: 20px; padding: 20px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
-      <div style="width: 60px; height: 60px; border-radius: 16px; background: #eef8f3; display: flex; align-items: center; justify-content: center; font-size: 32px;">
-        👨‍🌾
-      </div>
-      <div>
-        <div style="font-size: 13px; color: var(--muted); font-weight: 700;">شغل شما در تاراز</div>
-        <div id="mission-user-role" style="font-size: 20px; font-weight: 900; color: var(--forest); margin-top: 4px;">در حال بارگذاری...</div>
-      </div>
+        <!-- Other screens (Bookings, Conversations, etc.) would follow the same pattern -->
     </div>
 
-    <!-- کادر درخواست (به سبک اسنپ) -->
-    <h3 style="font-size: 18px; font-weight: 900; color: var(--forest); margin-bottom: 12px;">چه کاری برایتان انجام دهیم؟</h3>
-    <div style="position: relative; margin-bottom: 24px;">
-      <textarea id="mission-input" placeholder="مثلاً: ۵۰ رأس گوسفند از اصفهان به اهواز..." style="width: 100%; min-height: 120px; padding: 20px; border-radius: 20px; border: 2px solid var(--line); font-size: 16px; line-height: 1.8; box-shadow: 0 4px 12px rgba(0,0,0,0.03); outline: none; resize: none;" onfocus="showSuggestions()" onblur="setTimeout(hideSuggestions, 200)"></textarea>
-      
-      <!-- منوی پیشنهادات (به سبک دیوار) -->
-      <div id="mission-suggestions" style="display:none; position:absolute; top:100%; left:0; right:0; background:#fff; border:1px solid var(--line); border-radius:16px; box-shadow:0 12px 24px rgba(0,0,0,0.1); z-index:10; overflow:hidden; margin-top: 8px;">
-        <div onclick="fillMissionInput('خرید گوسفند زنده')" style="padding:16px 20px; border-bottom:1px solid #f0f0eb; cursor:pointer; font-size:15px; color:var(--forest); display:flex; align-items:center; gap:12px;"><span>🐑</span> خرید گوسفند زنده</div>
-        <div onclick="fillMissionInput('نیاز به دامپزشک')" style="padding:16px 20px; border-bottom:1px solid #f0f0eb; cursor:pointer; font-size:15px; color:var(--forest); display:flex; align-items:center; gap:12px;"><span>🩺</span> نیاز به دامپزشک</div>
-        <div onclick="fillMissionInput('حمل بار به شهر دیگر')" style="padding:16px 20px; border-bottom:1px solid #f0f0eb; cursor:pointer; font-size:15px; color:var(--forest); display:flex; align-items:center; gap:12px;"><span>🚛</span> حمل بار به شهر دیگر</div>
-        <div onclick="fillMissionInput('خرید نهاده و کنسانتره')" style="padding:16px 20px; cursor:pointer; font-size:15px; color:var(--forest); display:flex; align-items:center; gap:12px;"><span>🌰</span> خرید نهاده و کنسانتره</div>
-      </div>
-    </div>
+    <!-- Main Bottom Navigation -->
+    <nav class="nav" id="nav">
+        <a href="#" class="nav-item active" onclick="go('home')">
+            <i class="fas fa-home"></i>
+            <span>خانه</span>
+        </a>
+        <a href="#" class="nav-item" onclick="go('map')">
+            <i class="fas fa-map-marked-alt"></i>
+            <span>مأموریت</span>
+        </a>
+        <a href="#" class="nav-item center-btn" onclick="go('missions')">
+            <div class="pulse-circle">
+                <i class="fas fa-plus"></i>
+            </div>
+        </a>
+        <a href="#" class="nav-item" onclick="go('conversations')">
+            <i class="fas fa-comment-dots"></i>
+            <span>گفتگو</span>
+        </a>
+        <a href="#" class="nav-item" onclick="go('profile')">
+            <i class="fas fa-user"></i>
+            <span>من</span>
+        </a>
+    </nav>
 
-    <!-- منطقه -->
-    <h3 style="font-size: 18px; font-weight: 900; color: var(--forest); margin-bottom: 12px;">در کدام منطقه؟</h3>
-    <div style="position: relative; margin-bottom: 24px;">
-      <input id="mission-region" placeholder="مثلاً: اصفهان، یا شهرستان..." style="width: 100%; padding: 20px; border-radius: 20px; border: 2px solid var(--line); font-size: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); outline: none;">
-    </div>
-
-    <!-- آپشن‌ها (به سبک فیلترهای دیوار) -->
-    <h3 style="font-size: 16px; font-weight: 900; color: var(--forest); margin-bottom: 12px;">آپشن‌های بیشتر:</h3>
-    <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 32px;">
-      <button type="button" class="chip-big" onclick="toggleMissionOption(this, 'اشتراکی')" style="border:2px solid var(--line); background: #fff; color: var(--forest); padding: 12px 20px; border-radius: 100px; font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 8px;">🤝 اشتراکی</button>
-      <button type="button" class="chip-big" onclick="toggleMissionOption(this, 'فوری')" style="border:2px solid var(--line); background: #fff; color: var(--forest); padding: 12px 20px; border-radius: 100px; font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 8px;">⚡ فوری</button>
-      <button type="button" class="chip-big" onclick="toggleMissionOption(this, 'فقط نزدیک من')" style="border:2px solid var(--line); background: #fff; color: var(--forest); padding: 12px 20px; border-radius: 100px; font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 8px;">📍 فقط نزدیک من</button>
-      <button type="button" class="chip-big" onclick="toggleMissionOption(this, 'بالای ۱۰هزار')" style="border:2px solid var(--line); background: #fff; color: var(--forest); padding: 12px 20px; border-radius: 100px; font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 8px;">📦 بالای ۱۰هزار</button>
-    </div>
-
-    <button type="button" class="btn-gold" onclick="startMission()" style="width: 100%; min-height: 64px; font-size: 18px; font-weight: 900; border-radius: 20px; box-shadow: 0 8px 20px rgba(240,180,41,0.3);">🚀 شروع جستجو</button>
-  </div>
-  
-  <div id="mission-result"></div>
-</section>
-
-
-  <!-- ============ BUY ============ -->
-  <section class="screen" id="screen-buy">
-    <div class="sub-header">
-      <button type="button" class="back-btn" onclick="go('home')">→</button>
-      <div class="title">🛒 ثبت تقاضا</div>
-    </div>
-    <div style="padding:20px 16px 40px">
-      <div class="field"><label>چه می‌خواهی؟</label><input id="buy-demand-title" placeholder="مثلاً: دگزامتازون / گوسفند شال"></div>
-      <div class="field">
-        <label>دسته</label>
-        <select id="buy-demand-category">
-          <option value="livestock">🐑 دام زنده</option><option value="poultry">🐔 طیور و جوجه</option><option value="crops">🌾 محصولات کشاورزی</option><option value="feed">🌰 نهاده</option><option value="forage">🌿 علوفه</option><option value="agri_inputs">🌱 بذر، کود</option><option value="vet_drugs">💉 دارو و واکسن</option><option value="vet_equipment">🩺 تجهیزات دامپزشکی</option><option value="farm_equipment">🔧 تجهیزات دامداری</option><option value="machinery">🚜 ماشین‌آلات</option>
-        </select>
-      </div>
-      <div class="field"><label>چقدر؟</label><input id="buy-demand-qty" placeholder="مثلاً: ۲۰ ویال / ۵۰ رأس"></div>
-      <div class="field"><label>قیمت پیشنهادی (تومان)</label><input id="buy-demand-price" type="tel" inputmode="numeric" placeholder="مثلاً: ۹۰" style="direction:ltr;text-align:left"></div>
-      <div class="field"><label>کجا؟</label><input id="buy-demand-region" placeholder="مثلاً: اهواز"></div>
-      <button type="button" class="btn-green" onclick="submitBuyDemand()" style="min-height:64px;font-size:18px">📥 ثبت تقاضا</button>
-    </div>
-  </section>
-
-  <!-- ============ SELL ============ -->
-  <section class="screen" id="screen-sell">
-    <div class="sub-header">
-      <button type="button" class="back-btn" onclick="go('home')">→</button>
-      <div class="title" id="sell-title-header">💰 ثبت فروش</div>
-    </div>
-    <div style="padding:20px 16px 40px">
-      <div id="sell-urgent-block" style="display:none">
-        <div class="card" style="background:#fff5f5;border-color:#f5c8cc;text-align:center;margin-bottom:16px">
-          <b style="color:var(--fire);font-size:17px">🔥 فروش فوری</b><small>با تخفیف ویژه، سریع‌تر بفروش</small>
-        </div>
-      </div>
-      <div class="field"><label>چی می‌فروشی؟</label><input id="sell-item-title" placeholder="مثلاً: گوسفند شال / گندم"></div>
-      <div class="field">
-        <label>دسته</label>
-        <select id="sell-category">
-          <option value="livestock">🐑 دام زنده</option><option value="poultry">🐔 طیور و جوجه</option><option value="crops">🌾 محصولات کشاورزی</option><option value="feed">🌰 نهاده</option><option value="forage">🌿 علوفه</option><option value="agri_inputs">🌱 بذر، کود</option><option value="vet_drugs">💉 دارو و واکسن</option><option value="vet_equipment">🩺 تجهیزات دامپزشکی</option><option value="farm_equipment">🔧 تجهیزات دامداری</option><option value="machinery">🚜 ماشین‌آلات</option>
-        </select>
-      </div>
-      <div id="livestock-fields" style="display:none; background: #f0f8f3; padding: 16px; border-radius: 16px; margin-top: 12px; border: 1px dashed #cfe5da;">
-  <h3 style="font-size: 15px; color: var(--forest); margin: 0 0 12px 0;">🐑 مشخصات تخصصی دام</h3>
-  <div class="field" style="margin-top: 0;">
-    <label>نژاد</label>
-    <select id="sell-breed">
-      <option value="shal">شال</option>
-      <option value="afshari">افشاری</option>
-      <option value="kordi">کردی</option>
-      <option value="lori">لری</option>
-      <option value="bakhtiari">بختیاری</option>
-      <option value="other">سایر</option>
-    </select>
-  </div>
-  <div class="field">
-    <label>وزن تقریبی (کیلوگرم)</label>
-    <input id="sell-weight" type="tel" inputmode="numeric" placeholder="مثلاً: ۴۵" style="direction:ltr;text-align:left">
-  </div>
-  <div class="field">
-    <label>سن (ماه)</label>
-    <input id="sell-age" type="tel" inputmode="numeric" placeholder="مثلاً: ۱۲" style="direction:ltr;text-align:left">
-  </div>
-  <div class="field">
-    <label>واکسیناسیون</label>
-    <select id="sell-vaccine">
-      <option value="yes">کامل (واکسینه شده)</option>
-      <option value="no">بدون واکسن</option>
-      <option value="partial">ناقص</option>
-    </select>
-  </div>
-</div>
-
-      <div class="field"><label>چقدر؟</label><input id="sell-qty" placeholder="مثلاً: ۵۰ رأس"></div>
-      <div class="field"><label>قیمت واحد (تومان)</label><input id="sell-price" type="tel" inputmode="numeric" placeholder="مثلاً: ۳۸۵۰۰۰" style="direction:ltr;text-align:left"></div>
-      <div class="field"><label>کجا؟</label><input id="sell-region" placeholder="مثلاً: اهواز"></div>
-      <div class="field">
-        <label>توضیحات (اختیاری)</label>
-        <textarea id="sell-desc" placeholder="..."></textarea>
-        <div class="sell-photos-wrap">
-          <label style="display:block;font-size:14px;font-weight:700;color:var(--muted);margin-bottom:6px">📷 عکس‌ها (حداکثر ۳)</label>
-          <button type="button" class="sell-photo-add" onclick="pickListingPhotos()"><span>➕ افزودن عکس</span></button>
-          <div class="sell-photos-grid" id="sell-photos-preview"></div>
-          <div style="margin-top:16px">
-            <label style="display:block;font-size:14px;font-weight:700;color:var(--muted);margin-bottom:6px">📍 موقعیت روی نقشه (اختیاری)</label>
-            <button type="button" class="sell-photo-add" onclick="toggleMapPicker()" id="map-toggle-btn"><span>🗺️ انتخاب موقعیت روی نقشه</span></button>
-            <div id="map-picker" style="display:none"></div>
-            <div class="map-help" id="map-help" style="display:none">روی نقشه کلیک کن تا موقعیت انتخاب بشه</div>
-          </div>
-        </div>
-      </div>
-      <div id="sell-urgent-fields" style="display:none;margin-top:16px;padding:16px;background:#fff5f5;border:2px dashed #f5c8cc;border-radius:16px">
-        <div class="field" style="margin-top:0">
-          <label>دلیل فروش فوری</label>
-          <select id="sell-urgent-reason"><option value="expiry">⏳ نزدیک به انقضا</option><option value="auction">🔥 حراج</option><option value="special">🎁 تخفیف ویژه</option><option value="overstock">📦 موجودی مازاد</option></select>
-        </div>
-        <div class="field"><label>قیمت قبلی (اختیاری)</label><input id="sell-old-price" type="tel" inputmode="numeric" placeholder="مثلاً: ۴۰۰۰۰۰" style="direction:ltr;text-align:left"></div>
-      </div>
-      <button type="button" class="btn-primary" id="sell-submit" onclick="postListing()" style="min-height:64px;font-size:18px">📤 منتشر کن</button>
-    </div>
-  </section>
-
-  <!-- ============ DETAIL ============ -->
-  <section class="screen" id="screen-detail" style="padding-bottom:110px">
-    <div class="sub-header">
-      <button type="button" class="back-btn" onclick="backFromDetail()">→</button>
-      <div class="title">📋 جزئیات آگهی</div>
-    </div>
-    <div id="detail-body"></div>
-  </section>
-
-  <!-- ============ PROFILE ============ -->
-  <section class="screen" id="screen-profile">
-    <div class="profile-top">
-      <div class="profile-avatar-wrap">
-        <div class="profile-avatar" id="profile-avatar"></div>
-        <div class="profile-edit-badge" onclick="pickAvatar()">✎</div>
-      </div>
-      <div class="name" id="profile-name">—</div>
-      <div class="phone" id="profile-phone">—</div>
-      <div class="rating-line" id="profile-rating-line">—</div>
-    </div>
-    <div style="padding:0 16px 40px">
-      <div class="profile-menu-item" onclick="openProfileSection('listings')">
-        <div class="ic">📦</div><div class="body"><b>آگهی‌های من</b><small id="cnt-listings">—</small></div><div class="arrow">‹</div>
-      </div>
-      <div class="profile-menu-item" onclick="go('missions-list')">
-  <div class="ic">🎯</div>
-  <div class="body"><b>مأموریت‌های من</b><small>مدیریت زنجیره‌های خرید و فروش</small></div>
-  <div class="arrow">‹</div>
-</div>
-
-      <div class="profile-menu-item" onclick="openProfileSection('favorites')">
-        <div class="ic">❤️</div><div class="body"><b>علاقه‌مندی‌ها</b><small id="cnt-favorites">—</small></div><div class="arrow">‹</div>
-      </div>
-      <div class="profile-menu-item" onclick="openProfileSection('bookings')">
-        <div class="ic">📅</div><div class="body"><b>رزروهای من</b><small id="cnt-bookings">—</small></div><div class="arrow">‹</div>
-      </div>
-      <div class="profile-menu-item" onclick="openProfileSection('requests')">
-        <div class="ic">📨</div><div class="body"><b>درخواست‌های خرید</b><small id="cnt-requests">—</small></div><div class="arrow">‹</div>
-      </div>
-      <div class="profile-menu-item" onclick="openProfileSection('reviews')">
-        <div class="ic">⭐</div><div class="body"><b>امتیازهای من</b><small id="cnt-reviews">—</small></div><div class="arrow">‹</div>
-      </div>
-      <div class="stats-box" id="profile-stats">
-        <div class="stats-title">📊 آمار شما</div>
-        <div class="stats-grid">
-          <div class="stat-item"><div class="stat-val" id="stat-listings">۰</div><div class="stat-lbl">📦 آگهی</div></div>
-          <div class="stat-item"><div class="stat-val" id="stat-favorites">۰</div><div class="stat-lbl">❤️ علاقه‌مندی</div></div>
-          <div class="stat-item"><div class="stat-val" id="stat-convs">۰</div><div class="stat-lbl">💬 گفتگو</div></div>
-          <div class="stat-item"><div class="stat-val" id="stat-rating">۰</div><div class="stat-lbl">⭐ امتیاز</div></div>
-          <div class="stat-item"><div class="stat-val" id="stat-missions">۰</div><div class="stat-lbl">🎯 مأموریت</div></div>
-          <div class="stat-item"><div class="stat-val" id="stat-bookings">۰</div><div class="stat-lbl">📅 رزرو</div></div>
-        </div>
-      </div>
-     <div class="profile-menu-item" onclick="go('ready')" style="background: linear-gradient(135deg, #eef8f3, #fff); border-color: #cfe5da;">
-  <div class="ic" style="background: #2aa876; color: #fff;">🟢</div>
-  <div class="body">
-    <b style="color: var(--forest);">اعلام آمادگی</b>
-    <small style="color: var(--accent);">من آماده پذیرش مأموریت هستم</small>
-  </div>
-  <div class="arrow" style="color: var(--accent);">‹</div>
-</div>
-      <div class="profile-menu-item" onclick="go('settings')">
-        <div class="ic">⚙️</div><div class="body"><b>تنظیمات</b><small>حالت تاریک، پشتیبان‌گیری</small></div><div class="arrow">‹</div>
-      </div>
-      <div class="profile-menu-item" onclick="enablePushNotifications()">
-        <div class="ic">🔔</div><div class="body"><b>فعال‌سازی اعلان‌ها</b><small>اعلان پیام‌های جدید</small></div><div class="arrow">‹</div>
-      </div>
-      <button type="button" class="btn-outline" onclick="logout()" style="margin-top:20px;min-height:60px;font-size:17px">🚪 خروج</button>
-      <button type="button" class="btn-red" onclick="confirmDeleteAccount()" style="margin-top:12px;min-height:60px;font-size:17px;background:linear-gradient(135deg, #e63946, #b91c28); color: #fff;">🗑️ حذف حساب کاربری</button>
-    </div>
-  </section>
-
-  <!-- ============ PROFILE SUB ============ -->
-  <section class="screen" id="screen-profile-sub">
-    <div class="sub-header">
-      <button type="button" class="back-btn" onclick="go('profile')">→</button>
-      <div class="title" id="profile-sub-title">—</div>
-    </div>
-    <div id="profile-sub-body" style="padding:16px 0 40px"></div>
-  </section>
-<!-- ============ MY MISSIONS ============ -->
-<section class="screen" id="screen-missions-list">
-  <div class="sub-header">
-    <button type="button" class="back-btn" onclick="go('profile')">→</button>
-    <div class="title">🎯 مأموریت‌های من</div>
-  </div>
-  <div style="padding:16px 0 40px">
-    <div style="padding: 0 16px 16px">
-      <button type="button" class="btn-green" onclick="go('mission')" style="min-height: 56px; font-size: 16px;">➕ ایجاد مأموریت جدید</button>
-    </div>
-    <div id="my-missions-container"></div>
-  </div>
-</section>
-  <!-- ============ MISSION CHAIN VIEW ============ -->
-<section class="screen" id="screen-mission-chain">
-  <div class="sub-header">
-    <button type="button" class="back-btn" onclick="go('missions-list')">→</button>
-    <div class="title" id="chain-title">🔗 زنجیره مأموریت</div>
-  </div>
-  <div style="padding: 20px 16px 40px;" id="chain-content">
-    <!-- محتوا با جاوااسکریپت پر می‌شه -->
-  </div>
-</section>
-
-<!-- ============ READY STATUS (اعلام آمادگی) ============ -->
-<section class="screen" id="screen-ready">
-  <div class="sub-header">
-    <button type="button" class="back-btn" onclick="go('profile')">→</button>
-    <div class="title">🟢 اعلام آمادگی</div>
-  </div>
-  <div style="padding:16px 0 40px">
-    
-    <div class="card" style="margin:16px; text-align:center; background: #eef8f3; border-color: #cfe5da;">
-      <h3 style="font-size:18px; color:var(--forest); margin-bottom:8px;">وضعیت شما</h3>
-      <div id="ready-status-text" style="font-size:15px; font-weight:800; margin-bottom:16px;">در حال بارگذاری...</div>
-      <button type="button" id="toggle-ready-btn" class="btn-green" onclick="toggleReadyStatus()" style="min-height:60px; font-size:18px; border-radius:100px;">تغییر وضعیت</button>
-    </div>
-
-    <div class="field" style="margin:16px;">
-      <label>نوع خدمت شما</label>
-      <select id="ready-service-type">
-        <option value="transport">🚛 راننده / حمل و نقل</option>
-        <option value="vet">🩺 دامپزشک</option>
-        <option value="butcher">🔪 قصاب</option>
-        <option value="shepherd">🐑 چوپان</option>
-        <option value="labor">👷 کارگر کشاورزی</option>
-      </select>
-    </div>
-
-    <div class="field" style="margin:16px;">
-      <label>محدوده فعالیت (شهر یا استان)</label>
-      <input id="ready-region" placeholder="مثلاً: خوزستان یا اهواز">
-    </div>
-
-    <div class="field" style="margin:16px;">
-      <label>توضیحات یا درخواست شرطی (اختیاری)</label>
-      <textarea id="ready-notes" placeholder="مثلاً: اگر باری از اصفهان به اهواز بود و از ایذه می‌گذشت، من را خبر کن. ظرفیت یک گاو اضافه دارم." style="min-height:100px;"></textarea>
-    </div>
-<div class="card" style="margin:16px; background:#fff8e6; border-color:#f0b429;">
-  <h3 style="font-size:16px; color:#8a6400; margin-bottom:8px;">⏰ درخواست شرطی (Watch)</h3>
-  <p style="font-size:12px; color:#8a6400; margin-bottom:12px;">اینجا مشخص کن چه نوع بار یا مسیری رو دنبال می‌کنی تا در صورت ثبت، بهت خبر بدیم.</p>
-  
-  <div class="field" style="margin-top:0;">
-    <label>از کجا؟</label>
-    <input id="watch-from" placeholder="مثلاً: اصفهان">
-  </div>
-  <div class="field">
-    <label>به کجا؟</label>
-    <input id="watch-to" placeholder="مثلاً: اهواز">
-  </div>
-  <div class="field">
-    <label>نوع بار/شرایط</label>
-    <input id="watch-notes" placeholder="مثلاً: فقط دام زنده، وزن بالای ۵۰ کیلو">
-  </div>
-  <button type="button" class="btn-gold" onclick="addWatchCondition()" style="min-height:50px; font-size:14px; margin-top:12px;">🔔 ثبت این درخواست</button>
-</div>
-
-    <button type="button" class="btn-primary" onclick="saveReadyProfile()" style="margin:16px; min-height:64px; font-size:18px;">💾 ذخیره اطلاعات</button>
-  </div>
-</section>
-
-  <!-- ============ SETTINGS ============ -->
-  <section class="screen" id="screen-settings">
-    <div class="sub-header">
-      <button type="button" class="back-btn" onclick="go('profile')">→</button>
-      <div class="title">⚙️ تنظیمات</div>
-    </div>
-    <div style="padding:0 0 40px">
-      <div class="settings-item" onclick="changePasswordDialog()"><div class="ic">🔒</div><div class="body"><b>تغییر پسورد</b><small>پسورد اکانتت رو عوض کن</small></div><div class="arrow">‹</div></div>
-      <div class="settings-item" onclick="toggleTheme()"><div class="ic" id="theme-ic">🌙</div><div class="body"><b>حالت تاریک</b><small id="theme-lbl">خاموش</small></div><div class="arrow">‹</div></div>
-      <div class="settings-item" onclick="setSecurityDialog()"><div class="ic">🛡️</div><div class="body"><b>تنظیم سوال امنیتی</b><small>برای بازیابی پسورد</small></div><div class="arrow">‹</div></div>
-      <div class="settings-item" onclick="exportBackup()"><div class="ic">📤</div><div class="body"><b>خروجی پشتیبان</b><small>دانلود فایل JSON</small></div><div class="arrow">‹</div></div>
-      <div class="settings-item" onclick="importBackup()"><div class="ic">📥</div><div class="body"><b>بازیابی از فایل</b><small>بارگذاری JSON</small></div><div class="arrow">‹</div></div>
-      <div class="settings-item" onclick="clearAllData()"><div class="ic">🗑️</div><div class="body"><b style="color:var(--fire)">پاک کردن همه داده‌ها</b><small>حذف کامل اطلاعات این گوشی</small></div><div class="arrow">‹</div></div>
-      <p style="text-align:center;font-size:13px;color:var(--muted);margin-top:28px">تاراز نسخه ۳.۰</p>
-    </div>
-  </section>
-
-  <!-- ============ NOTIFS ============ -->
-  <section class="screen" id="screen-notifs">
-    <div class="sub-header"><button type="button" class="back-btn" onclick="go('home')">→</button><div class="title">🔔 اعلان‌ها</div></div>
-    <div id="notif-list" style="padding:8px 0 40px"></div>
-  </section>
-
-  <!-- ============ CHAT LIST ============ -->
-  <section class="screen" id="screen-chatlist">
-    <div class="sub-header"><button type="button" class="back-btn" onclick="go('home')">→</button><div class="title">💬 گفتگوها</div></div>
-    <div id="chatlist-body" style="padding:8px 0 40px"></div>
-  </section>
-
-  <!-- ============ CHAT ============ -->
-  <section class="screen" id="screen-chat">
-    <header class="chat-header">
-      <button type="button" onclick="go('chatlist')" class="chat-back">→</button>
-      <div class="chat-head-avatar" id="chat-head-avatar"></div>
-      <div class="chat-head-info">
-        <div class="chat-head-name" id="chat-head-name">—</div>
-        <div class="chat-head-sub" id="chat-head-sub">—</div>
-      </div>
-    </header>
-    <div class="chat-body" id="chat-body"></div>
-    <div id="chat-quick-replies" style="display:flex; gap:8px; padding: 8px 16px; overflow-x:auto; background:#fff; border-top: 1px solid var(--line);">
-  <button type="button" onclick="quickReply('سلام، موجود هست؟')" style="flex-shrink:0; padding:8px 16px; border-radius:100px; border:1px solid var(--accent); background:#eef8f3; color:var(--forest); font-size:13px; font-weight:700;">سلام، موجود هست؟</button>
-  <button type="button" onclick="quickReply('قیمت چنده؟')" style="flex-shrink:0; padding:8px 16px; border-radius:100px; border:1px solid var(--accent); background:#eef8f3; color:var(--forest); font-size:13px; font-weight:700;">قیمت چنده؟</button>
-  <button type="button" onclick="quickReply('امکان ارسال به شهر من هست؟')" style="flex-shrink:0; padding:8px 16px; border-radius:100px; border:1px solid var(--accent); background:#eef8f3; color:var(--forest); font-size:13px; font-weight:700;">ارسال دارید؟</button>
-  <button type="button" onclick="quickReply('آدرس دقیق رو می‌فرستید؟')" style="flex-shrink:0; padding:8px 16px; border-radius:100px; border:1px solid var(--accent); background:#eef8f3; color:var(--forest); font-size:13px; font-weight:700;">آدرس؟</button>
-</div>
-
-    <div class="chat-input-bar">
-      <input id="chat-input" placeholder="پیام..." onkeypress="if(event.key==='Enter')sendMessage()">
-      <button type="button" onclick="sendMessage()" class="chat-send">↑</button>
-    </div>
-  </section>
-<!-- ============ ADMIN PANEL (مخفی) ============ -->
-<section class="screen" id="screen-admin">
-  <div class="sub-header">
-    <button type="button" class="back-btn" onclick="go('home')">→</button>
-    <div class="title">👑 داشبورد مدیریت</div>
-  </div>
-  <div style="padding:16px">
-    <div class="stats-box" style="margin:0 0 16px 0">
-      <div class="stats-title">📊 آمار کلی</div>
-      <div class="stats-grid">
-        <div class="stat-item"><div class="stat-val" id="admin-stat-users">۰</div><div class="stat-lbl">👥 کاربران</div></div>
-        <div class="stat-item"><div class="stat-val" id="admin-stat-listings">۰</div><div class="stat-lbl">📦 آگهی‌ها</div></div>
-        <div class="stat-item"><div class="stat-val" id="admin-stat-convs">۰</div><div class="stat-lbl">💬 گفتگوها</div></div>
-      </div>
-    </div>
-    
-    <h2 style="font-size:18px;margin-bottom:12px">📦 آخرین آگهی‌ها</h2>
-    <div id="admin-listings-list"></div>
-    
-    <h2 style="font-size:18px;margin-top:24px;margin-bottom:12px">👥 آخرین کاربران</h2>
-    <div id="admin-users-list"></div>
-    <h2 style="font-size:18px;margin-top:24px;margin-bottom:12px">🤖 دستیار هوشمند</h2>
-<div class="card" style="margin-top:0">
-  <div id="admin-ai-response" style="font-size:14px;line-height:1.9;color:var(--muted);margin-bottom:12px;min-height:40px">هر سوالی داری بپرس...</div>
-  <div style="display:flex;gap:8px">
-    <input id="admin-ai-input" placeholder="مثلاً: چند آگهی داریم؟" style="flex:1;padding:12px;border:2px solid var(--line);border-radius:12px;font-size:14px">
-    <button type="button" class="btn-blue" onclick="askAdminAI()" style="width:auto;padding:12px 20px;margin:0">بپرس</button>
-  </div>
-</div>
-
-  </div>
-</section>
-
-  <!-- ============ NAV ============ -->
-<nav class="nav" id="nav">
-  <button type="button" data-nav="home" onclick="go('home')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
-    خانه
-  </button>
-  <button type="button" data-nav="browse" onclick="go('browse')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-    بازار
-  </button>
-  
- <!-- 👇 دکمه وسط (چه می‌خواهم) - طراحی جدید 👇 -->
-<button type="button" data-nav="mission" class="nav-center" onclick="go('mission')" style="background: linear-gradient(135deg, #2563eb, #1e40af); border: 4px solid #fff; box-shadow: 0 8px 24px rgba(37,99,235,0.5); transform: translateY(-15px); transition: 0.2s;">
-  <span style="font-size: 36px; line-height: 1; margin-bottom: 4px;">🎯</span>
-  <span style="font-size: 14px; font-weight: 900; color: #fff;">چه می‌خواهم؟</span>
-</button>
-<!-- 👆 تا اینجا 👆 -->
-
-
-  <button type="button" data-nav="services" onclick="go('services')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-    خدمات
-  </button>
-  <button type="button" data-nav="chatlist" onclick="go('chatlist')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-    چت
-    <span class="nav-badge" id="nav-chat-badge"></span>
-  </button>
-</nav>
-
-  <!-- ============ مودال‌ها ============ -->
-  <div class="modal-overlay" id="rating-modal">
-    <div class="modal">
-      <h3 id="rating-title">تجربه‌تان چطور بود؟</h3>
-      <div class="sub">امتیاز شما بعد از معامله ثبت می‌شود.</div>
-      <div class="stars-row" id="rating-stars">
-        <span class="star-btn" data-v="1">★</span><span class="star-btn" data-v="2">★</span><span class="star-btn" data-v="3">★</span><span class="star-btn" data-v="4">★</span><span class="star-btn" data-v="5">★</span>
-      </div>
-      <div class="star-label" id="rating-label">یک امتیاز انتخاب کنید</div>
-      <div class="field"><textarea id="rating-comment" placeholder="نظر (اختیاری)..." style="min-height:80px"></textarea></div>
-      <button type="button" class="btn-gold" onclick="submitRating()" style="min-height:60px;font-size:17px">ثبت امتیاز</button>
-      <button type="button" class="btn-outline" onclick="closeRating()">بعداً</button>
-    </div>
-  </div>
-
-  <div class="modal-overlay" id="delete-account-modal">
-    <div class="modal" style="text-align: center;">
-      <h3 style="color: var(--fire);">⚠️ حذف حساب کاربری</h3>
-      <div class="sub" style="font-size: 14px; line-height: 1.8;">آیا مطمئن هستید؟ تمام اطلاعات، آگهی‌ها و پیام‌های شما برای همیشه پاک خواهد شد. این عمل غیرقابل بازگشت است.</div>
-      <div class="field" style="text-align: right;"><label>برای تایید، کلمه <b>حذف</b> را تایپ کنید:</label><input id="delete-confirm-input" placeholder="حذف" style="text-align: center;"></div>
-      <button type="button" class="btn-red" id="btn-confirm-delete" onclick="executeDeleteAccount()" style="margin-top: 12px; min-height: 56px; font-size: 16px;">تایید و حذف دائمی</button>
-      <button type="button" class="btn-outline" onclick="closeDeleteModal()" style="margin-top: 8px; min-height: 56px; font-size: 16px;">انصراف</button>
-    </div>
-  </div>
-
-  <div class="toast" id="toast"></div>
-</div>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="script.js"></script>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
