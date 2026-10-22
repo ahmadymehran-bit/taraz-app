@@ -713,12 +713,22 @@ var grid = document.getElementById('browse-grid'); if(!grid) return;
 var html = ''; for(var i=0;i<4;i++){ html += '<div class="skeleton-card-grid"><div class="skeleton-photo"></div><div class="skeleton-line medium"></div><div class="skeleton-line short"></div></div>'; }
 grid.innerHTML = html;
 }
-async function renderHome(){
-  renderHomeSkeleton();
-  
-  var result = await api.getListings();
-  var list = (result && result.listings) ? result.listings : DB.listings;
-  
+async function renderHome() {
+    try {
+        // مطمئن شوید متغیر مورد نظر (مثلاً api یا supabase) وجود دارد
+        if (typeof api === 'undefined') {
+            console.error("API is not initialized yet!");
+            return;
+        }
+        
+        // کد اصلی شما که خطا می‌داد را اینجا قرار دهید
+        const listings = await api.getListings(); 
+        // ... بقیه کدها
+    } catch (error) {
+        console.error("Error rendering home:", error);
+    }
+}
+
   // --- محاسبه نبض بازار (میانگین قیمت) ---
   try {
     var sheepListings = list.filter(l => l.title.includes('گوسفند') || l.title.includes('میش'));
@@ -2343,7 +2353,7 @@ function proceedToDestination(cityName) {
     }
 }
 
-V
+
 /* ============================================================
    API LAYER 
    ============================================================ */
