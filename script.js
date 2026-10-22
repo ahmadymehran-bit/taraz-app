@@ -2081,58 +2081,6 @@ window.selectCityFromMap = function(cityName, lat, lng) {
   toast('مبدأ انتخاب شد: ' + cityName);
 };
 
-const cityCoords = {
-  'تهران': [35.6892, 51.3890],
-  'اصفهان': [32.6546, 51.6680],
-  'مشهد': [36.2605, 59.6168],
-  'شیراز': [29.5918, 52.5837],
-  'تبریز': [38.0800, 46.2919],
-  'کرج': [35.8400, 50.9391],
-  'اهواز': [31.3183, 48.6706],
-  'قم': [34.6416, 50.8746],
-  'کرمانشاه': [34.3142, 47.0650],
-  'رشت': [37.2808, 49.5832],
-  'یزد': [31.8974, 54.3569],
-  'کرمان': [30.2839, 57.0834],
-  'بندرعباس': [27.1865, 56.2808],
-  'زاهدان': [29.4963, 60.8629],
-  'اراک': [34.0917, 49.6892],
-  'همدان': [34.7983, 48.5148],
-  'سنندج': [35.3115, 46.9920],
-  'بوشهر': [28.9234, 50.8203],
-  'قزوین': [36.2796, 50.0049],
-  'گرگان': [36.8414, 54.4436],
-  'ساری': [36.5659, 53.0586],
-  'خرم‌آباد': [33.4878, 48.3558],
-  'ایلام': [33.6374, 46.4227],
-  'زنجان': [36.6736, 48.4787],
-  'ارومیه': [37.5553, 45.0725],
-  'اردبیل': [38.2498, 48.2933],
-  'سمنان': [35.5729, 53.3971],
-  'بیرجند': [32.8663, 59.2211],
-  'یاسوج': [30.6682, 51.5880],
-  'شهرکرد': [32.3256, 50.8644]
-};
-
-// تابع نمایش دکمه تایید مبدأ
-function showConfirmOriginButton(cityName) {
-  const oldBtn = document.getElementById('confirm-origin-btn');
-  if (oldBtn) oldBtn.remove();
- 
-  const btn = document.createElement('button');
-  btn.id = 'confirm-origin-btn';
-  btn.textContent = '✅ تایید مبدأ و ادامه';
-  btn.onclick = function() { goToDestinationStep(cityName); };
- 
-  const mapScreen = document.getElementById('screen-map-home');
-  if (mapScreen) {
-    mapScreen.appendChild(btn);
-    setTimeout(() => {
-      btn.classList.add('active');
-    }, 50);
-  }
-}
-
 // تابع رفتن به مرحله بعد
 function goToDestinationStep(originCity) {
   window._missionOrigin = originCity;
