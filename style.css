@@ -375,3 +375,156 @@ body.no-nav .screen.active { padding-bottom: 0 !important; }
 .auth-tabs { display: flex; gap: 8px; margin: 16px 20px 0; background: #f0f0eb; padding: 6px; border-radius: 16px; }
 .auth-tab { flex: 1; padding: 12px; background: transparent; border: 0; border-radius: 12px; font-size: 15px; font-weight: 700; color: var(--muted); cursor: pointer; font-family: inherit; }
 .auth-tab.active { background: #fff; color: var(--forest); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+:root {
+    --taraz-dark: #123d32;
+    --taraz-primary: #1f8062;
+    --taraz-accent: #f0b429;
+    --taraz-bg: #f8f9fa;
+    --taraz-card-bg: #ffffff;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Vazirmatn', Tahoma, sans-serif;
+    direction: rtl;
+    background-color: var(--taraz-bg);
+}
+
+#screen-map-home {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* نقشه تمام صفحه */
+#main-map {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+/* کادر جستجوی شناور در بالای صفحه */
+.search-overlay {
+    position: absolute;
+    top: 24px;
+    left: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.search-box {
+    background: var(--taraz-card-bg);
+    padding: 14px 20px;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(18, 61, 50, 0.15);
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.search-box:hover {
+    border-color: var(--taraz-primary);
+}
+
+.search-box svg {
+    color: var(--taraz-primary);
+    width: 24px;
+    height: 24px;
+    margin-left: 14px;
+}
+
+.search-box input {
+    border: none;
+    outline: none;
+    font-size: 16px;
+    width: 100%;
+    background: transparent;
+    font-family: inherit;
+    color: #2d3748;
+    pointer-events: none; /* کلیک روی کادر والد اعمال شود */
+}
+
+/* Bottom Sheet (پنجره کشویی پایین صفحه) */
+.bottom-sheet {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--taraz-card-bg);
+    border-top-left-radius: 28px;
+    border-top-right-radius: 28px;
+    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.15);
+    z-index: 1002;
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.1, 0.9, 0.2, 1);
+    max-height: 75vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.bottom-sheet.active {
+    transform: translateY(0);
+}
+
+.sheet-handle-bar {
+    width: 40px;
+    height: 5px;
+    background: #e2e8f0;
+    border-radius: 3px;
+    margin: 12px auto 8px auto;
+}
+
+.sheet-header {
+    padding: 12px 24px 16px 24px;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sheet-header h3 {
+    margin: 0;
+    color: var(--taraz-dark);
+    font-size: 18px;
+}
+
+.sheet-close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #718096;
+}
+
+.sheet-content {
+    padding: 20px 24px;
+    overflow-y: auto;
+}
+
+/* لایه پس‌زمینه تیره هنگام باز شدن Bottom Sheet */
+.sheet-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1001;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.sheet-backdrop.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
