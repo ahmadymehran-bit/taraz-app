@@ -328,77 +328,44 @@ if(!list.length){ wrap.innerHTML='<div class="empty"><span class="emoji">🔔</s
 wrap.innerHTML=list.map(function(n){ return '<div class="notif-card '+(n.read?'':'unread')+'"><div class="notif-ic">'+(n.icon||'🔔')+'</div><div class="notif-main"><b>'+n.title+'</b><small>'+n.body+'</small><span class="time">'+timeAgo(n.createdAt)+'</span></div></div>'; }).join('');
 var all=DB.notifications; all.forEach(function(n){n.read=true}); DB.notifications=all; updateBellBadge();
 }
-// --- GLOBAL STATE & CONSTANTS ---
-let currentUser = null;
-let currentMap = null;
-let activeScreen = 'home';
 
-// تنظیمات اولیه Supabase (مطمئن شوید با اطلاعات خودتان ست شده باشد)
-const SUPABASE_URL = 'https://your-project-url.supabase.co';
-const SUPABASE_KEY = 'your-anon-key';
-// const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY); 
-
-// --- CORE NAVIGATION ENGINE ---
-/**
- * مدیریت جابجایی بین صفحات (Screens)
- * @param {string} screenId - آی‌دی سکشن مورد نظر در index.html
- */
-// --- CORE NAVIGATION ENGINE ---
-/**
- * مدیریت جابجایی بین صفحات (Screens)
- * @param {string} screenId - آی‌دی سکشن مورد نظر در index.html
- */
-function go(screenId) {
-    console.log(`Navigating to: ${screenId}`);
-    
-    // ۱. مخفی کردن تمام سکشن‌ها (با فرض اینکه کلاس سکشن‌ها page-section است)
-    const allScreens = document.querySelectorAll('section, .page-section');
-    allScreens.forEach(screen => {
-        screen.style.display = 'none';
-    });
-
-    // ۲. نمایش سکشن مقصد
-    const target = document.getElementById(screenId);
-    if (target) {
-        target.style.display = 'block';
-    } else {
-        console.error(`Screen not found: ${screenId}`);
-        return;
-    }
-
-    // ۳. مدیریت حالت نقشه (Map Mode)
-    // بررسی می‌کنیم اگر مقصد نقشه بود، کلاس map-mode به body اضافه شود
-    if (screenId === 'map-home' || screenId === 'browse') {
-        document.body.classList.add('map-mode');
-        // اگر تابع نقشه را قبلاً تعریف کرده‌ایم، آن را صدا می‌زنیم
-        if (typeof initMapHome === 'function') {
-            initMapHome();
-        }
-    } else {
-        document.body.classList.remove('map-mode');
-    }
-
-    // ۴. به‌روزرسانی وضعیت فعال در منوی پایین (Bottom Nav)
-    updateBottomNav(screenId);
-    
-    activeScreen = screenId;
+/* NAVIGATION */
+function go(s){
+  if(!DB.user&&s!=='auth')s='auth';
+  if(!s) s = 'map-home'; // اگر صفحه‌ای مشخص نشد، صفحه نقشه باز شود
+  if(s==='detail'&&!currentDetailId)s='browse';
+  if(s==='chat'&&!currentConvId)s='chatlist';
+  if(s==='capacity'&&!currentCapacityId)s='services';
+  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+  const target=document.getElementById('screen-'+s); if(target)target.classList.add('active');
+  currentScreen=s;
+  document.body.classList.toggle('no-nav',s==='auth'||s==='chat');
+  document.querySelectorAll('#nav button').forEach(b=>b.classList.remove('active'));
+  const map={home:'home',browse:'browse',services:'services',mission:'mission',profile:'profile',chatlist:'chatlist',buy:'home',sell:'home',settings:'profile',notifs:'home',capacity:'services',detail:'browse'};
+  if(map[s]){const b=document.querySelector('#nav button[data-nav="'+map[s]+'"]');if(b)b.classList.add('active')}
+if(s==='home') { loadFavorites().then(renderHome); updateHomeReadyButton(); }
+if(s==='map-home') setTimeout(initMapHome, 100);
+  if(s==='browse'){ loadFavorites().then(renderBrowse); }
+  if(s==='services')renderServices();
+  if(s==='capacity')renderCapacityDetail();
+  if(s==='mission')renderMission();
+  if(s==='profile')renderProfile();
+  if(s==='sell')resetSellForm();
+  if(s==='chatlist')renderChatList();
+  if(s==='chat')renderChat();
+  if(s==='settings')applyTheme();
+  if(s==='notifs')renderNotifs();
+  if(s==='missions-list')renderMyMissions();
+if(s==='mission-chain') renderMissionChainView();
+if (s === 'mission') {
+  var roleEl = document.getElementById('mission-user-role');
+  if (roleEl && DB.user) {
+    roleEl.textContent = DB.user.role || 'کاربر';
+  }
+  renderMission();
 }
-
-/**
- * به‌روزرسانی ظاهر دکمه‌های منوی پایین
- */
-function updateBottomNav(screenId) {
-    const navButtons = document.querySelectorAll('.bottom-nav .nav-item');
-    navButtons.forEach(btn => {
-        if (btn.getAttribute('data-screen') === screenId) {
-            btn.classList.add('active');
-        } else {
-            btn.classList.remove('active');
-        }
-    });
+  renderHeaderAvatars(); updateChatBadge(); updateBellBadge();
 }
-
-
 function backFromCapacity(){go(capacityReturnTo||'services')}
 function goUrgentSell(){go('sell');setTimeout(()=>enableUrgentSellMode(),50)}
 function enableUrgentSellMode(){
