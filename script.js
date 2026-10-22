@@ -1933,7 +1933,7 @@ function initMapHome() {
   L.control.zoom({ position: 'bottomleft' }).addTo(_mainMap);
 
   // ۲. لود کردن و نمایش مرزبندی استان‌های ایران
-const iranProvincesUrl = 'https://raw.githubusercontent.com/amiryasir/iran-geojson/master/iran_provinces.json';
+const iranProvincesUrl = 'https://raw.githubusercontent.com/ssepehrnoush/Iran-geojson-map-boundaries/master/ir_states_boundaries_coordinates.geojson';
 
   fetch(iranProvincesUrl)
     .then(response => response.json())
