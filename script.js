@@ -333,7 +333,10 @@ let currentUser = null;
 let currentMap = null;
 let activeScreen = 'home';
 
-
+// تنظیمات اولیه Supabase (مطمئن شوید با اطلاعات خودتان ست شده باشد)
+const SUPABASE_URL = 'https://your-project-url.supabase.co';
+const SUPABASE_KEY = 'your-anon-key';
+// const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY); 
 
 // --- CORE NAVIGATION ENGINE ---
 /**
@@ -344,38 +347,30 @@ let activeScreen = 'home';
 /**
  * مدیریت جابجایی بین صفحات (Screens)
  * @param {string} screenId - آی‌دی سکشن مورد نظر در index.html
- */
-// --- CORE NAVIGATION ENGINE ---
-/**
- * مدیریت جابجایی بین صفحات (Screens)
- * @param {string} screenId - آی‌دی سکشن مورد نظر (مثلاً 'home' یا 'profile')
  */
 function go(screenId) {
-    // اضافه کردن پیشوند screen- برای هماهنگی با ساختار HTML شما
-    // اگر آی‌دی ورودی خودش با screen- شروع نشده باشد، آن را اضافه می‌کنیم
-    const targetId = screenId.startsWith('screen-') ? screenId : `screen-${screenId}`;
+    console.log(`Navigating to: ${screenId}`);
     
-    console.log(`Navigating to target ID: ${targetId}`);
-    
-    // ۱. مخفی کردن تمام سکشن‌ها
-    const allScreens = document.querySelectorAll('section.screen, section.page-section');
+    // ۱. مخفی کردن تمام سکشن‌ها (با فرض اینکه کلاس سکشن‌ها page-section است)
+    const allScreens = document.querySelectorAll('section, .page-section');
     allScreens.forEach(screen => {
         screen.style.display = 'none';
     });
 
     // ۲. نمایش سکشن مقصد
-    const target = document.getElementById(targetId);
+    const target = document.getElementById(screenId);
     if (target) {
         target.style.display = 'block';
     } else {
-        console.error(`Screen not found: ${targetId}`);
+        console.error(`Screen not found: ${screenId}`);
         return;
     }
 
     // ۳. مدیریت حالت نقشه (Map Mode)
-    // اگر مقصد نقشه بود (در اینجا فرض می‌کنیم آی‌دی نقشه screen-map-home است)
-    if (targetId === 'screen-map-home' || targetId === 'screen-browse') {
+    // بررسی می‌کنیم اگر مقصد نقشه بود، کلاس map-mode به body اضافه شود
+    if (screenId === 'map-home' || screenId === 'browse') {
         document.body.classList.add('map-mode');
+        // اگر تابع نقشه را قبلاً تعریف کرده‌ایم، آن را صدا می‌زنیم
         if (typeof initMapHome === 'function') {
             initMapHome();
         }
@@ -383,12 +378,15 @@ function go(screenId) {
         document.body.classList.remove('map-mode');
     }
 
-    // ۴. به‌روزرسانی وضعیت فعال در منوی پایین
+    // ۴. به‌روزرسانی وضعیت فعال در منوی پایین (Bottom Nav)
     updateBottomNav(screenId);
     
     activeScreen = screenId;
 }
 
+/**
+ * به‌روزرسانی ظاهر دکمه‌های منوی پایین
+ */
 function updateBottomNav(screenId) {
     const navButtons = document.querySelectorAll('.bottom-nav .nav-item');
     navButtons.forEach(btn => {
@@ -400,71 +398,6 @@ function updateBottomNav(screenId) {
     });
 }
 
-// --- MAP SYSTEM ---
-
-// متغیر سراسری برای ذخیره شیء نقشه
-let map = null;
-let geojsonLayer = null;
-
-/**
- * مقداردهی اولیه نقشه و لود کردن مرزهای استان‌ها
- */
-async function initMapHome() {
-    // اگر نقشه از قبل وجود دارد، دوباره آن را از اول نساز (برای جلوگیری از سنگین شدن)
-    if (map) return;
-
-    console.log("Initializing Map...");
-
-    // ۱. ایجاد شیء نقشه با مرکز ایران
-    map = L.map('map-container').setView([32.4279, 53.6880], 5);
-
-    // ۲. اضافه کردن لایه نقشه OpenStreetMap
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
-
-    // ۳. لود کردن مرزهای استان‌ها از فایل GeoJSON
-    try {
-        const response = await fetch('ir_states_boundaries_coordinates.geojson');
-        if (!response.ok) throw new Error("GeoJSON file not found!");
-        
-        const geojsonData = await response.json();
-
-        // ۴. اضافه کردن لایه GeoJSON به نقشه
-        geojsonLayer = L.geoJSON(geojsonData, {
-            style: function(feature) {
-                return {
-                    color: "#2ecc71", // رنگ سبز برای مرزها (رنگ Taraz)
-                    weight: 2,
-                    fillOpacity: 0.1
-                };
-            },
-            onEachFeature: function(feature, layer) {
-                // وقتی روی یک استان کلیک می‌شود
-                layer.on('click', function(e) {
-                    const provinceName = feature.properties.name || feature.properties.NAME;
-                    handleProvinceClick(provinceName, e.latlng);
-                });
-            }
-        }).addTo(map);
-
-        console.log("Map and GeoJSON loaded successfully.");
-    } catch (error) {
-        console.error("Error loading map boundaries:", error);
-    }
-}
-
-/**
- * مدیریت کلیک روی استان‌ها
- * @param {string} provinceName - نام استان
- * @param {L.LatLng} latlng - مختصات کلیک شده
- */
-function handleProvinceClick(provinceName, latlng) {
-    console.log(`Clicked on province: ${provinceName}`);
-    // در مراحل بعد، اینجا Bottom Sheet را برای انتخاب شهر باز می‌کنیم
-    // فعلاً فقط برای تست یک پیام نمایش می‌دهیم
-    alert(`شما روی استان ${provinceName} کلیک کردید.`);
-}
 
 function backFromCapacity(){go(capacityReturnTo||'services')}
 function goUrgentSell(){go('sell');setTimeout(()=>enableUrgentSellMode(),50)}
@@ -713,22 +646,12 @@ var grid = document.getElementById('browse-grid'); if(!grid) return;
 var html = ''; for(var i=0;i<4;i++){ html += '<div class="skeleton-card-grid"><div class="skeleton-photo"></div><div class="skeleton-line medium"></div><div class="skeleton-line short"></div></div>'; }
 grid.innerHTML = html;
 }
-async function renderHome() {
-    try {
-        // مطمئن شوید متغیر مورد نظر (مثلاً api یا supabase) وجود دارد
-        if (typeof api === 'undefined') {
-            console.error("API is not initialized yet!");
-            return;
-        }
-        
-        // کد اصلی شما که خطا می‌داد را اینجا قرار دهید
-        const listings = await api.getListings(); 
-        // ... بقیه کدها
-    } catch (error) {
-        console.error("Error rendering home:", error);
-    }
-}
-
+async function renderHome(){
+  renderHomeSkeleton();
+  
+  var result = await api.getListings();
+  var list = (result && result.listings) ? result.listings : DB.listings;
+  
   // --- محاسبه نبض بازار (میانگین قیمت) ---
   try {
     var sheepListings = list.filter(l => l.title.includes('گوسفند') || l.title.includes('میش'));
