@@ -527,4 +527,41 @@ body, html {
     opacity: 1;
     pointer-events: auto;
 }
+/* --- بخش جدید: استایل دکمه تأیید مبدأ (مشابه اسنپ) --- */
+
+#confirm-origin-btn {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(200%); /* در حالت عادی پایین صفحه مخفی است */
+    width: 90%;
+    max-width: 400px;
+    background-color: #ff8c00; /* نارنجی اسنپ */
+    color: white;
+    text-align: center;
+    padding: 16px;
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 1rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 2000; /* بالاتر از نقشه و سایر المان‌ها */
+    border: none;
+    cursor: pointer;
+    font-family: inherit; /* استفاده از فونت فعلی سیستم */
+}
+
+/* کلاس فعال برای نمایش دکمه با انیمیشن از پایین به بالا */
+#confirm-origin-btn.active {
+    transform: translateX(-50%) translateY(0);
+}
+
+/* استایل برای زمانی که دکمه فشار داده می‌شود (افکت کلیک) */
+#confirm-origin-btn:active {
+    transform: translateX(-50%) translateY(5px) scale(0.98);
+    background-color: #e67e00;
+}
+
+/* --- انتهای بخش جدید --- */
+
 
