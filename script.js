@@ -345,29 +345,37 @@ let activeScreen = 'home';
  * مدیریت جابجایی بین صفحات (Screens)
  * @param {string} screenId - آی‌دی سکشن مورد نظر در index.html
  */
+// --- CORE NAVIGATION ENGINE ---
+/**
+ * مدیریت جابجایی بین صفحات (Screens)
+ * @param {string} screenId - آی‌دی سکشن مورد نظر (مثلاً 'home' یا 'profile')
+ */
 function go(screenId) {
-    console.log(`Navigating to: ${screenId}`);
+    // اضافه کردن پیشوند screen- برای هماهنگی با ساختار HTML شما
+    // اگر آی‌دی ورودی خودش با screen- شروع نشده باشد، آن را اضافه می‌کنیم
+    const targetId = screenId.startsWith('screen-') ? screenId : `screen-${screenId}`;
     
-    // ۱. مخفی کردن تمام سکشن‌ها (با فرض اینکه کلاس سکشن‌ها page-section است)
-    const allScreens = document.querySelectorAll('section, .page-section');
+    console.log(`Navigating to target ID: ${targetId}`);
+    
+    // ۱. مخفی کردن تمام سکشن‌ها
+    const allScreens = document.querySelectorAll('section.screen, section.page-section');
     allScreens.forEach(screen => {
         screen.style.display = 'none';
     });
 
     // ۲. نمایش سکشن مقصد
-    const target = document.getElementById(screenId);
+    const target = document.getElementById(targetId);
     if (target) {
         target.style.display = 'block';
     } else {
-        console.error(`Screen not found: ${screenId}`);
+        console.error(`Screen not found: ${targetId}`);
         return;
     }
 
     // ۳. مدیریت حالت نقشه (Map Mode)
-    // بررسی می‌کنیم اگر مقصد نقشه بود، کلاس map-mode به body اضافه شود
-    if (screenId === 'map-home' || screenId === 'browse') {
+    // اگر مقصد نقشه بود (در اینجا فرض می‌کنیم آی‌دی نقشه screen-map-home است)
+    if (targetId === 'screen-map-home' || targetId === 'screen-browse') {
         document.body.classList.add('map-mode');
-        // اگر تابع نقشه را قبلاً تعریف کرده‌ایم، آن را صدا می‌زنیم
         if (typeof initMapHome === 'function') {
             initMapHome();
         }
@@ -375,15 +383,12 @@ function go(screenId) {
         document.body.classList.remove('map-mode');
     }
 
-    // ۴. به‌روزرسانی وضعیت فعال در منوی پایین (Bottom Nav)
+    // ۴. به‌روزرسانی وضعیت فعال در منوی پایین
     updateBottomNav(screenId);
     
     activeScreen = screenId;
 }
 
-/**
- * به‌روزرسانی ظاهر دکمه‌های منوی پایین
- */
 function updateBottomNav(screenId) {
     const navButtons = document.querySelectorAll('.bottom-nav .nav-item');
     navButtons.forEach(btn => {
