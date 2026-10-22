@@ -143,7 +143,6 @@
     <div id="home-listings"></div>
   </section>
 </section>
-
 <!-- ============ MAP HOME ============ -->
 <section class="screen" id="screen-map-home">
   
@@ -152,7 +151,7 @@
 
   <!-- ۲. کادر جستجوی شناور -->
   <div class="search-overlay">
-    <div class="search-box" onclick="openCityList()">
+    <div class="search-box" id="origin-search-box">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
       <input type="text" placeholder="مبدأ را جستجو کنید..." readonly style="cursor: pointer;">
     </div>
@@ -160,16 +159,16 @@
 
   <!-- ۳. منوی پایین شناور -->
   <div style="position: absolute; bottom: 20px; left: 16px; right: 16px; z-index: 1000; background: #fff; border-radius: 24px; box-shadow: 0 -4px 20px rgba(0,0,0,0.05); display: flex; justify-content: space-around; padding: 12px 8px;">
-    <button type="button" onclick="go('home')" style="display: flex; flex-direction: column; align-items: center; gap: 4px; background: none; border: none; color: var(--muted);">
-      <span style="font-size: 24px;">🏠</span>
-      <span style="font-size: 11px; font-weight: 700;">خانه</span>
+    <button type="button" onclick="go('map-home')" style="display: flex; flex-direction: column; align-items: center; gap: 4px; background: none; border: none; color: var(--taraz-primary);">
+      <span style="font-size: 24px;">🗺️</span>
+      <span style="font-size: 11px; font-weight: 700;">نقشه</span>
     </button>
     <button type="button" onclick="go('browse')" style="display: flex; flex-direction: column; align-items: center; gap: 4px; background: none; border: none; color: var(--muted);">
       <span style="font-size: 24px;">🏪</span>
       <span style="font-size: 11px; font-weight: 700;">بازار</span>
     </button>
     <!-- دکمه وسط (مأموریت) -->
-    <button type="button" onclick="go('mission')" style="display: flex; flex-direction: column; align-items: center; gap: 4px; background: var(--accent); color: #fff; padding: 12px 20px; border-radius: 20px; border: 4px solid #fff; box-shadow: 0 6px 16px rgba(31,128,98,0.4); transform: translateY(-20px);">
+    <button type="button" onclick="go('mission')" style="display: flex; flex-direction: column; align-items: center; gap: 4px; background: var(--taraz-primary); color: #fff; padding: 12px 20px; border-radius: 20px; border: 4px solid #fff; box-shadow: 0 6px 16px rgba(31,128,98,0.4); transform: translateY(-20px);">
       <span style="font-size: 28px;">🎯</span>
       <span style="font-size: 12px; font-weight: 900;">مأموریت</span>
     </button>
@@ -184,12 +183,12 @@
   </div>
 
   <!-- Bottom Sheet (لیست شهرها) -->
-  <div class="sheet-backdrop" id="sheet-backdrop" onclick="closeCityList()"></div>
-  <div class="bottom-sheet" id="city-bottom-sheet">
+  <div class="sheet-backdrop" id="sheetBackdrop" onclick="closeBottomSheet()"></div>
+  <div class="bottom-sheet" id="locationBottomSheet">
     <div class="sheet-handle-bar"></div>
     <div class="sheet-header">
       <h3>انتخاب شهر (مبدأ)</h3>
-      <button class="sheet-close-btn" onclick="closeCityList()">✕</button>
+      <button class="sheet-close-btn" id="closeSheetBtn">✕</button>
     </div>
     <div class="sheet-content" id="city-list-container">
       <!-- لیست شهرها با جاوااسکریپت پر می‌شه -->
@@ -197,6 +196,7 @@
   </div>
 
 </section>
+
 
   <!-- ============ BROWSE ============ -->
   <section class="screen" id="screen-browse" style="padding-bottom:110px">
