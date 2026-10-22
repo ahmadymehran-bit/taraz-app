@@ -328,139 +328,44 @@ if(!list.length){ wrap.innerHTML='<div class="empty"><span class="emoji">🔔</s
 wrap.innerHTML=list.map(function(n){ return '<div class="notif-card '+(n.read?'':'unread')+'"><div class="notif-ic">'+(n.icon||'🔔')+'</div><div class="notif-main"><b>'+n.title+'</b><small>'+n.body+'</small><span class="time">'+timeAgo(n.createdAt)+'</span></div></div>'; }).join('');
 var all=DB.notifications; all.forEach(function(n){n.read=true}); DB.notifications=all; updateBellBadge();
 }
-// --- GLOBAL STATE & CONSTANTS ---
-let currentUser = null;
-let currentMap = null;
-let activeScreen = 'home';
 
-
-
-// --- CORE NAVIGATION ENGINE ---
-/**
- * مدیریت جابجایی بین صفحات (Screens)
- * @param {string} screenId - آی‌دی سکشن مورد نظر در index.html
- */
-// --- CORE NAVIGATION ENGINE ---
-/**
- * مدیریت جابجایی بین صفحات (Screens)
- * @param {string} screenId - آی‌دی سکشن مورد نظر در index.html
- */
-function go(screenId) {
-    console.log(`Navigating to: ${screenId}`);
-    
-    // ۱. مخفی کردن تمام سکشن‌ها (با فرض اینکه کلاس سکشن‌ها page-section است)
-    const allScreens = document.querySelectorAll('section, .page-section');
-    allScreens.forEach(screen => {
-        screen.style.display = 'none';
-    });
-
-    // ۲. نمایش سکشن مقصد
-    const target = document.getElementById(screenId);
-    if (target) {
-        target.style.display = 'block';
-    } else {
-        console.error(`Screen not found: ${screenId}`);
-        return;
-    }
-
-    // ۳. مدیریت حالت نقشه (Map Mode)
-    // بررسی می‌کنیم اگر مقصد نقشه بود، کلاس map-mode به body اضافه شود
-    if (screenId === 'map-home' || screenId === 'browse') {
-        document.body.classList.add('map-mode');
-        // اگر تابع نقشه را قبلاً تعریف کرده‌ایم، آن را صدا می‌زنیم
-        if (typeof initMapHome === 'function') {
-            initMapHome();
-        }
-    } else {
-        document.body.classList.remove('map-mode');
-    }
-
-    // ۴. به‌روزرسانی وضعیت فعال در منوی پایین (Bottom Nav)
-    updateBottomNav(screenId);
-    
-    activeScreen = screenId;
+/* NAVIGATION */
+function go(s){
+  if(!DB.user&&s!=='auth')s='auth';
+  if(!s) s = 'map-home'; // اگر صفحه‌ای مشخص نشد، صفحه نقشه باز شود
+  if(s==='detail'&&!currentDetailId)s='browse';
+  if(s==='chat'&&!currentConvId)s='chatlist';
+  if(s==='capacity'&&!currentCapacityId)s='services';
+  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+  const target=document.getElementById('screen-'+s); if(target)target.classList.add('active');
+  currentScreen=s;
+  document.body.classList.toggle('no-nav',s==='auth'||s==='chat');
+  document.querySelectorAll('#nav button').forEach(b=>b.classList.remove('active'));
+  const map={home:'home',browse:'browse',services:'services',mission:'mission',profile:'profile',chatlist:'chatlist',buy:'home',sell:'home',settings:'profile',notifs:'home',capacity:'services',detail:'browse'};
+  if(map[s]){const b=document.querySelector('#nav button[data-nav="'+map[s]+'"]');if(b)b.classList.add('active')}
+if(s==='home') { loadFavorites().then(renderHome); updateHomeReadyButton(); }
+if(s==='map-home') setTimeout(initMapHome, 100);
+  if(s==='browse'){ loadFavorites().then(renderBrowse); }
+  if(s==='services')renderServices();
+  if(s==='capacity')renderCapacityDetail();
+  if(s==='mission')renderMission();
+  if(s==='profile')renderProfile();
+  if(s==='sell')resetSellForm();
+  if(s==='chatlist')renderChatList();
+  if(s==='chat')renderChat();
+  if(s==='settings')applyTheme();
+  if(s==='notifs')renderNotifs();
+  if(s==='missions-list')renderMyMissions();
+if(s==='mission-chain') renderMissionChainView();
+if (s === 'mission') {
+  var roleEl = document.getElementById('mission-user-role');
+  if (roleEl && DB.user) {
+    roleEl.textContent = DB.user.role || 'کاربر';
+  }
+  renderMission();
 }
-
-/**
- * به‌روزرسانی ظاهر دکمه‌های منوی پایین
- */
-function updateBottomNav(screenId) {
-    const navButtons = document.querySelectorAll('.bottom-nav .nav-item');
-    navButtons.forEach(btn => {
-        if (btn.getAttribute('data-screen') === screenId) {
-            btn.classList.add('active');
-        } else {
-            btn.classList.remove('active');
-        }
-    });
+  renderHeaderAvatars(); updateChatBadge(); updateBellBadge();
 }
-
-// --- MAP SYSTEM ---
-
-// متغیر سراسری برای ذخیره شیء نقشه
-let map = null;
-let geojsonLayer = null;
-
-/**
- * مقداردهی اولیه نقشه و لود کردن مرزهای استان‌ها
- */
-async function initMapHome() {
-    // اگر نقشه از قبل وجود دارد، دوباره آن را از اول نساز (برای جلوگیری از سنگین شدن)
-    if (map) return;
-
-    console.log("Initializing Map...");
-
-    // ۱. ایجاد شیء نقشه با مرکز ایران
-    map = L.map('map-container').setView([32.4279, 53.6880], 5);
-
-    // ۲. اضافه کردن لایه نقشه OpenStreetMap
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
-
-    // ۳. لود کردن مرزهای استان‌ها از فایل GeoJSON
-    try {
-        const response = await fetch('ir_states_boundaries_coordinates.geojson');
-        if (!response.ok) throw new Error("GeoJSON file not found!");
-        
-        const geojsonData = await response.json();
-
-        // ۴. اضافه کردن لایه GeoJSON به نقشه
-        geojsonLayer = L.geoJSON(geojsonData, {
-            style: function(feature) {
-                return {
-                    color: "#2ecc71", // رنگ سبز برای مرزها (رنگ Taraz)
-                    weight: 2,
-                    fillOpacity: 0.1
-                };
-            },
-            onEachFeature: function(feature, layer) {
-                // وقتی روی یک استان کلیک می‌شود
-                layer.on('click', function(e) {
-                    const provinceName = feature.properties.name || feature.properties.NAME;
-                    handleProvinceClick(provinceName, e.latlng);
-                });
-            }
-        }).addTo(map);
-
-        console.log("Map and GeoJSON loaded successfully.");
-    } catch (error) {
-        console.error("Error loading map boundaries:", error);
-    }
-}
-
-/**
- * مدیریت کلیک روی استان‌ها
- * @param {string} provinceName - نام استان
- * @param {L.LatLng} latlng - مختصات کلیک شده
- */
-function handleProvinceClick(provinceName, latlng) {
-    console.log(`Clicked on province: ${provinceName}`);
-    // در مراحل بعد، اینجا Bottom Sheet را برای انتخاب شهر باز می‌کنیم
-    // فعلاً فقط برای تست یک پیام نمایش می‌دهیم
-    alert(`شما روی استان ${provinceName} کلیک کردید.`);
-}
-
 function backFromCapacity(){go(capacityReturnTo||'services')}
 function goUrgentSell(){go('sell');setTimeout(()=>enableUrgentSellMode(),50)}
 function enableUrgentSellMode(){
@@ -2106,60 +2011,9 @@ window.selectCityFromMap = function(cityName) {
   const input = document.querySelector('#origin-search-box input');
   if (input) input.value = cityName;
   if (window.closeBottomSheet) window.closeBottomSheet();
-  
-  // مختصات شهرها
-  const cityCoords = {
-    'تهران': [35.6892, 51.3890],
-    'اصفهان': [32.6546, 51.6680],
-    'مشهد': [36.2605, 59.6168],
-    'شیراز': [29.5918, 52.5837],
-    'تبریز': [38.0800, 46.2919],
-    'کرج': [35.8400, 50.9391],
-    'اهواز': [31.3183, 48.6706],
-    'قم': [34.6416, 50.8746],
-    'کرمانشاه': [34.3142, 47.0650],
-    'رشت': [37.2808, 49.5832],
-    'یزد': [31.8974, 54.3569],
-    'کرمان': [30.2839, 57.0834],
-    'بندرعباس': [27.1865, 56.2808],
-    'زاهدان': [29.4963, 60.8629],
-    'اراک': [34.0917, 49.6892],
-    'همدان': [34.7983, 48.5148],
-    'سنندج': [35.3115, 46.9920],
-    'بوشهر': [28.9234, 50.8203],
-    'قزوین': [36.2796, 50.0049],
-    'گرگان': [36.8414, 54.4436],
-    'ساری': [36.5659, 53.0586],
-    'خرم‌آباد': [33.4878, 48.3558],
-    'ایلام': [33.6374, 46.4227],
-    'زنجان': [36.6736, 48.4787],
-    'ارومیه': [37.5553, 45.0725],
-    'اردبیل': [38.2498, 48.2933],
-    'سمنان': [35.5729, 53.3971],
-    'بیرجند': [32.8663, 59.2211],
-    'یاسوج': [30.6682, 51.5880],
-    'شهرکرد': [32.3256, 50.8644]
-  };
-
-  const coords = cityCoords[cityName] || [32.4279, 53.6880];
-
-  // 👇 این بخش زوم و پین رو انجام می‌ده 👇
-  if (_mainMap) {
-    _mainMap.setView(coords, 10);
-    
-    if (window._originMarker) {
-      window._originMarker.remove();
-    }
-    
-    window._originMarker = L.marker(coords).addTo(_mainMap)
-      .bindPopup('مبدأ: ' + cityName)
-      .openPopup();
-  }
-  
   toast('مبدأ ' + cityName + ' انتخاب شد');
-  showConfirmOriginButton(cityName);
+  // در آینده: پین روی نقشه برای شهر انتخابی
 };
-
 
 // انتخاب شهر از لیست
 window.selectCityFromMap = function(cityName) {
@@ -2251,91 +2105,6 @@ function goToDestinationStep(originCity) {
     go('mission');
     toast('مبدأ ' + originCity + ' ثبت شد. حالا مقصد را انتخاب کنید.');
   }, 300);
-}
-
-/**
- * بخش مدیریت انتخاب مبدأ (مشابه اسنپ)
- * این کد باید با توابع نقشه شما هماهنگ باشد
- */
-
-// ۱. تعریف متغیر برای نگهداری پین (Marker)
-let originMarker = null;
-
-// ۲. تابع اصلی برای انتخاب شهر از لیست یا نقشه
-window.selectCityFromMap = function(cityName, lat, lng) {
-    // اگر نام شهر خالی بود، از مختصات استفاده کن
-    const finalName = cityName || "مبدأ انتخاب شده";
-
-    // الف) زوم کردن نقشه روی نقطه انتخاب شده
-    if (window.map) {
-        const point = [Number(lat), Number(lng)];
-        window.map.setView(point, 13, {
-            animate: true,
-            duration: 1.2
-        });
-
-        // ب) حذف پین قبلی و گذاشتن پین جدید
-        if (originMarker) {
-            window.map.removeLayer(originMarker);
-        }
-        originMarker = L.marker(point).addTo(window.map);
-    }
-
-    // ج) نمایش دکمه تأیید در پایین صفحه (Bottom Sheet)
-    showConfirmOriginButton(finalName);
-
-    // د) نمایش پیام کوچک (Toast)
-    if (typeof toast === 'function') {
-        toast('مبدأ انتخاب شد: ' + finalName);
-    }
-};
-
-// ۳. تابع نمایش دکمه تأیید (که در پایین صفحه ظاهر می‌شود)
-function showConfirmOriginButton(cityName) {
-    // بررسی اینکه آیا دکمه از قبل وجود دارد یا خیر
-    let confirmBtn = document.getElementById('confirm-origin-btn');
-    
-    if (!confirmBtn) {
-        confirmBtn = document.createElement('button');
-        confirmBtn.id = 'confirm-origin-btn';
-        confirmBtn.className = 'confirm-btn-bottom'; // کلاس استایل شما
-        confirmBtn.innerHTML = '✅ تأیید مبدأ و ادامه';
-        
-        // اضافه کردن رویداد کلیک
-        confirmBtn.onclick = function() {
-            proceedToDestination(cityName);
-        };
-
-        // اضافه کردن دکمه به بدنه اصلی یا کانتینر نقشه
-        document.body.appendChild(confirmBtn);
-    }
-
-    // ذخیره نام شهر در متغیر سراسری برای مرحله بعد
-    window._selectedOriginName = cityName;
-    
-    // انیمیشن ورود دکمه
-    confirmBtn.style.display = 'block';
-    setTimeout(() => confirmBtn.classList.add('active'), 10);
-}
-
-// ۴. تابع رفتن به مرحله بعد (انتخاب مقصد)
-function proceedToDestination(cityName) {
-    const btn = document.getElementById('confirm-origin-btn');
-    if (btn) {
-        btn.classList.remove('active');
-        setTimeout(() => btn.remove(), 300);
-    }
-    
-    console.log("مبدأ تایید شد:", cityName);
-    
-    // اینجا باید تابع انتقال به مرحله بعدی (مثلاً انتخاب مقصد) را صدا بزنی
-    // مثال:
-    if (typeof goToDestinationStep === 'function') {
-        goToDestinationStep(cityName);
-    } else {
-        // اگر تابع مشخصی نداری، اینجا منطق انتقال مرحله را بنویس
-        toast('مبدأ تایید شد. حالا مقصد را انتخاب کنید.');
-    }
 }
 
 
