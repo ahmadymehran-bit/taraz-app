@@ -2343,6 +2343,29 @@ function proceedToDestination(cityName) {
     }
 }
 
+// --- MAP SYSTEM ---
+let map; // متغیر سراسری برای نگه داشتن شیء نقشه
+
+/**
+ * مقداردهی اولیه نقشه ایران
+ */
+function initMapHome() {
+    // اگر نقشه از قبل ساخته شده، دوباره نساز تا از تکرار جلوگیری شود
+    if (map) return;
+
+    console.log("Initializing Map...");
+
+    // ۱. ایجاد شیء نقشه و متمرکز کردن روی ایران (طول و عرض جغرافیایی ایران)
+    // [32.4, 53.6] مختصات تقریبی مرکز ایران است
+    map = L.map('map-container').setView([32.4, 53.6], 5);
+
+    // ۲. اضافه کردن لایه نقشه OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    console.log("Map initialized successfully.");
+}
 
 /* ============================================================
    API LAYER 
