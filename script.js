@@ -328,44 +328,144 @@ if(!list.length){ wrap.innerHTML='<div class="empty"><span class="emoji">🔔</s
 wrap.innerHTML=list.map(function(n){ return '<div class="notif-card '+(n.read?'':'unread')+'"><div class="notif-ic">'+(n.icon||'🔔')+'</div><div class="notif-main"><b>'+n.title+'</b><small>'+n.body+'</small><span class="time">'+timeAgo(n.createdAt)+'</span></div></div>'; }).join('');
 var all=DB.notifications; all.forEach(function(n){n.read=true}); DB.notifications=all; updateBellBadge();
 }
+// --- GLOBAL STATE & CONSTANTS ---
+let currentUser = null;
+let currentMap = null;
+let activeScreen = 'home';
 
-/* NAVIGATION */
-function go(s){
-  if(!DB.user&&s!=='auth')s='auth';
-  if(!s) s = 'map-home'; // اگر صفحه‌ای مشخص نشد، صفحه نقشه باز شود
-  if(s==='detail'&&!currentDetailId)s='browse';
-  if(s==='chat'&&!currentConvId)s='chatlist';
-  if(s==='capacity'&&!currentCapacityId)s='services';
-  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
-  const target=document.getElementById('screen-'+s); if(target)target.classList.add('active');
-  currentScreen=s;
-  document.body.classList.toggle('no-nav',s==='auth'||s==='chat');
-  document.querySelectorAll('#nav button').forEach(b=>b.classList.remove('active'));
-  const map={home:'home',browse:'browse',services:'services',mission:'mission',profile:'profile',chatlist:'chatlist',buy:'home',sell:'home',settings:'profile',notifs:'home',capacity:'services',detail:'browse'};
-  if(map[s]){const b=document.querySelector('#nav button[data-nav="'+map[s]+'"]');if(b)b.classList.add('active')}
-if(s==='home') { loadFavorites().then(renderHome); updateHomeReadyButton(); }
-if(s==='map-home') setTimeout(initMapHome, 100);
-  if(s==='browse'){ loadFavorites().then(renderBrowse); }
-  if(s==='services')renderServices();
-  if(s==='capacity')renderCapacityDetail();
-  if(s==='mission')renderMission();
-  if(s==='profile')renderProfile();
-  if(s==='sell')resetSellForm();
-  if(s==='chatlist')renderChatList();
-  if(s==='chat')renderChat();
-  if(s==='settings')applyTheme();
-  if(s==='notifs')renderNotifs();
-  if(s==='missions-list')renderMyMissions();
-if(s==='mission-chain') renderMissionChainView();
-if (s === 'mission') {
-  var roleEl = document.getElementById('mission-user-role');
-  if (roleEl && DB.user) {
-    roleEl.textContent = DB.user.role || 'کاربر';
-  }
-  renderMission();
+
+
+// --- CORE NAVIGATION ENGINE ---
+/**
+ * مدیریت جابجایی بین صفحات (Screens)
+ * @param {string} screenId - آی‌دی سکشن مورد نظر در index.html
+ */
+// --- CORE NAVIGATION ENGINE ---
+/**
+ * مدیریت جابجایی بین صفحات (Screens)
+ * @param {string} screenId - آی‌دی سکشن مورد نظر در index.html
+ */
+// --- CORE NAVIGATION ENGINE ---
+/**
+ * مدیریت جابجایی بین صفحات (Screens)
+ * @param {string} screenId - آی‌دی سکشن مورد نظر (مثلاً 'home' یا 'profile')
+ */
+function go(screenId) {
+    // اضافه کردن پیشوند screen- برای هماهنگی با ساختار HTML شما
+    // اگر آی‌دی ورودی خودش با screen- شروع نشده باشد، آن را اضافه می‌کنیم
+    const targetId = screenId.startsWith('screen-') ? screenId : `screen-${screenId}`;
+    
+    console.log(`Navigating to target ID: ${targetId}`);
+    
+    // ۱. مخفی کردن تمام سکشن‌ها
+    const allScreens = document.querySelectorAll('section.screen, section.page-section');
+    allScreens.forEach(screen => {
+        screen.style.display = 'none';
+    });
+
+    // ۲. نمایش سکشن مقصد
+    const target = document.getElementById(targetId);
+    if (target) {
+        target.style.display = 'block';
+    } else {
+        console.error(`Screen not found: ${targetId}`);
+        return;
+    }
+
+    // ۳. مدیریت حالت نقشه (Map Mode)
+    // اگر مقصد نقشه بود (در اینجا فرض می‌کنیم آی‌دی نقشه screen-map-home است)
+    if (targetId === 'screen-map-home' || targetId === 'screen-browse') {
+        document.body.classList.add('map-mode');
+        if (typeof initMapHome === 'function') {
+            initMapHome();
+        }
+    } else {
+        document.body.classList.remove('map-mode');
+    }
+
+    // ۴. به‌روزرسانی وضعیت فعال در منوی پایین
+    updateBottomNav(screenId);
+    
+    activeScreen = screenId;
 }
-  renderHeaderAvatars(); updateChatBadge(); updateBellBadge();
+
+function updateBottomNav(screenId) {
+    const navButtons = document.querySelectorAll('.bottom-nav .nav-item');
+    navButtons.forEach(btn => {
+        if (btn.getAttribute('data-screen') === screenId) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
 }
+
+// --- MAP SYSTEM ---
+
+// متغیر سراسری برای ذخیره شیء نقشه
+let map = null;
+let geojsonLayer = null;
+
+/**
+ * مقداردهی اولیه نقشه و لود کردن مرزهای استان‌ها
+ */
+async function initMapHome() {
+    // اگر نقشه از قبل وجود دارد، دوباره آن را از اول نساز (برای جلوگیری از سنگین شدن)
+    if (map) return;
+
+    console.log("Initializing Map...");
+
+    // ۱. ایجاد شیء نقشه با مرکز ایران
+    map = L.map('map-container').setView([32.4279, 53.6880], 5);
+
+    // ۲. اضافه کردن لایه نقشه OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // ۳. لود کردن مرزهای استان‌ها از فایل GeoJSON
+    try {
+        const response = await fetch('ir_states_boundaries_coordinates.geojson');
+        if (!response.ok) throw new Error("GeoJSON file not found!");
+        
+        const geojsonData = await response.json();
+
+        // ۴. اضافه کردن لایه GeoJSON به نقشه
+        geojsonLayer = L.geoJSON(geojsonData, {
+            style: function(feature) {
+                return {
+                    color: "#2ecc71", // رنگ سبز برای مرزها (رنگ Taraz)
+                    weight: 2,
+                    fillOpacity: 0.1
+                };
+            },
+            onEachFeature: function(feature, layer) {
+                // وقتی روی یک استان کلیک می‌شود
+                layer.on('click', function(e) {
+                    const provinceName = feature.properties.name || feature.properties.NAME;
+                    handleProvinceClick(provinceName, e.latlng);
+                });
+            }
+        }).addTo(map);
+
+        console.log("Map and GeoJSON loaded successfully.");
+    } catch (error) {
+        console.error("Error loading map boundaries:", error);
+    }
+}
+
+/**
+ * مدیریت کلیک روی استان‌ها
+ * @param {string} provinceName - نام استان
+ * @param {L.LatLng} latlng - مختصات کلیک شده
+ */
+function handleProvinceClick(provinceName, latlng) {
+    console.log(`Clicked on province: ${provinceName}`);
+    // در مراحل بعد، اینجا Bottom Sheet را برای انتخاب شهر باز می‌کنیم
+    // فعلاً فقط برای تست یک پیام نمایش می‌دهیم
+    alert(`شما روی استان ${provinceName} کلیک کردید.`);
+}
+
 function backFromCapacity(){go(capacityReturnTo||'services')}
 function goUrgentSell(){go('sell');setTimeout(()=>enableUrgentSellMode(),50)}
 function enableUrgentSellMode(){
@@ -2243,6 +2343,29 @@ function proceedToDestination(cityName) {
     }
 }
 
+// --- MAP SYSTEM ---
+let map; // متغیر سراسری برای نگه داشتن شیء نقشه
+
+/**
+ * مقداردهی اولیه نقشه ایران
+ */
+function initMapHome() {
+    // اگر نقشه از قبل ساخته شده، دوباره نساز تا از تکرار جلوگیری شود
+    if (map) return;
+
+    console.log("Initializing Map...");
+
+    // ۱. ایجاد شیء نقشه و متمرکز کردن روی ایران (طول و عرض جغرافیایی ایران)
+    // [32.4, 53.6] مختصات تقریبی مرکز ایران است
+    map = L.map('map-container').setView([32.4, 53.6], 5);
+
+    // ۲. اضافه کردن لایه نقشه OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    console.log("Map initialized successfully.");
+}
 
 /* ============================================================
    API LAYER 
