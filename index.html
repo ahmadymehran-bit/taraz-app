@@ -16,7 +16,22 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>  
 </head>
 <body>
+<body>
 <div id="app">
+    <!-- ۱. لایه اصلی نقشه (باید حتماً اینجا باشد) -->
+    <div id="main-map"></div>
+
+    <!-- ۲. لایه رابط کاربری (UI) مثل جستجو و دکمه‌ها -->
+    <!-- تمام المان‌های دیگر مثل جستجو، Bottom Sheet و غیره باید اینجا باشند -->
+    <div id="ui-layer">
+        <!-- اینجا کدهای مربوط به search box و دکمه‌ها قرار می‌گیرند -->
+    </div>
+</div>
+
+<!-- مطمئن شوید script.js در انتهای body یا بعد از div app لود می‌شود -->
+<script src="script.js"></script>
+</body>
+
 
   <!-- ============ AUTH ============ -->
   <section class="screen active" id="screen-auth">
