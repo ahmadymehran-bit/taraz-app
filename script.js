@@ -1923,9 +1923,14 @@ async function submitRatingForMission(toPhone) {
 /* ============ MAP HOME LOGIC (Cursor Version) ============ */
 let _mainMap = null;
 let _provincesLayer = null;
-
 function initMapHome() {
-  if (_mainMap) return; // جلوگیری از ساخت مجدد
+  // اگر نقشه از قبل وجود داشت، فقط سایز را اصلاح کن و دوباره نساز
+  if (_mainMap) {
+    setTimeout(() => {
+      _mainMap.invalidateSize();
+    }, 200);
+    return;
+  }
 
   // ۱. راه‌اندازی نقشه با مرکزیت ایران
   _mainMap = L.map('main-map', {
@@ -1943,7 +1948,7 @@ function initMapHome() {
   L.control.zoom({ position: 'bottomleft' }).addTo(_mainMap);
 
   // ۲. لود کردن و نمایش مرزبندی استان‌های ایران
-const iranProvincesUrl = 'https://raw.githubusercontent.com/ssepehrnoush/Iran-geojson-map-boundaries/master/ir_states_boundaries_coordinates.geojson';
+  const iranProvincesUrl = 'https://raw.githubusercontent.com/ssepehrnoush/Iran-geojson-map-boundaries/master/ir_states_boundaries_coordinates.geojson';
 
   fetch(iranProvincesUrl)
     .then(response => response.json())
@@ -1956,8 +1961,8 @@ const iranProvincesUrl = 'https://raw.githubusercontent.com/ssepehrnoush/Iran-ge
           fillOpacity: 0.15
         },
         onEachFeature: function (feature, layer) {
-          if (feature.properties && (feature.properties.name || feature.properties.NAME_1)) {
-            const provinceName = feature.properties.name || feature.properties.NAME_1;
+          const provinceName = feature.properties.name || feature.properties.NAME_1;
+          if (provinceName) {
             layer.bindTooltip(provinceName, { direction: 'center', permanent: false, className: 'province-tooltip' });
           }
 
@@ -1971,7 +1976,7 @@ const iranProvincesUrl = 'https://raw.githubusercontent.com/ssepehrnoush/Iran-ge
             },
             click: function (e) {
               _mainMap.fitBounds(e.target.getBounds());
-              console.log("استان انتخاب شده:", feature.properties.name || feature.properties.NAME_1);
+              console.log("استان انتخاب شده:", provinceName);
               // در آینده: انتخاب استان به عنوان مبدأ
             }
           });
@@ -1980,40 +1985,10 @@ const iranProvincesUrl = 'https://raw.githubusercontent.com/ssepehrnoush/Iran-ge
     })
     .catch(error => console.error('خطا در بارگذاری نقشه استان‌ها:', error));
 
-  // ۳. مدیریت Bottom Sheet
-  setTimeout(function() {
-    const searchBox = document.getElementById('origin-search-box');
-    const bottomSheet = document.getElementById('locationBottomSheet');
-    const sheetBackdrop = document.getElementById('sheetBackdrop');
-    const closeSheetBtn = document.getElementById('closeSheetBtn');
-    const cityContainer = document.getElementById('city-list-container');
-
-    if (!searchBox) return; // اگر صفحه هنوز لود نشده
-
-    // پر کردن لیست شهرها
-    const cities = ['تهران', 'اصفهان', 'مشهد', 'شیراز', 'تبریز', 'کرج', 'اهواز', 'قم', 'کرمانشاه', 'رشت', 'یزد', 'کرمان', 'بندرعباس', 'زاهدان', 'اراک', 'همدان', 'سنندج', 'بوشهر', 'قزوین', 'گرگان', 'ساری', 'خرم‌آباد', 'ایلام', 'زنجان', 'ارومیه', 'اردبیل', 'سمنان', 'بیرجند', 'یاسوج', 'شهرکرد'];
-    if(cityContainer) {
-      cityContainer.innerHTML = cities.map(city => 
-        `<div onclick="selectCityFromMap('${city}')" style="padding: 16px; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-size: 16px; color: #123d32;">${city}</div>`
-      ).join('');
-    }
-
-    // تعریف توابع سراسری برای استفاده در HTML
-    window.openBottomSheet = function() {
-      bottomSheet.classList.add('active');
-      sheetBackdrop.classList.add('active');
-    };
-
-    window.closeBottomSheet = function() {
-      bottomSheet.classList.remove('active');
-      sheetBackdrop.classList.remove('active');
-    };
-
-    searchBox.addEventListener('click', window.openBottomSheet);
-    if(closeSheetBtn) closeSheetBtn.addEventListener('click', window.closeBottomSheet);
-    if(sheetBackdrop) sheetBackdrop.addEventListener('click', window.closeBottomSheet);
-
-  }, 200);
+  // ۳. اصلاح نهایی ابعاد نقشه برای اطمینان از نمایش کامل
+  setTimeout(() => {
+    if (_mainMap) _mainMap.invalidateSize();
+  }, 300);
 }
 
 // انتخاب شهر از لیست
