@@ -1920,6 +1920,7 @@ async function submitRatingForMission(toPhone) {
     toast('خطا در ثبت امتیاز');
   }
 }
+
 /* ============ MAP HOME LOGIC (Cursor Version) ============ */
 let _mainMap = null;
 let _provincesLayer = null;
@@ -1969,16 +1970,21 @@ const iranProvincesUrl = 'https://raw.githubusercontent.com/ssepehrnoush/Iran-ge
             mouseout: function (e) {
               _provincesLayer.resetStyle(e.target);
             },
-            click: function (e) {
+                       click: function (e) {
               _mainMap.fitBounds(e.target.getBounds());
               console.log("استان انتخاب شده:", feature.properties.name || feature.properties.NAME_1);
-              // در آینده: انتخاب استان به عنوان مبدأ
             }
           });
         }
       }).addTo(_mainMap);
     })
     .catch(error => console.error('خطا در بارگذاری نقشه استان‌ها:', error));
+
+  // اطمینان از تنظیم دقیق ابعاد نقشه پس از لود
+  setTimeout(() => {
+    if (_mainMap) _mainMap.invalidateSize();
+  }, 300);
+}
 
   // ۳. مدیریت Bottom Sheet
   setTimeout(function() {
