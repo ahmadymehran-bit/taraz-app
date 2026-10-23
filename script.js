@@ -336,9 +336,19 @@ function go(s){
   if(s==='detail'&&!currentDetailId)s='browse';
   if(s==='chat'&&!currentConvId)s='chatlist';
   if(s==='capacity'&&!currentCapacityId)s='services';
-  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
-  const target=document.getElementById('screen-'+s); if(target)target.classList.add('active');
-  currentScreen=s;
+   // همه اسکرین‌ها را مخفی کن و کلاس active را بردار
+  document.querySelectorAll('.screen').forEach(x => {
+    x.classList.remove('active');
+    x.style.display = 'none'; // این خط مانع از ماندن display:none دستی می‌شود
+  });
+
+  // اسکرین مورد نظر را پیدا کن و نمایش بده
+  const target = document.getElementById('screen-' + s); 
+  if (target) {
+    target.classList.add('active');
+    target.style.display = 'block'; // اجبار به نمایش صفحه
+  }
+
   document.body.classList.toggle('no-nav',s==='auth'||s==='chat');
   document.querySelectorAll('#nav button').forEach(b=>b.classList.remove('active'));
   const map={home:'home',browse:'browse',services:'services',mission:'mission',profile:'profile',chatlist:'chatlist',buy:'home',sell:'home',settings:'profile',notifs:'home',capacity:'services',detail:'browse'};
