@@ -1923,14 +1923,9 @@ async function submitRatingForMission(toPhone) {
 /* ============ MAP HOME LOGIC (Cursor Version) ============ */
 let _mainMap = null;
 let _provincesLayer = null;
+
 function initMapHome() {
-  // اگر نقشه از قبل وجود داشت، فقط سایز را اصلاح کن و دوباره نساز
-  if (_mainMap) {
-    setTimeout(() => {
-      _mainMap.invalidateSize();
-    }, 200);
-    return;
-  }
+  if (_mainMap) return; // جلوگیری از ساخت مجدد
 
   // ۱. راه‌اندازی نقشه با مرکزیت ایران
   _mainMap = L.map('main-map', {
@@ -1948,7 +1943,7 @@ function initMapHome() {
   L.control.zoom({ position: 'bottomleft' }).addTo(_mainMap);
 
   // ۲. لود کردن و نمایش مرزبندی استان‌های ایران
-  const iranProvincesUrl = 'https://raw.githubusercontent.com/ssepehrnoush/Iran-geojson-map-boundaries/master/ir_states_boundaries_coordinates.geojson';
+const iranProvincesUrl = 'https://raw.githubusercontent.com/ssepehrnoush/Iran-geojson-map-boundaries/master/ir_states_boundaries_coordinates.geojson';
 
   fetch(iranProvincesUrl)
     .then(response => response.json())
@@ -1961,8 +1956,8 @@ function initMapHome() {
           fillOpacity: 0.15
         },
         onEachFeature: function (feature, layer) {
-          const provinceName = feature.properties.name || feature.properties.NAME_1;
-          if (provinceName) {
+          if (feature.properties && (feature.properties.name || feature.properties.NAME_1)) {
+            const provinceName = feature.properties.name || feature.properties.NAME_1;
             layer.bindTooltip(provinceName, { direction: 'center', permanent: false, className: 'province-tooltip' });
           }
 
@@ -1976,7 +1971,7 @@ function initMapHome() {
             },
             click: function (e) {
               _mainMap.fitBounds(e.target.getBounds());
-              console.log("استان انتخاب شده:", provinceName);
+              console.log("استان انتخاب شده:", feature.properties.name || feature.properties.NAME_1);
               // در آینده: انتخاب استان به عنوان مبدأ
             }
           });
@@ -1984,12 +1979,6 @@ function initMapHome() {
       }).addTo(_mainMap);
     })
     .catch(error => console.error('خطا در بارگذاری نقشه استان‌ها:', error));
-
-  // ۳. اصلاح نهایی ابعاد نقشه برای اطمینان از نمایش کامل
-  setTimeout(() => {
-    if (_mainMap) _mainMap.invalidateSize();
-  }, 300);
-}
 
   // ۳. مدیریت Bottom Sheet
   setTimeout(function() {
