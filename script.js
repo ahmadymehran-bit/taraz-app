@@ -332,17 +332,29 @@ var all=DB.notifications; all.forEach(function(n){n.read=true}); DB.notification
 /* NAVIGATION */
 function go(s){
   if(!DB.user&&s!=='auth')s='auth';
+  if(!s) s = 'map-home'; // اگر صفحه‌ای مشخص نشد، صفحه نقشه باز شود
   if(s==='detail'&&!currentDetailId)s='browse';
   if(s==='chat'&&!currentConvId)s='chatlist';
   if(s==='capacity'&&!currentCapacityId)s='services';
-  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
-  const target=document.getElementById('screen-'+s); if(target)target.classList.add('active');
-  currentScreen=s;
+   // همه اسکرین‌ها را مخفی کن و کلاس active را بردار
+  document.querySelectorAll('.screen').forEach(x => {
+    x.classList.remove('active');
+    x.style.display = 'none'; // این خط مانع از ماندن display:none دستی می‌شود
+  });
+
+  // اسکرین مورد نظر را پیدا کن و نمایش بده
+  const target = document.getElementById('screen-' + s); 
+  if (target) {
+    target.classList.add('active');
+    target.style.display = 'block'; // اجبار به نمایش صفحه
+  }
+
   document.body.classList.toggle('no-nav',s==='auth'||s==='chat');
   document.querySelectorAll('#nav button').forEach(b=>b.classList.remove('active'));
   const map={home:'home',browse:'browse',services:'services',mission:'mission',profile:'profile',chatlist:'chatlist',buy:'home',sell:'home',settings:'profile',notifs:'home',capacity:'services',detail:'browse'};
   if(map[s]){const b=document.querySelector('#nav button[data-nav="'+map[s]+'"]');if(b)b.classList.add('active')}
 if(s==='home') { loadFavorites().then(renderHome); updateHomeReadyButton(); }
+if(s==='map-home') setTimeout(initMapHome, 100);
   if(s==='browse'){ loadFavorites().then(renderBrowse); }
   if(s==='services')renderServices();
   if(s==='capacity')renderCapacityDetail();
@@ -392,7 +404,7 @@ var result = null; try { result = await api.loginWithPassword(phone, password); 
 if(result && result.ok && result.user){
 DB.user = { phone: result.user.phone, name: result.user.name, role: result.user.role, avatar: result.user.avatar || null, joinedAt: Number(result.user.joined_at) || Date.now() };
 if(result.user.avatar && result.user.avatar.length < 100000){ DB.user.avatar = result.user.avatar; }
-toast('✓ خوش آمدید ' + result.user.name); go('home');
+toast('✓ خوش آمدید ' + result.user.name); go('map-home');
 } else if(result && result.error){ toast(result.error); } else { toast('خطا در ورود'); }
 }
 async function doRegister(){
@@ -406,7 +418,7 @@ var result = null; try { result = await api.register(phone, name, role, password
 if(result && result.ok && result.user){
 DB.user = { phone: result.user.phone, name: result.user.name, role: result.user.role, avatar: result.user.avatar || null, joinedAt: Number(result.user.joined_at) || Date.now() };
 var roles = DB.userRoles; if(!roles[phone]) roles[phone] = []; if(roles[phone].indexOf(role) < 0) roles[phone].push(role); DB.userRoles = roles;
-toast('✓ ثبت‌نام موفق'); go('home');
+toast('✓ ثبت‌نام موفق'); go('map-home');
 } else if(result && result.error){ toast(result.error); } else { toast('خطا در ثبت‌نام'); }
 }
 async function changePasswordDialog(){
@@ -1907,7 +1919,104 @@ async function submitRatingForMission(toPhone) {
   } catch(e) {
     toast('خطا در ثبت امتیاز');
   }
+}/* ============ MAP HOME LOGIC (FIXED & CLEAN) ============ */
+let _mainMap = null;
+let _provincesLayer = null;
+let _originMarker = null;
+
+function initMapHome() {
+  if (_mainMap) {
+    setTimeout(() => { _mainMap.invalidateSize(); }, 200);
+    return;
+  }
+
+  _mainMap = L.map('main-map', {
+    zoomControl: false,
+    attributionControl: false
+  }).setView([32.4279, 53.6880], 5);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    minZoom: 4
+  }).addTo(_mainMap);
+
+  L.control.zoom({ position: 'bottomleft' }).addTo(_mainMap);
+
+  const iranProvincesUrl = 'https://raw.githubusercontent.com/ssepehrnoush/Iran-geojson-map-boundaries/master/ir_states_boundaries_coordinates.geojson';
+
+  fetch(iranProvincesUrl)
+    .then(res => res.json())
+    .then(data => {
+      _provincesLayer = L.geoJSON(data, {
+        style: { color: '#123d32', weight: 1.5, fillColor: '#1f8062', fillOpacity: 0.15 },
+        onEachFeature: function (feature, layer) {
+          const name = feature.properties.name || feature.properties.NAME_1;
+          if (name) layer.bindTooltip(name, { direction: 'center', permanent: false, className: 'province-tooltip' });
+          layer.on({
+            mouseover: (e) => e.target.setStyle({ fillColor: '#f0b429', fillOpacity: 0.4, weight: 2 }),
+            mouseout: (e) => _provincesLayer.resetStyle(e.target),
+            click: (e) => _mainMap.fitBounds(e.target.getBounds())
+          });
+        }
+      }).addTo(_mainMap);
+    })
+    .catch(err => console.error('Province layer error:', err));
+
+  setTimeout(() => { if (_mainMap) _mainMap.invalidateSize(); }, 300);
 }
+
+// تابع انتخاب شهر (هم برای لیست و هم برای نقشه)
+window.selectCityFromMap = function(cityName, lat = null, lng = null) {
+  const input = document.querySelector('#origin-search-box input');
+  if (input) input.value = cityName;
+
+  // اگر مختصات داده شده بود (از روی نقشه کلیک شده)، نقشه را جابجا کن
+  if (_mainMap && lat && lng) {
+    _mainMap.flyTo([lat, lng], 10);
+    if (_originMarker) _mainMap.removeLayer(_originMarker);
+    _originMarker = L.marker([lat, lng]).addTo(_mainMap).bindPopup(cityName).openPopup();
+  }
+
+  // بستن Bottom Sheet
+  const bs = document.getElementById('locationBottomSheet');
+  const bd = document.getElementById('sheetBackdrop');
+  if (bs) bs.classList.remove('active');
+  if (bd) bd.classList.remove('active');
+
+  // نمایش دکمه تایید
+  showConfirmOriginButton(cityName);
+};
+
+function showConfirmOriginButton(cityName) {
+  let btn = document.getElementById('confirm-origin-btn');
+  if (!btn) {
+    btn = document.createElement('button');
+    btn.id = 'confirm-origin-btn';
+    btn.className = 'confirm-btn-bottom'; // حتماً در CSS این کلاس را داشته باشید
+    btn.onclick = () => proceedToDestination(cityName);
+    document.body.appendChild(btn);
+  }
+  
+  window._selectedOriginName = cityName;
+  btn.textContent = '✅ تایید مبدأ و ادامه';
+  btn.style.display = 'block';
+  setTimeout(() => btn.classList.add('active'), 10);
+}
+
+function proceedToDestination(cityName) {
+  const btn = document.getElementById('confirm-origin-btn');
+  if (btn) {
+    btn.classList.remove('active');
+    setTimeout(() => btn.remove(), 300);
+  }
+  
+  console.log("Origin set to:", cityName);
+  // انتقال به مرحله بعد (فرض بر این است که تابع go یا مشابه آن دارید)
+  if (typeof go === 'function') {
+    go('mission'); 
+  }
+}
+
 
 /* ============================================================
    API LAYER 
