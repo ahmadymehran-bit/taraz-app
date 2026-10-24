@@ -363,13 +363,6 @@ if (s === 'mission') {
   renderMission();
 }
   renderHeaderAvatars(); updateChatBadge(); updateBellBadge();
-  // ارسال رویداد برای راه‌اندازی نقشه و سایر کامپوننت‌ها
-document.dispatchEvent(
-  new CustomEvent('taraz:screenShown', {
-    detail: { screenId: s }
-  })
-);
-
 }
 function backFromCapacity(){go(capacityReturnTo||'services')}
 function goUrgentSell(){go('sell');setTimeout(()=>enableUrgentSellMode(),50)}
@@ -1915,74 +1908,6 @@ async function submitRatingForMission(toPhone) {
     toast('خطا در ثبت امتیاز');
   }
 }
-/* ============ MAP & DETAIL SCREEN LOGIC ============ */
-document.addEventListener('DOMContentLoaded', function() {
-  // اگر صفحه نقشه در DOM وجود دارد، نقشه را راه‌اندازی کن
-  if (document.getElementById('map')) {
-    initMapDetail();
-  }
-});
-
-function initMapDetail() {
-  const tehran = [35.6892, 51.3890];
-  const esfahan = [32.6546, 51.6680];
-  const mapEl = document.getElementById('map');
-  const feedback = document.getElementById('feedback');
-
-  if (!window.L) {
-    mapEl.innerHTML = '<div class="map-fallback"><div class="fallback-route">تهران ⟶ اصفهان</div><p>کتابخانه نقشه بارگذاری نشد.</p><small>برای نقشه زنده، اتصال اینترنت و دسترسی به سرویس نقشه لازم است.</small></div>';
-    return;
-  }
-
-  const map = L.map('map', { zoomControl: false }).setView([34.25, 51.5], 5.4);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 18,
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'
-  }).addTo(map);
-  L.control.zoom({ position: 'topleft' }).addTo(map);
-
-  const a = L.divIcon({ className: 'taraz-pin-wrap', html: '<span class="taraz-pin">مبدأ</span>', iconSize: [48, 38], iconAnchor: [24, 19] });
-  const b = L.divIcon({ className: 'taraz-pin-wrap', html: '<span class="taraz-pin destination-pin">مقصد</span>', iconSize: [54, 38], iconAnchor: [27, 19] });
-  L.marker(tehran, { icon: a }).addTo(map).bindPopup('<b>مبدأ خرید</b><br>تهران');
-  L.marker(esfahan, { icon: b }).addTo(map).bindPopup('<b>محل تحویل</b><br>اصفهان');
-  
-  const line = L.polyline([tehran, [34.8, 51.4], [33.7, 51.5], esfahan], { color: '#12835b', weight: 4, opacity: .9, dashArray: '8 8' }).addTo(map);
-  map.fitBounds(line.getBounds(), { padding: [35, 35] });
-
-  document.getElementById('locate-btn').onclick = () => map.fitBounds(line.getBounds(), { padding: [35, 35] });
-  document.getElementById('open-map').onclick = () => window.open('https://www.openstreetmap.org/directions?engine=fossgis_osrm_car&route=35.6892%2C51.3890%3B32.6546%2C51.6680', '_blank', 'noopener');
-
-  async function searchPlace() {
-    const q = document.getElementById('place-search').value.trim();
-    if (!q) { feedback.textContent = 'نام شهر یا مکان را وارد کنید.'; return; }
-    feedback.textContent = 'در حال جستجوی مکان…';
-    try {
-      const r = await fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=ir&q=' + encodeURIComponent(q), { headers: { 'Accept-Language': 'fa' } });
-      if (!r.ok) throw Error();
-      const data = await r.json();
-      if (!data.length) { feedback.textContent = 'مکانی پیدا نشد؛ نام شهر را دقیق‌تر وارد کنید.'; return; }
-      const p = data[0], lat = Number(p.lat), lon = Number(p.lon);
-      map.setView([lat, lon], 11);
-      L.popup().setLatLng([lat, lon]).setContent('<b>' + String(p.display_name).replace(/[<>]/g, '') + '</b>').openOn(map);
-      feedback.textContent = 'مکان روی نقشه نمایش داده شد.';
-    } catch (e) {
-      feedback.textContent = 'جستجوی آنلاین در دسترس نیست؛ اتصال اینترنت را بررسی کنید.';
-    }
-  }
-
-  document.getElementById('search-btn').onclick = searchPlace;
-  document.getElementById('place-search').addEventListener('keydown', e => { if (e.key === 'Enter') searchPlace(); });
-
-  document.querySelectorAll('.service-chip').forEach(x => x.onclick = () => {
-    const on = x.classList.toggle('is-active');
-    x.setAttribute('aria-pressed', String(on));
-  });
-
-  document.getElementById('submit-mission').onclick = () => {
-    const n = document.querySelectorAll('.option-row input:checked').length;
-    feedback.textContent = 'نمونه درخواست آماده است؛ ' + n + ' آپشن انتخاب شده. برای ثبت واقعی، بک‌اند تاراز باید متصل شود.';
-  };
-}
 
 /* ============================================================
    API LAYER 
@@ -2052,182 +1977,88 @@ window.apiHealthCheck = async function() {
   else { console.warn('✗ API not reachable'); if (typeof toast === 'function') toast('✗ اتصال به سرور برقرار نشد'); return false; }
 };
 console.log('✓ API layer v1 loaded');
+/* ============ MAP & DETAIL SCREEN LOGIC ============ */
+let newMapInstance = null;
 
+function initMapDetail() {
+  const mapEl = document.getElementById('map');
+  if (!mapEl) return;
 
-
-/* ==========================================================
-   TARAZ — منطق تعاملی نقشه (قدم ۴)
-   ========================================================== */
-
-const TARAZ_MAP_CONFIG = {
-  geoJsonUrl: 'https://raw.githubusercontent.com/ssepehrnoush/Iran-geojson-map-boundaries/master/ir_states_boundaries_coordinates.geojson',
-  center: [32.4279, 53.688],
-  zoom: 5,
-  colors: {
-    border: '#123d32',
-    fill: '#1f8062',
-    fillHover: '#f0b429',
-    pinStart: '#1f8062',
-    pinEnd: '#f0b429',
-  }
-};
-
-// حالت داخلی نقشه
-const tarazMapState = {
-  map: null,
-  markers: { start: null, end: null },
-  points: { start: null, end: null },
-  pickMode: null // 'start' یا 'end'
-};
-
-// ۱. ساخت آیکون پین
-function tarazCreatePinIcon(type, emoji) {
-  const color = type === 'start' ? TARAZ_MAP_CONFIG.colors.pinStart : TARAZ_MAP_CONFIG.colors.pinEnd;
-  return L.divIcon({
-    className: '',
-    html: `<div style="background:${color}; width:36px; height:36px; border-radius:50% 50% 50% 0; transform:rotate(-45deg); border:3px solid #fff; box-shadow:0 4px 10px rgba(0,0,0,0.3); display:flex; align-items:center; justify-content:center;"><span style="transform:rotate(45deg); font-size:18px;">${emoji}</span></div>`,
-    iconSize: [36, 36],
-    iconAnchor: [18, 36],
-    popupAnchor: [0, -36]
-  });
-}
-
-// ۲. افزودن پین به نقشه
-function tarazSetMarker(type, latlng, label) {
-  if (!tarazMapState.map) return;
-  
-  // حذف پین قبلی اگر وجود دارد
-  if (tarazMapState.markers[type]) {
-    tarazMapState.map.removeLayer(tarazMapState.markers[type]);
-  }
-
-  const emoji = type === 'start' ? '📍' : '🏁';
-  const icon = tarazCreatePinIcon(type, emoji);
-  
-  const marker = L.marker(latlng, { icon, draggable: true }).addTo(tarazMapState.map);
-  
-  marker.bindPopup(`<b>${type === 'start' ? 'مبدأ' : 'مقصد'}:</b> ${label || 'انتخاب شد'}`).openPopup();
-
-  // اگر کاربر پین را جابجا کرد
-  marker.on('dragend', (e) => {
-    tarazMapState.points[type] = { latlng: e.target.getLatLng(), label: label || 'موقعیت جدید' };
-    tarazUpdateInfoCard();
-  });
-
-  tarazMapState.markers[type] = marker;
-  tarazMapState.points[type] = { latlng, label: label || 'انتخاب شد' };
-  
-  tarazUpdateInfoCard();
-}
-
-// ۳. محاسبه مسافت (خط مستقیم)
-function tarazHaversine(a, b) {
-  const R = 6371;
-  const dLat = (b.lat - a.lat) * Math.PI / 180;
-  const dLng = (b.lng - a.lng) * Math.PI / 180;
-  const lat1 = a.lat * Math.PI / 180;
-  const lat2 = b.lat * Math.PI / 180;
-  const h = Math.sin(dLat/2)**2 + Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLng/2)**2;
-  return 2 * R * Math.asin(Math.sqrt(h));
-}
-
-// ۴. آپدیت پنل اطلاعات
-function tarazUpdateInfoCard() {
-  const infoCard = document.querySelector('#screen-map-detail .info-card');
-  if (!infoCard) return;
-
-  const { start, end } = tarazMapState.points;
-  const startTxt = start ? start.label : 'انتخاب نشده';
-  const endTxt = end ? end.label : 'انتخاب نشده';
-  let distanceTxt = '--';
-
-  if (start && end) {
-    const km = tarazHaversine(start.latlng, end.latlng);
-    distanceTxt = `${km.toFixed(0)} کیلومتر`;
-  }
-
-  infoCard.innerHTML = `
-    <p><span>📍 مبدأ:</span> <strong>${startTxt}</strong></p>
-    <p><span>🏁 مقصد:</span> <strong>${endTxt}</strong></p>
-    <p><span>📏 مسافت:</span> <strong>${distanceTxt}</strong></p>
-  `;
-}
-
-// ۵. راه‌اندازی نقشه
-function initTarazMap() {
-  const container = document.getElementById('leaflet-map');
-  if (!container) return;
-
-  if (tarazMapState.map) {
-    tarazMapState.map.invalidateSize();
+  if (newMapInstance) {
+    newMapInstance.invalidateSize();
     return;
   }
 
-  // ساخت نقشه
-  tarazMapState.map = L.map('leaflet-map').setView(TARAZ_MAP_CONFIG.center, TARAZ_MAP_CONFIG.zoom);
-  
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(tarazMapState.map);
+  const tehran = [35.6892, 51.3890];
+  const esfahan = [32.6546, 51.6680];
+  const feedback = document.getElementById('feedback');
 
-  // لود استان‌ها
-  fetch(TARAZ_MAP_CONFIG.geoJsonUrl)
-    .then(res => res.json())
-    .then(data => {
-      L.geoJSON(data, {
-        style: { color: TARAZ_MAP_CONFIG.colors.border, weight: 1.5, fillColor: TARAZ_MAP_CONFIG.colors.fill, fillOpacity: 0.2 },
-        onEachFeature: (feature, layer) => {
-          const name = feature.properties.NAME_1 || feature.properties.name || 'استان';
-          layer.bindTooltip(name, { sticky: true });
-          
-          layer.on({
-            mouseover: (e) => e.target.setStyle({ fillColor: TARAZ_MAP_CONFIG.colors.fillHover, fillOpacity: 0.4 }),
-            mouseout: (e) => e.target.setStyle({ fillColor: TARAZ_MAP_CONFIG.colors.fill, fillOpacity: 0.2 }),
-            click: (e) => {
-              // اگر در حالت انتخاب مبدأ یا مقصد بودیم
-              if (tarazMapState.pickMode) {
-                tarazSetMarker(tarazMapState.pickMode, e.latlng, name);
-                tarazMapState.pickMode = null; // خروج از حالت انتخاب
-                
-                // برداشتن هایلایت از دکمه‌ها
-                document.querySelectorAll('#screen-map-detail .floating-card').forEach(b => b.style.background = '#fff');
-              }
-            }
-          });
-        }
-      }).addTo(tarazMapState.map);
-    })
-    .catch(err => console.error('خطا در لود نقشه:', err));
-}
+  if (!window.L) {
+    mapEl.innerHTML = '<div class="map-fallback"><div class="fallback-route">تهران ⟶ اصفهان</div><p>کتابخانه نقشه بارگذاری نشد.</p></div>';
+    return;
+  }
 
-// ۶. اتصال دکمه‌های شناور به منطق انتخاب
-function bindTarazMapUI() {
-  const floatingBtns = document.querySelectorAll('#screen-map-detail .floating-card');
+  newMapInstance = L.map('map', { zoomControl: false }).setView([34.25, 51.5], 5.4);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    attribution: '&copy; OpenStreetMap'
+  }).addTo(newMapInstance);
   
-  floatingBtns.forEach((btn, index) => {
-    btn.addEventListener('click', () => {
-      // اگر روی دکمه مبدأ (index 0) یا مقصد (index 1) کلیک شد
-      if (index === 0 || index === 1) {
-        const mode = index === 0 ? 'start' : 'end';
-        
-        // تغییر حالت
-        tarazMapState.pickMode = mode;
-        
-        // تغییر ظاهر دکمه فعال
-        floatingBtns.forEach(b => b.style.background = '#fff');
-        btn.style.background = '#f0b429';
-        
-        alert(`لطفاً روی نقشه کلیک کنید تا ${mode === 'start' ? 'مبدأ' : 'مقصد'} انتخاب شود.`);
-      }
-    });
+  L.control.zoom({ position: 'topleft' }).addTo(newMapInstance);
+
+  const a = L.divIcon({ className: 'taraz-pin-wrap', html: '<span class="taraz-pin">مبدأ</span>', iconSize: [48, 38], iconAnchor: [24, 19] });
+  const b = L.divIcon({ className: 'taraz-pin-wrap', html: '<span class="taraz-pin destination-pin">مقصد</span>', iconSize: [54, 38], iconAnchor: [27, 19] });
+  
+  L.marker(tehran, { icon: a }).addTo(newMapInstance).bindPopup('<b>مبدأ خرید</b><br>تهران');
+  L.marker(esfahan, { icon: b }).addTo(newMapInstance).bindPopup('<b>محل تحویل</b><br>اصفهان');
+  
+  const line = L.polyline([tehran, [34.8, 51.4], [33.7, 51.5], esfahan], { color: '#12835b', weight: 4, opacity: .9, dashArray: '8 8' }).addTo(newMapInstance);
+  newMapInstance.fitBounds(line.getBounds(), { padding: [35, 35] });
+
+  document.getElementById('locate-btn').onclick = () => newMapInstance.fitBounds(line.getBounds(), { padding: [35, 35] });
+  document.getElementById('open-map').onclick = () => window.open('https://www.openstreetmap.org/directions?engine=fossgis_osrm_car&route=35.6892%2C51.3890%3B32.6546%2C51.6680', '_blank', 'noopener');
+
+  async function searchPlace() {
+    const q = document.getElementById('place-search').value.trim();
+    if (!q) { feedback.textContent = 'نام شهر را وارد کنید.'; return; }
+    feedback.textContent = 'در حال جستجو…';
+    try {
+      const r = await fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=ir&q=' + encodeURIComponent(q), { headers: { 'Accept-Language': 'fa' } });
+      const data = await r.json();
+      if (!data.length) { feedback.textContent = 'پیدا نشد.'; return; }
+      const p = data[0];
+      newMapInstance.setView([Number(p.lat), Number(p.lon)], 11);
+      feedback.textContent = 'مکان پیدا شد.';
+    } catch (e) { feedback.textContent = 'خطا در جستجو.'; }
+  }
+
+  document.getElementById('search-btn').onclick = searchPlace;
+  document.getElementById('place-search').addEventListener('keydown', e => { if (e.key === 'Enter') searchPlace(); });
+
+  document.querySelectorAll('.service-chip').forEach(x => x.onclick = () => {
+    x.classList.toggle('is-active');
   });
+
+  document.getElementById('submit-mission').onclick = () => {
+    const n = document.querySelectorAll('.option-row input:checked').length;
+    feedback.textContent = 'درخواست با ' + n + ' آپشن آماده است.';
+  };
 }
 
-// اجرای توابع پس از باز شدن صفحه
+// راه‌اندازی نقشه وقتی صفحه باز می‌شود
 document.addEventListener('taraz:screenShown', (e) => {
   if (e.detail && e.detail.screenId === 'map-detail') {
     setTimeout(() => {
-      initTarazMap();
-      bindTarazMapUI();
-      if (tarazMapState.map) tarazMapState.map.invalidateSize();
+      initMapDetail();
+      if (newMapInstance) newMapInstance.invalidateSize();
     }, 200);
+  }
+});
+
+// اگر صفحه از قبل باز بود
+document.addEventListener('DOMContentLoaded', () => {
+  const mapScreen = document.getElementById('screen-map-detail');
+  if (mapScreen && mapScreen.classList.contains('active')) {
+    setTimeout(() => initMapDetail(), 200);
   }
 });
