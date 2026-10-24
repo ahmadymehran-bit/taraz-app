@@ -2291,7 +2291,12 @@ var api = {
 window.apiHealthCheck = async function() {
   console.log('Testing API connection...');
   var result = await api.health();
-  if (result && result.status === 'ok') { console.log('✓ API connected:', result); if (typeof toast === 'function') toast('✓ اتصال به سرور برقرار شد'); return true; }
-  else { console.warn('✗ API not reachable'); if (typeof toast === 'function') toast('✗ اتصال به سرور برقرار نشد'); return false; }
+  if (result && result.status === 'ok') { 
+    console.log('✓ API connected:', result); 
+  } else { 
+    console.warn('✗ API not reachable'); 
+    if (typeof toast === 'function') toast('خطا در اتصال به سرور');
+  }
 };
+
 console.log('✓ API layer v1 loaded');
