@@ -1908,6 +1908,316 @@ async function submitRatingForMission(toPhone) {
     toast('خطا در ثبت امتیاز');
   }
 }
+* ==========================================================
+   TARAZ — نقشه تعاملی صفحه «چه می‌خواهم؟» (screen-map-detail)
+   Leaflet + GeoJSON استان‌های ایران + پین مبدأ/مقصد
+   ========================================================== */
+
+// ---------- پیکربندی برند ----------
+const TARAZ_MAP_CONFIG = {
+  geoJsonUrl:
+    'https://raw.githubusercontent.com/ssepehrnoush/Iran-geojson-map-boundaries/master/ir_states_boundaries_coordinates.geojson',
+  center: [32.4279, 53.688], // مرکز ایران
+  zoom: 5,
+  minZoom: 4,
+  maxZoom: 12,
+  colors: {
+    border: '#123d32', // سبز جنگلی تیره — خطوط مرزی استان‌ها
+    fill: '#1f8062', // سبز روشن — داخل استان‌ها
+    fillHover: '#f0b429', // طلایی — هاور استان
+    pinStart: '#1f8062', // پین مبدأ
+    pinEnd: '#f0b429', // پین مقصد
+  },
+};
+
+// نگه‌داری نمونه سراسری نقشه برای دسترسی از سایر بخش‌ها
+window.tarazMap = null;
+window.tarazStateLayer = null;
+window.tarazMarkers = { start: null, end: null };
+
+
+/* ----------------------------------------------------------
+   تابع ۱: ساخت آیکون سفارشی برای پین‌ها
+   ---------------------------------------------------------- */
+function tarazCreatePinIcon(type, emoji) {
+  const color =
+    type === 'start'
+      ? TARAZ_MAP_CONFIG.colors.pinStart
+      : TARAZ_MAP_CONFIG.colors.pinEnd;
+
+  return L.divIcon({
+    className: '', // حذف کلاس پیش‌فرض Leaflet
+    html: `
+      <div class="taraz-pin ${type}" style="background:${color};">
+        <span>${emoji}</span>
+      </div>
+    `,
+    iconSize: [34, 34],
+    iconAnchor: [17, 34], // نوک پین روی نقطه
+    popupAnchor: [0, -34],
+  });
+}
+
+
+/* ----------------------------------------------------------
+   تابع ۲: استایل‌دهی به هر استان در GeoJSON
+   ---------------------------------------------------------- */
+function tarazStateStyle(feature) {
+  return {
+    color: TARAZ_MAP_CONFIG.colors.border,
+    weight: 1.5,
+    opacity: 0.85,
+    fillColor: TARAZ_MAP_CONFIG.colors.fill,
+    fillOpacity: 0.22,
+  };
+}
+
+/* رفتار هاور روی استان‌ها */
+function tarazOnEachState(feature, layer) {
+  // استخراج نام استان (کلیدها در GeoJSON متفاوت است)
+  const name =
+    feature.properties?.name ||
+    feature.properties?.NAME_1 ||
+    feature.properties?.province ||
+    feature.properties?.NAME ||
+    'استان';
+
+  layer.bindTooltip(name, {
+    className: 'taraz-tooltip',
+    sticky: true,
+    direction: 'top',
+    offset: [0, -6],
+  });
+
+  layer.on({
+    mouseover: (e) => {
+      const l = e.target;
+      l.setStyle({
+        fillColor: TARAZ_MAP_CONFIG.colors.fillHover,
+        fillOpacity: 0.35,
+        weight: 2.2,
+        color: TARAZ_MAP_CONFIG.colors.border,
+      });
+      if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+        l.bringToFront();
+      }
+    },
+    mouseout: (e) => {
+      if (window.tarazStateLayer) {
+        window.tarazStateLayer.resetStyle(e.target);
+      }
+    },
+    click: (e) => {
+      const center = e.target.getBounds().getCenter();
+      window.tarazMap.flyTo(center, Math.min(window.tarazMap.getZoom() + 1, 9), {
+        duration: 0.8,
+      });
+      // اطلاع‌رسانی به سایر بخش‌ها (مثلاً پر کردن فیلد مبدأ/مقصد)
+      document.dispatchEvent(
+        new CustomEvent('taraz:stateSelected', {
+          detail: { name, center, feature },
+        })
+      );
+    },
+  });
+}
+
+
+/* ----------------------------------------------------------
+   تابع ۳: افزودن پین مبدأ یا مقصد به نقشه
+   ---------------------------------------------------------- */
+function tarazSetMarker(type, latlng, label) {
+  if (!window.tarazMap) {
+    console.warn('[Taraz] نقشه هنوز آماده نیست.');
+    return null;
+  }
+
+  // اگر مارکر قبلی وجود دارد، حذف شود
+  if (window.tarazMarkers[type]) {
+    window.tarazMap.removeLayer(window.tarazMarkers[type]);
+  }
+
+  const emoji = type === 'start' ? '📍' : '🏁';
+  const icon = tarazCreatePinIcon(type, emoji);
+
+  const marker = L.marker(latlng, {
+    icon,
+    draggable: true,
+    title: label || (type === 'start' ? 'مبدأ' : 'مقصد'),
+  }).addTo(window.tarazMap);
+
+  // پاپ‌آپ با برچسب
+  if (label) {
+    marker.bindPopup(
+      `<div style="font-family:inherit;text-align:center;">
+        <strong>${type === 'start' ? 'مبدأ' : 'مقصد'}:</strong> ${label}
+      </div>`
+    );
+  }
+
+  // هنگام درگ کردن مارکر
+  marker.on('dragend', (e) => {
+    const pos = e.target.getLatLng();
+    document.dispatchEvent(
+      new CustomEvent('taraz:markerMoved', {
+        detail: { type, latlng: pos },
+      })
+    );
+  });
+
+  window.tarazMarkers[type] = marker;
+  return marker;
+}
+
+
+/* ----------------------------------------------------------
+   تابع ۴: راه‌اندازی اصلی نقشه
+   ---------------------------------------------------------- */
+async function initTarazMap() {
+  const container = document.getElementById('leaflet-map');
+  if (!container) {
+    console.warn('[Taraz] #leaflet-map پیدا نشد.');
+    return;
+  }
+
+  // اگر قبلاً ساخته شده، دوباره نساز
+  if (window.tarazMap) {
+    window.tarazMap.invalidateSize();
+    return window.tarazMap;
+  }
+
+  // --- ساخت نقشه پایه ---
+  const map = L.map(container, {
+    center: TARAZ_MAP_CONFIG.center,
+    zoom: TARAZ_MAP_CONFIG.zoom,
+    minZoom: TARAZ_MAP_CONFIG.minZoom,
+    maxZoom: TARAZ_MAP_CONFIG.maxZoom,
+    zoomControl: true,
+    attributionControl: true,
+  });
+
+  window.tarazMap = map;
+
+  // --- لایه کاشی‌ها (OpenStreetMap رایگان) ---
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | تاراز',
+  }).addTo(map);
+
+  // --- لود GeoJSON استان‌ها ---
+  try {
+    const response = await fetch(TARAZ_MAP_CONFIG.geoJsonUrl);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+    const geoData = await response.json();
+
+    window.tarazStateLayer = L.geoJSON(geoData, {
+      style: tarazStateStyle,
+      onEachFeature: tarazOnEachState,
+    }).addTo(map);
+
+    // فیت کردن مرزهای ایران
+    map.fitBounds(window.tarazStateLayer.getBounds(), {
+      padding: [20, 20],
+    });
+
+    // اطلاع‌رسانی آماده بودن نقشه
+    document.dispatchEvent(new CustomEvent('taraz:mapReady'));
+  } catch (err) {
+    console.error('[Taraz] خطا در لود GeoJSON استان‌ها:', err);
+  }
+
+  // --- پین‌های پیش‌فرض (نمونه — بعداً از دیتابیس خوانده می‌شود) ---
+  // tarazSetMarker('start', [35.6892, 51.389], 'تهران');
+  // tarazSetMarker('end', [29.5918, 52.5837], 'شیراز');
+
+  // --- مدیریت resize ---
+  window.addEventListener('resize', () => {
+    if (window.tarazMap) window.tarazMap.invalidateSize();
+  });
+
+  return map;
+}
+
+
+/* ----------------------------------------------------------
+   تابع ۵: اتصال رویدادهای UI (دکمه‌های شناور، جستجو، ثبت)
+   ---------------------------------------------------------- */
+function bindTarazMapUI() {
+  // دکمه بازگشت
+  const backBtn = document.querySelector('#screen-map-detail .back-btn');
+  if (backBtn) {
+    backBtn.addEventListener('click', () => {
+      history.back();
+    });
+  }
+
+  // دکمه‌های شناور روی نقشه
+  document
+    .querySelectorAll('#screen-map-detail .floating-card')
+    .forEach((btn, index) => {
+      btn.addEventListener('click', () => {
+        // می‌توانی بعداً به actionهای واقعی وصل کنی
+        const actions = ['start', 'end', 'cargo'];
+        const action = actions[index] || 'unknown';
+        document.dispatchEvent(
+          new CustomEvent('taraz:floatingCardClick', {
+            detail: { action, button: btn },
+          })
+        );
+      });
+    });
+
+  // دکمه جستجو
+  const searchBtn = document.querySelector(
+    '#screen-map-detail .search-btn'
+  );
+  const searchInput = document.querySelector(
+    '#screen-map-detail .search-bar input'
+  );
+  if (searchBtn && searchInput) {
+    searchBtn.addEventListener('click', () => {
+      const query = searchInput.value.trim();
+      if (!query) return;
+      document.dispatchEvent(
+        new CustomEvent('taraz:searchRequested', { detail: { query } })
+      );
+    });
+    searchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') searchBtn.click();
+    });
+  }
+}
+
+
+/* ----------------------------------------------------------
+   تابع ۶: راه‌اندازی زمانی که صفحه در DOM ظاهر شد
+   ---------------------------------------------------------- */
+function setupTarazMapScreen() {
+  // اگر صفحه از ابتدا visible است
+  if (document.getElementById('leaflet-map')) {
+    // کمی تأخیر برای اطمینان از رندر شدن layout
+    setTimeout(() => {
+      initTarazMap().then(() => bindTarazMapUI());
+    }, 150);
+  }
+}
+
+// اجرا هنگام لود DOM
+document.addEventListener('DOMContentLoaded', setupTarazMapScreen);
+
+// نمایش صفحه‌ای که بعداً از طریق روتر نشان داده می‌شود
+document.addEventListener('taraz:screenShown', (e) => {
+  if (e.detail?.screenId === 'screen-map-detail') {
+    setTimeout(() => {
+      initTarazMap().then(() => {
+        window.tarazMap?.invalidateSize();
+        bindTarazMapUI();
+      });
+    }, 200);
+  }
+});
 
 /* ============================================================
    API LAYER 
