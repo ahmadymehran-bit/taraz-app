@@ -1272,11 +1272,13 @@ async function renderMyMissions() {
 
 function backFromDetail(){go(detailReturnTo||'home')}
 if(DB.user){ loadFavorites().then(function(){ if(currentScreen==='home')renderHome(); else if(currentScreen==='browse')renderBrowse(); }); }
+
 /* اسکرول به بالا — برای کلیک روی لوگو */
 function scrollToTop() {
   const active = document.querySelector('.screen.active');
   if (active) active.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
 console.log('✓ Taraz v3.0 loaded');
 /* ============ ADMIN PANEL LOGIC ============ */
 const ADMIN_PHONE = '09163905174'; // شماره موبایل خودت رو اینجا بذار
@@ -2032,15 +2034,21 @@ function initTarazMap() {
   const line = L.polyline([tehran, [34.8, 51.4], [33.7, 51.5], esfahan], { color: '#12835b', weight: 4, opacity: .9, dashArray: '8 8' }).addTo(tarazMapInstance);
   tarazMapInstance.fitBounds(line.getBounds(), { padding: [35, 35] });
 
-  // رویداد دکمه‌ها
- const locateBtn = document.getElementById('locate-btn');
+  // کد امن برای دکمه‌های نقشه
+const locateBtn = document.getElementById('locate-btn');
 if (locateBtn) {
-  locateBtn.onclick = () => tarazMapInstance.setView([35.6892, 51.3890], 6);
+  locateBtn.onclick = function() {
+    if(typeof tarazMapInstance !== 'undefined' && tarazMapInstance) {
+       tarazMapInstance.setView([32.4279, 53.6880], 5);
+    }
+  };
 }
 
 const openMapBtn = document.getElementById('open-map');
 if (openMapBtn) {
-  openMapBtn.onclick = () => window.open('https://www.openstreetmap.org/?mlat=35.6892&mlon=51.3890#map=6/35.6892/51.3890', '_blank');
+  openMapBtn.onclick = function() {
+    window.open('https://www.openstreetmap.org', '_blank');
+  };
 }
 
   async function searchPlace() {
@@ -2059,42 +2067,15 @@ if (openMapBtn) {
     } catch (e) { feedback.textContent = 'جستجوی آنلاین در دسترس نیست؛ اتصال اینترنت را بررسی کنید.'; }
   }
 
-// اتصال دکمه‌های نقشه
-if(document.getElementById('locate-btn')) document.getElementById('locate-btn').onclick = () => tarazMapInstance.setView([32.4279, 53.6880], 5);
-if(document.getElementById('open-map')) document.getElementById('open-map').onclick = () => window.open('https://www.openstreetmap.org', '_blank');
-
-
-var mapOpenBtn = document.getElementById('open-map');
-if (mapOpenBtn) {
-  mapOpenBtn.onclick = function() {
-    window.open('https://www.openstreetmap.org', '_blank');
-  };
-}
-
-
+  document.getElementById('search-btn').onclick = searchPlace;
+  document.getElementById('place-search').addEventListener('keydown', e => { if (e.key === 'Enter') searchPlace(); });
 
   document.querySelectorAll('.service-chip').forEach(x => x.onclick = () => {
     const on = x.classList.toggle('is-active');
     x.setAttribute('aria-pressed', String(on));
   });
 
-document.addEventListener('DOMContentLoaded', () => {
-  const mapScreen = document.getElementById('screen-map-detail');
-  if (mapScreen && mapScreen.classList.contains('active')) {
-    setTimeout(() => { if(typeof initTarazMap === 'function') initTarazMap(); }, 300);
-  }
-});
-
-document.addEventListener('taraz:screenShown', (e) => {
-  if (e.detail && e.detail.screenId === 'map-detail') {
-    setTimeout(() => {
-      if(typeof initTarazMap === 'function') initTarazMap();
-      if (window.tarazMapInstance) window.tarazMapInstance.invalidateSize();
-    }, 300);
-  }
-});
-
-const submitMissionBtn = document.getElementById('submit-mission');
+ const submitMissionBtn = document.getElementById('submit-mission');
 if (submitMissionBtn) {
   submitMissionBtn.onclick = () => {
     const n = document.querySelectorAll('.option-row input:checked').length;
@@ -2102,3 +2083,21 @@ if (submitMissionBtn) {
     if (feedback) feedback.textContent = 'نمونه درخواست ( ' + n + ' ) انتخاب شده';
   };
 }
+
+// ۱. وقتی صفحه عوض می‌شود (با تابع go)
+document.addEventListener('taraz:screenShown', (e) => {
+  if (e.detail && e.detail.screenId === 'map-detail') {
+    setTimeout(() => {
+      initTarazMap();
+      if (tarazMapInstance) tarazMapInstance.invalidateSize();
+    }, 300);
+  }
+});
+
+// ۲. اگر صفحه از قبل باز باشد
+document.addEventListener('DOMContentLoaded', () => {
+  const mapScreen = document.getElementById('screen-map-detail');
+  if (mapScreen && mapScreen.classList.contains('active')) {
+    setTimeout(() => initTarazMap(), 300);
+  }
+});
