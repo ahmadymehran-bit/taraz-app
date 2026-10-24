@@ -287,3 +287,57 @@
   width: 100%;
   box-sizing: border-box;
 }
+/* ---------- بهبود صفحه بازار (Browse) ---------- */
+.browse-header {
+  background: var(--paper) !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  border-bottom: 1px solid var(--line);
+}
+.browse-search-big {
+  border-radius: 100px !important;
+  background: #fff !important;
+  border: 1px solid var(--line) !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.02) !important;
+  padding: 12px 18px !important;
+}
+.browse-grid {
+  gap: 12px !important;
+  padding: 16px 12px 40px !important;
+}
+.browse-card {
+  border-radius: 16px !important;
+  border: 1px solid var(--line) !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03) !important;
+}
+.browse-card .title {
+  font-size: 14px !important;
+  height: auto !important;
+  line-height: 1.6;
+  margin-bottom: 6px;
+}
+.browse-card .price-big {
+  color: var(--forest) !important;
+  font-size: 16px !important;
+}
+.chips-row {
+  padding-bottom: 8px !important;
+}
+.chip-big {
+  box-shadow: none !important;
+}
+/* یکسان‌سازی دکمه‌های ثبت در صفحه خرید و فروش */
+#screen-buy .btn-green,
+#screen-sell .btn-primary {
+  background: linear-gradient(145deg, #219b70, #126a4c) !important;
+  color: #fff !important;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 20px rgba(22, 132, 95, 0.25) !important;
+  border: none !important;
+  font-size: 17px !important;
+  font-weight: 900 !important;
+}
+#screen-buy .sub-header,
+#screen-sell .sub-header {
+  background: transparent;
+  border-bottom: none;
+}
