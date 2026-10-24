@@ -2078,12 +2078,14 @@ if (mapOpenBtn) {
     x.setAttribute('aria-pressed', String(on));
   });
 
-  document.getElementById('submit-mission').onclick = () => {
+  const submitMissionBtn = document.getElementById('submit-mission');
+if (submitMissionBtn) {
+  submitMissionBtn.onclick = () => {
     const n = document.querySelectorAll('.option-row input:checked').length;
-    feedback.textContent = 'نمونه درخواست آماده است؛ ' + n + ' آپشن انتخاب شده.';
+    const feedback = document.getElementById('feedback');
+    if (feedback) feedback.textContent = 'نمونه درخواست ( ' + n + ' ) انتخاب شده';
   };
 }
-
 // ۱. وقتی صفحه عوض می‌شود (با تابع go)
 document.addEventListener('taraz:screenShown', (e) => {
   if (e.detail && e.detail.screenId === 'map-detail') {
