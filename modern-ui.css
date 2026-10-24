@@ -279,3 +279,11 @@
 .top .header-bell {
   display: none !important;
 }
+/* جلوگیری از اسکرول افقی در صفحه پروفایل */
+#screen-profile {
+  overflow-x: hidden;
+}
+#screen-profile > div:first-of-type {
+  width: 100%;
+  box-sizing: border-box;
+}
