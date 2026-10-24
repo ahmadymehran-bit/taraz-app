@@ -642,15 +642,8 @@ body.no-nav .screen.active { padding-bottom: 0 !important; }
 /* ==========================================================
    اصلاحات نهایی ظاهر صفحه نقشه (TARAZ)
    ========================================================== */
-
-/* ۱. مخفی کردن صفحه نقشه تا زمانی که فعال نشده */
-#screen-map-detail {
-  display: none !important;
-}
-
-/* ۲. وقتی صفحه نقشه باز شد، کل صفحه را پر کند */
+/* اصلاح نمایش صفحه نقشه */
 #screen-map-detail.active {
-  display: flex !important;
   position: fixed;
   top: 0;
   left: 0;
@@ -659,6 +652,7 @@ body.no-nav .screen.active { padding-bottom: 0 !important; }
   z-index: 9999;
   background: #fff;
 }
+
 
 /* ۳. اصلاح دکمه‌های زوم Leaflet (که در عکس بیرون زده بودند) */
 #leaflet-map .leaflet-control-zoom {
