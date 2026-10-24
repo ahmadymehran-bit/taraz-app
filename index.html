@@ -620,58 +620,121 @@
 
   </div>
 </section>
-<!-- ============ MAP & DETAIL SCREEN (New) ============ -->
-<section class="screen" id="screen-map-detail">
-  <header class="topbar">
-    <a class="brand" href="#" onclick="event.preventDefault(); go('home');"><span class="brand-symbol">ت</span><span class="brand-copy"><strong>تاراز</strong><small>بازار تخصصی دام و کشاورزی</small></span></a>
-    <label class="search-box" for="place-search">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.3 4.3"/></svg>
-      <input id="place-search" type="search" placeholder="جستجوی شهر یا مکان..." autocomplete="off">
-      <button id="search-btn" class="search-submit" type="button">جستجو</button>
-    </label>
-    <button class="profile-button" type="button" aria-label="پروفایل" onclick="go('profile')">👤</button>
+<!-- ============ MAP & DETAIL SCREEN (Modern Mobile) ============ -->
+<section class="screen" id="screen-map-detail" style="padding-bottom: 110px;">
+  
+  <!-- هدر صفحه نقشه -->
+  <header class="modern-header" style="position: relative;">
+    <div class="mh-brand" onclick="go('home')">
+      <span class="leaf">🗺️</span>
+      <span class="mh-title">نقشه سفارش</span>
+    </div>
+    <div style="flex:1"></div>
+    <button type="button" onclick="go('home')" style="background:none;border:none;font-size:24px;color:var(--muted);">✕</button>
   </header>
-  <main class="workspace">
-    <section class="map-section" aria-label="نقشه مسیر">
-      <div class="map-heading">
-        <div><span class="eyebrow">نقشه مأموریت</span><h1>تهران <span class="route-arrow">←</span> اصفهان</h1></div>
-        <span class="live-pill"><i></i> نقشه تعاملی</span>
+
+  <!-- نقشه -->
+  <div style="position: relative; height: 40vh; min-height: 250px; width: 100%;">
+    <div id="map" style="width: 100%; height: 100%; z-index: 1;"></div>
+    
+    <!-- دکمه‌های شناور روی نقشه -->
+    <button class="map-control" style="position:absolute; top:16px; right:16px; z-index:500; width:40px; height:40px; border-radius:12px; background:#fff; border:1px solid var(--line); font-size:20px; box-shadow:var(--shadow);">🔍</button>
+    <button class="map-control" style="position:absolute; top:66px; right:16px; z-index:500; width:40px; height:40px; border-radius:12px; background:#fff; border:1px solid var(--line); font-size:20px; box-shadow:var(--shadow);">⌖</button>
+  </div>
+
+  <!-- کارت جزئیات (کشویی) -->
+  <div style="position: relative; margin-top: -30px; z-index: 10; background: var(--paper); border-radius: 30px 30px 0 0; padding: 20px 16px; box-shadow: 0 -10px 20px rgba(0,0,0,0.05);">
+    
+    <!-- دستگیره کشویی -->
+    <div style="width: 40px; height: 4px; background: var(--line); border-radius: 4px; margin: 0 auto 16px;"></div>
+
+    <!-- تصویر و عنوان -->
+    <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+      <div style="width: 70px; height: 70px; border-radius: 16px; background: #e0f0ff; display: flex; align-items: center; justify-content: center; font-size: 36px;">🐑</div>
+      <div>
+        <h2 style="font-size: 18px; font-weight: 900; color: var(--forest); margin: 0 0 4px 0;">خرید ۵۰ رأس گوسفند</h2>
+        <div style="font-size: 13px; color: var(--muted);">از فروشنده معتبر، با حمل مطمئن</div>
       </div>
-      <div class="map-frame">
-        <div id="map" aria-label="نقشه تعاملی ایران"></div>
-        <div class="map-float map-status"><span class="status-icon">↗</span><span><b>مسیر پیشنهادی</b><small id="route-status">تهران تا اصفهان</small></span></div>
-        <button id="locate-btn" class="map-control" type="button" title="نمایش مسیر تهران تا اصفهان">⌖</button>
-        <div class="map-legend"><span class="legend-line"></span> مسیر حمل دام <span class="legend-dot"></span> مقصد</div>
-      </div>
-      <div class="route-summary">
-        <div><span class="summary-icon">⌁</span><span><small>مسافت تقریبی</small><strong id="distance">حدود ۴۵۰ کیلومتر</strong></span></div>
-        <div><span class="summary-icon">◷</span><span><small>زمان تقریبی مسیر</small><strong id="duration">۵ تا ۶ ساعت</strong></span></div>
-        <button id="open-map" class="text-action" type="button">باز کردن نقشه ↗</button>
-      </div>
-    </section>
-    <aside class="mission-panel" aria-label="جزئیات مأموریت خرید">
-      <div class="mission-topline"><span class="eyebrow">مأموریت خرید</span><span class="mission-number">#TR-2048</span></div>
-      <div class="mission-title-row"><div><h2>خرید ۵۰ رأس گوسفند</h2><p>از فروشنده معتبر، با حمل مطمئن</p></div><span class="animal-icon">🐑</span></div>
-      <div class="route-cities"><div class="city-point"><span class="point-dot origin"></span><div><small>مبدأ خرید</small><strong>تهران</strong></div></div><span class="city-connector"></span><div class="city-point"><span class="point-dot destination"></span><div><small>محل تحویل</small><strong>اصفهان</strong></div></div></div>
-      <div class="details-grid">
-        <div class="detail-card"><span class="detail-icon">🐑</span><span><small>تعداد</small><strong>۵۰ رأس</strong></span></div>
-        <div class="detail-card"><span class="detail-icon">🩺</span><span><small>وضعیت سلامت</small><strong>نیازمند تأیید</strong></span></div>
-        <div class="detail-card"><span class="detail-icon">🚚</span><span><small>حمل موردنیاز</small><strong>دام‌بر تهویه‌دار</strong></span></div>
-        <div class="detail-card"><span class="detail-icon">💳</span><span><small>پرداخت</small><strong>امکان بیعانه</strong></span></div>
-      </div>
-      <section class="option-section">
-        <div class="section-heading"><h3>آپشن‌های بیشتر</h3><span>اختیاری</span></div>
-        <div class="option-list">
-          <label class="option-row"><input type="checkbox" checked><span class="option-symbol">📍</span><span class="option-text"><b>فقط نزدیک من</b><small>نمایش فروشندگان اطراف</small></span><span class="check-ui"></span></label>
-          <label class="option-row"><input type="checkbox"><span class="option-symbol">⚡</span><span class="option-text"><b>خرید فوری</b><small>اولویت با پاسخ سریع</small></span><span class="check-ui"></span></label>
-          <label class="option-row"><input type="checkbox" checked><span class="option-symbol">🤝</span><span class="option-text"><b>حمل اشتراکی</b><small>تقسیم هزینه مسیر با خریدار دیگر</small></span><span class="check-ui"></span></label>
-          <label class="option-row"><input type="checkbox"><span class="option-symbol">📦</span><span class="option-text"><b>فرصت‌های ویژه</b><small>پیشنهادهای قیمت‌مناسب</small></span><span class="check-ui"></span></label>
+    </div>
+
+    <!-- مسیر (مبدا و مقصد) -->
+    <div style="display: flex; align-items: center; justify-content: space-between; background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 16px; margin-bottom: 20px;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <div style="width: 12px; height: 12px; border-radius: 50%; background: var(--accent); border: 3px solid #d1f0e4;"></div>
+        <div>
+          <div style="font-size: 11px; color: var(--muted);">مبدأ خرید</div>
+          <div style="font-size: 14px; font-weight: 900; color: var(--forest);">تهران</div>
         </div>
-      </section>
-      <div class="service-chips"><button type="button" class="service-chip is-active" aria-pressed="true">🩺 دامپزشک</button><button type="button" class="service-chip" aria-pressed="false">🚛 راننده تأییدشده</button><button type="button" class="service-chip" aria-pressed="false">🛡️ بیمه حمل</button></div>
-      <div class="mission-footer"><div class="privacy-note"><span>✓</span> ثبت درخواست رایگان است</div><button id="submit-mission" class="primary-button" type="button">پیدا کردن فروشنده <span>←</span></button><p id="feedback" class="feedback" role="status" aria-live="polite"></p></div>
-    </aside>
-  </main>
+      </div>
+      <div style="flex: 1; border-top: 2px dashed var(--line); margin: 0 12px;"></div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <div style="width: 12px; height: 12px; border-radius: 50%; background: var(--fire); border: 3px solid #ffd1d1;"></div>
+        <div>
+          <div style="font-size: 11px; color: var(--muted);">محل تحویل</div>
+          <div style="font-size: 14px; font-weight: 900; color: var(--forest);">اصفهان</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- جزئیات کوچک -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+      <div style="background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 12px; display: flex; align-items: center; gap: 8px;">
+        <div style="font-size: 20px;">🐑</div>
+        <div>
+          <div style="font-size: 11px; color: var(--muted);">تعداد</div>
+          <div style="font-size: 13px; font-weight: 800; color: var(--forest);">۵۰ رأس</div>
+        </div>
+      </div>
+      <div style="background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 12px; display: flex; align-items: center; gap: 8px;">
+        <div style="font-size: 20px;">🚚</div>
+        <div>
+          <div style="font-size: 11px; color: var(--muted);">حمل</div>
+          <div style="font-size: 13px; font-weight: 800; color: var(--forest);">دام‌بر</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- گزینه‌ها -->
+    <h3 style="font-size: 15px; font-weight: 900; color: var(--forest); margin-bottom: 10px;">گزینه‌های حمل و نقل</h3>
+    <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px;">
+      <label style="display: flex; align-items: center; justify-content: space-between; background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 14px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 24px;">🚛</span>
+          <div>
+            <div style="font-size: 14px; font-weight: 800; color: var(--forest);">ماشین سبک</div>
+            <div style="font-size: 11px; color: var(--muted);">برای بارهای کم</div>
+          </div>
+        </div>
+        <input type="radio" name="transport" style="width: 20px; height: 20px; accent-color: var(--accent);">
+      </label>
+      <label style="display: flex; align-items: center; justify-content: space-between; background: #eef8f3; border: 2px solid var(--accent); border-radius: 16px; padding: 14px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 24px;">🚛</span>
+          <div>
+            <div style="font-size: 14px; font-weight: 800; color: var(--accent);">کامیون ویژه دام</div>
+            <div style="font-size: 11px; color: var(--accent);">تا ۵۰ رأس</div>
+          </div>
+        </div>
+        <input type="radio" name="transport" checked style="width: 20px; height: 20px; accent-color: var(--accent);">
+      </label>
+      <label style="display: flex; align-items: center; justify-content: space-between; background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 14px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 24px;">🤝</span>
+          <div>
+            <div style="font-size: 14px; font-weight: 800; color: var(--forest);">حمل مشترک</div>
+            <div style="font-size: 11px; color: var(--muted);">تقسیم هزینه مسیر</div>
+          </div>
+        </div>
+        <input type="radio" name="transport" style="width: 20px; height: 20px; accent-color: var(--accent);">
+      </label>
+    </div>
+
+    <!-- دکمه ثبت -->
+    <button type="button" class="modern-btn mb-urgent" onclick="go('mission')" style="width: 100%; border-radius: 16px; padding: 16px; font-size: 16px;">
+      ثبت درخواست خرید 🛒
+    </button>
+
+  </div>
 </section>
 
   <!-- ============ NAV ============ -->
