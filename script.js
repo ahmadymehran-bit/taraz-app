@@ -1988,103 +1988,178 @@ console.log('✓ API layer v1 loaded');
 
 
 /* ==========================================================
-   TARAZ — نقشه تعاملی صفحه «چه می‌خواهم؟»
-   نسخه: 1.0 (راه‌اندازی اولیه نقشه و GeoJSON)
+   TARAZ — منطق تعاملی نقشه (قدم ۴)
    ========================================================== */
 
-// تنظیمات اولیه نقشه
 const TARAZ_MAP_CONFIG = {
   geoJsonUrl: 'https://raw.githubusercontent.com/ssepehrnoush/Iran-geojson-map-boundaries/master/ir_states_boundaries_coordinates.geojson',
-  center: [32.4279, 53.688], // مرکز ایران
+  center: [32.4279, 53.688],
   zoom: 5,
   colors: {
-    border: '#123d32', // مرز استان‌ها
-    fill: '#1f8062', // رنگ داخل استان‌ها
-    fillHover: '#f0b429' // رنگ هاور
+    border: '#123d32',
+    fill: '#1f8062',
+    fillHover: '#f0b429',
+    pinStart: '#1f8062',
+    pinEnd: '#f0b429',
   }
 };
 
-// متغیر سراسری برای نگهداری نمونه نقشه
-let tarazMapInstance = null;
+// حالت داخلی نقشه
+const tarazMapState = {
+  map: null,
+  markers: { start: null, end: null },
+  points: { start: null, end: null },
+  pickMode: null // 'start' یا 'end'
+};
 
-// تابع راه‌اندازی نقشه
+// ۱. ساخت آیکون پین
+function tarazCreatePinIcon(type, emoji) {
+  const color = type === 'start' ? TARAZ_MAP_CONFIG.colors.pinStart : TARAZ_MAP_CONFIG.colors.pinEnd;
+  return L.divIcon({
+    className: '',
+    html: `<div style="background:${color}; width:36px; height:36px; border-radius:50% 50% 50% 0; transform:rotate(-45deg); border:3px solid #fff; box-shadow:0 4px 10px rgba(0,0,0,0.3); display:flex; align-items:center; justify-content:center;"><span style="transform:rotate(45deg); font-size:18px;">${emoji}</span></div>`,
+    iconSize: [36, 36],
+    iconAnchor: [18, 36],
+    popupAnchor: [0, -36]
+  });
+}
+
+// ۲. افزودن پین به نقشه
+function tarazSetMarker(type, latlng, label) {
+  if (!tarazMapState.map) return;
+  
+  // حذف پین قبلی اگر وجود دارد
+  if (tarazMapState.markers[type]) {
+    tarazMapState.map.removeLayer(tarazMapState.markers[type]);
+  }
+
+  const emoji = type === 'start' ? '📍' : '🏁';
+  const icon = tarazCreatePinIcon(type, emoji);
+  
+  const marker = L.marker(latlng, { icon, draggable: true }).addTo(tarazMapState.map);
+  
+  marker.bindPopup(`<b>${type === 'start' ? 'مبدأ' : 'مقصد'}:</b> ${label || 'انتخاب شد'}`).openPopup();
+
+  // اگر کاربر پین را جابجا کرد
+  marker.on('dragend', (e) => {
+    tarazMapState.points[type] = { latlng: e.target.getLatLng(), label: label || 'موقعیت جدید' };
+    tarazUpdateInfoCard();
+  });
+
+  tarazMapState.markers[type] = marker;
+  tarazMapState.points[type] = { latlng, label: label || 'انتخاب شد' };
+  
+  tarazUpdateInfoCard();
+}
+
+// ۳. محاسبه مسافت (خط مستقیم)
+function tarazHaversine(a, b) {
+  const R = 6371;
+  const dLat = (b.lat - a.lat) * Math.PI / 180;
+  const dLng = (b.lng - a.lng) * Math.PI / 180;
+  const lat1 = a.lat * Math.PI / 180;
+  const lat2 = b.lat * Math.PI / 180;
+  const h = Math.sin(dLat/2)**2 + Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLng/2)**2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+
+// ۴. آپدیت پنل اطلاعات
+function tarazUpdateInfoCard() {
+  const infoCard = document.querySelector('#screen-map-detail .info-card');
+  if (!infoCard) return;
+
+  const { start, end } = tarazMapState.points;
+  const startTxt = start ? start.label : 'انتخاب نشده';
+  const endTxt = end ? end.label : 'انتخاب نشده';
+  let distanceTxt = '--';
+
+  if (start && end) {
+    const km = tarazHaversine(start.latlng, end.latlng);
+    distanceTxt = `${km.toFixed(0)} کیلومتر`;
+  }
+
+  infoCard.innerHTML = `
+    <p><span>📍 مبدأ:</span> <strong>${startTxt}</strong></p>
+    <p><span>🏁 مقصد:</span> <strong>${endTxt}</strong></p>
+    <p><span>📏 مسافت:</span> <strong>${distanceTxt}</strong></p>
+  `;
+}
+
+// ۵. راه‌اندازی نقشه
 function initTarazMap() {
   const container = document.getElementById('leaflet-map');
-  if (!container) return; // اگر کانتینر نبود، خارج شو
+  if (!container) return;
 
-  // اگر نقشه قبلاً ساخته شده، فقط سایز آن را آپدیت کن
-  if (tarazMapInstance) {
-    tarazMapInstance.invalidateSize();
+  if (tarazMapState.map) {
+    tarazMapState.map.invalidateSize();
     return;
   }
 
-  // ۱. ساخت نقشه
-  tarazMapInstance = L.map('leaflet-map').setView(TARAZ_MAP_CONFIG.center, TARAZ_MAP_CONFIG.zoom);
+  // ساخت نقشه
+  tarazMapState.map = L.map('leaflet-map').setView(TARAZ_MAP_CONFIG.center, TARAZ_MAP_CONFIG.zoom);
+  
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(tarazMapState.map);
 
-  // ۲. اضافه کردن لایه کاشی‌ها (OpenStreetMap)
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; OpenStreetMap | تاراز'
-  }).addTo(tarazMapInstance);
-
-  // ۳. اضافه کردن GeoJSON استان‌های ایران
+  // لود استان‌ها
   fetch(TARAZ_MAP_CONFIG.geoJsonUrl)
-    .then(response => response.json())
+    .then(res => res.json())
     .then(data => {
       L.geoJSON(data, {
-        style: function(feature) {
-          return {
-            color: TARAZ_MAP_CONFIG.colors.border,
-            weight: 1.5,
-            opacity: 0.85,
-            fillColor: TARAZ_MAP_CONFIG.colors.fill,
-            fillOpacity: 0.2
-          };
-        },
-        onEachFeature: function(feature, layer) {
-          // نام استان را از دیتا استخراج کن
+        style: { color: TARAZ_MAP_CONFIG.colors.border, weight: 1.5, fillColor: TARAZ_MAP_CONFIG.colors.fill, fillOpacity: 0.2 },
+        onEachFeature: (feature, layer) => {
           const name = feature.properties.NAME_1 || feature.properties.name || 'استان';
+          layer.bindTooltip(name, { sticky: true });
           
-          // اضافه کردن تولتیپ (هاور)
-          layer.bindTooltip(name, { sticky: true, direction: 'top' });
-
-          // افکت هاور
           layer.on({
-            mouseover: function(e) {
-              e.target.setStyle({ fillColor: TARAZ_MAP_CONFIG.colors.fillHover, fillOpacity: 0.4 });
-            },
-            mouseout: function(e) {
-              e.target.setStyle({ fillColor: TARAZ_MAP_CONFIG.colors.fill, fillOpacity: 0.2 });
+            mouseover: (e) => e.target.setStyle({ fillColor: TARAZ_MAP_CONFIG.colors.fillHover, fillOpacity: 0.4 }),
+            mouseout: (e) => e.target.setStyle({ fillColor: TARAZ_MAP_CONFIG.colors.fill, fillOpacity: 0.2 }),
+            click: (e) => {
+              // اگر در حالت انتخاب مبدأ یا مقصد بودیم
+              if (tarazMapState.pickMode) {
+                tarazSetMarker(tarazMapState.pickMode, e.latlng, name);
+                tarazMapState.pickMode = null; // خروج از حالت انتخاب
+                
+                // برداشتن هایلایت از دکمه‌ها
+                document.querySelectorAll('#screen-map-detail .floating-card').forEach(b => b.style.background = '#fff');
+              }
             }
           });
         }
-      }).addTo(tarazMapInstance);
+      }).addTo(tarazMapState.map);
     })
     .catch(err => console.error('خطا در لود نقشه:', err));
 }
 
-// گوش دادن به رویداد تغییر صفحه برای راه‌اندازی نقشه
-// (چون نقشه در صفحه‌ای غیرفعال است، باید وقتی صفحه باز شد ساخته شود)
+// ۶. اتصال دکمه‌های شناور به منطق انتخاب
+function bindTarazMapUI() {
+  const floatingBtns = document.querySelectorAll('#screen-map-detail .floating-card');
+  
+  floatingBtns.forEach((btn, index) => {
+    btn.addEventListener('click', () => {
+      // اگر روی دکمه مبدأ (index 0) یا مقصد (index 1) کلیک شد
+      if (index === 0 || index === 1) {
+        const mode = index === 0 ? 'start' : 'end';
+        
+        // تغییر حالت
+        tarazMapState.pickMode = mode;
+        
+        // تغییر ظاهر دکمه فعال
+        floatingBtns.forEach(b => b.style.background = '#fff');
+        btn.style.background = '#f0b429';
+        
+        alert(`لطفاً روی نقشه کلیک کنید تا ${mode === 'start' ? 'مبدأ' : 'مقصد'} انتخاب شود.`);
+      }
+    });
+  });
+}
+
+// اجرای توابع پس از باز شدن صفحه
 document.addEventListener('taraz:screenShown', (e) => {
   if (e.detail && e.detail.screenId === 'map-detail') {
-    // کمی تاخیر برای اطمینان از باز شدن کامل صفحه
     setTimeout(() => {
       initTarazMap();
-      if (tarazMapInstance) tarazMapInstance.invalidateSize();
+      bindTarazMapUI();
+      if (tarazMapState.map) tarazMapState.map.invalidateSize();
     }, 200);
   }
 });
-
-// راه‌اندازی اولیه اگر صفحه از قبل باز باشد
-document.addEventListener('DOMContentLoaded', () => {
-  const mapScreen = document.getElementById('screen-map-detail');
-  if (mapScreen && mapScreen.classList.contains('active')) {
-    setTimeout(() => initTarazMap(), 200);
-  }
-});
-
-// اجرای مستقیم نقشه برای تست
-setTimeout(() => {
-  initTarazMap();
-  if (tarazMapInstance) tarazMapInstance.invalidateSize();
-}, 500);
