@@ -2045,12 +2045,20 @@ function initMapDetail() {
   };
 }
 
-// راه‌اندازی نقشه وقتی صفحه باز می‌شود
+// گوش دادن به رویداد تغییر صفحه برای ساخت نقشه
 document.addEventListener('taraz:screenShown', (e) => {
   if (e.detail && e.detail.screenId === 'map-detail') {
     setTimeout(() => {
       initMapDetail();
       if (newMapInstance) newMapInstance.invalidateSize();
     }, 200);
+  }
+});
+
+// اجرای اولیه اگر صفحه از قبل باز باشد
+document.addEventListener('DOMContentLoaded', () => {
+  const mapScreen = document.getElementById('screen-map-detail');
+  if (mapScreen && mapScreen.classList.contains('active')) {
+    setTimeout(() => initMapDetail(), 200);
   }
 });
