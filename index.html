@@ -5,13 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>تاراز</title>
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="theme-overrides.css">
+<link rel="stylesheet" href="modern-ui.css"> <!-- فایل جدید CSS -->
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#2E7D32">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="تاراز">
 <link rel="apple-touch-icon" href="https://i.ibb.co/TMNM2gDf/web-app-manifest-192x192.png">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link rel="stylesheet" href="modern-ui.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>  
 </head>
 <body>
@@ -64,90 +65,74 @@
     </div>
   </section>
 
-<!-- ============ MODERN HEADER ============ -->
-<header class="modern-header">
-  <div class="mh-brand" onclick="scrollToTop()">
-    <span class="leaf">🌿</span>
-    <span class="mh-title">تاراز</span>
-  </div>
+  <!-- ============ HOME (جدید) ============ -->
+<section class="screen" id="screen-home">
+  
+  <!-- ============ MODERN HEADER ============ -->
+  <header class="modern-header">
+    <div class="mh-brand" onclick="scrollToTop()">
+      <span class="leaf">🌿</span>
+      <span class="mh-title">تاراز</span>
+    </div>
 
-  <div class="mh-profile" onclick="go('profile')">
-    <div class="mh-avatar" id="header-avatar"></div>
-    <div class="mh-info">
-      <div class="mh-name" id="header-user-name">کاربر</div>
-      <div class="mh-meta">
-        <span id="header-user-role">شغل</span>
-        <span class="star">★ <span id="header-user-rating">۰</span></span>
+    <div class="mh-profile" onclick="go('profile')">
+      <div class="mh-avatar" id="header-avatar"></div>
+      <div class="mh-info">
+        <div class="mh-name" id="header-user-name">کاربر</div>
+        <div class="mh-meta">
+          <span id="header-user-role">شغل</span>
+          <span class="star">★ <span id="header-user-rating">۰</span></span>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="mh-bell" id="header-bell" onclick="go('notifs')">
-    🔔
-    <span class="bell-badge" id="bell-badge"></span>
-  </div>
-</header>
+    <div class="mh-bell" id="header-bell" onclick="go('notifs')">
+      🔔
+      <span class="bell-badge" id="bell-badge"></span>
+    </div>
+  </header>
 
-<!-- ============ دکمه‌های اصلی ============ -->
-<div class="modern-actions">
-  <div class="row-2">
-    <button type="button" class="modern-btn mb-buy" onclick="go('buy')">
-      <span class="mb-icon">🛒</span>
-      <span class="mb-label">خرید</span>
-    </button>
-    <button type="button" class="modern-btn mb-sell" onclick="go('sell')">
-      <span class="mb-icon">💰</span>
-      <span class="mb-label">فروش</span>
-    </button>
-  </div>
-  <button type="button" class="modern-btn mb-urgent" onclick="goUrgentSell()">
-    <span class="mb-icon">⚡</span>
-    <span class="mb-label">خرید و فروش فوری</span>
-  </button>
-</div>
-
-<!-- ============ دسته‌بندی‌های گرد ============ -->
-<div class="modern-cats">
-  <button type="button" class="modern-cat" onclick="pickBrowseCat('livestock');go('browse')">
-    <span class="mc-icon">🐄</span>
-    <span class="mc-label">دام و دامداری</span>
-  </button>
-  <button type="button" class="modern-cat" onclick="pickBrowseCat('crops');go('browse')">
-    <span class="mc-icon">🌾</span>
-    <span class="mc-label">کشاورزی</span>
-  </button>
-  <button type="button" class="modern-cat" onclick="pickBrowseCat('vet_drugs');go('browse')">
-    <span class="mc-icon">🩺</span>
-    <span class="mc-label">دامپزشکی</span>
-  </button>
-  <button type="button" class="modern-cat" onclick="pickBrowseCat('agri_inputs');go('browse')">
-    <span class="mc-icon">🌱</span>
-    <span class="mc-label">گیاه‌پزشکی</span>
-  </button>
-</div>
-
-
-  <!-- دکمه‌های اصلی (بزرگ و آیکونیک) -->
-  <div class="action-panel" style="padding: 20px 16px;">
-    <div style="display: flex; gap: 16px; margin-bottom: 16px;">
-      <button type="button" onclick="go('buy')" style="flex: 1; background: linear-gradient(135deg,#2aa876,#197b55); color: #fff; border-radius: 20px; padding: 24px 10px; display: flex; flex-direction: column; align-items: center; gap: 12px; box-shadow: 0 8px 20px rgba(42,168,118,.3);">
-        <span style="font-size: 56px; line-height: 1;">🛒</span>
-        <span style="font-size: 22px; font-weight: 900;">خرید</span>
+  <!-- ============ دکمه‌های اصلی ============ -->
+  <div class="modern-actions">
+    <div class="row-2">
+      <button type="button" class="modern-btn mb-buy" onclick="go('buy')">
+        <span class="mb-icon">🛒</span>
+        <span class="mb-label">خرید</span>
       </button>
-      <button type="button" onclick="go('sell')" style="flex: 1; background: linear-gradient(135deg,#e5a400,#b88200); color: #fff; border-radius: 20px; padding: 24px 10px; display: flex; flex-direction: column; align-items: center; gap: 12px; box-shadow: 0 8px 20px rgba(229,164,0,.3);">
-        <span style="font-size: 56px; line-height: 1;">💰</span>
-        <span style="font-size: 22px; font-weight: 900;">فروش</span>
+      <button type="button" class="modern-btn mb-sell" onclick="go('sell')">
+        <span class="mb-icon">💰</span>
+        <span class="mb-label">فروش</span>
       </button>
     </div>
-    <button type="button" class="fire-btn" onclick="goUrgentSell()" style="width: 100%; padding: 18px; display: flex; align-items: center; justify-content: center; gap: 12px; border-radius: 20px; background: linear-gradient(135deg,#ff4d4d,#c81f1f); color: #fff; font-size: 20px; font-weight: 900; box-shadow: 0 8px 20px rgba(230,57,70,.3);">
-      <span style="font-size: 32px;">🔥</span>
-      <span>فروش فوری</span>
+    <button type="button" class="modern-btn mb-urgent" onclick="goUrgentSell()">
+      <span class="mb-icon">⚡</span>
+      <span class="mb-label">خرید و فروش فوری</span>
+    </button>
+  </div>
+
+  <!-- ============ دسته‌بندی‌های گرد ============ -->
+  <div class="modern-cats">
+    <button type="button" class="modern-cat" onclick="pickBrowseCat('livestock');go('browse')">
+      <span class="mc-icon">🐄</span>
+      <span class="mc-label">دام و دامداری</span>
+    </button>
+    <button type="button" class="modern-cat" onclick="pickBrowseCat('crops');go('browse')">
+      <span class="mc-icon">🌾</span>
+      <span class="mc-label">کشاورزی</span>
+    </button>
+    <button type="button" class="modern-cat" onclick="pickBrowseCat('vet_drugs');go('browse')">
+      <span class="mc-icon">🩺</span>
+      <span class="mc-label">دامپزشکی</span>
+    </button>
+    <button type="button" class="modern-cat" onclick="pickBrowseCat('agri_inputs');go('browse')">
+      <span class="mc-icon">🌱</span>
+      <span class="mc-label">گیاه‌پزشکی</span>
     </button>
   </div>
 
   <!-- نبض بازار (مرجع قیمت) -->
-  <section class="section" style="padding-top: 0;">
-    <h2 style="font-size: 20px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">📊 نبض بازار</h2>
+  <section class="section" style="padding-top: 12px;">
+    <h2 style="font-size: 18px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">📊 نبض بازار</h2>
     <div style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;" id="market-pulse-container">
       <!-- این بخش با جاوااسکریپت پر می‌شه -->
       <div class="card" style="min-width: 140px; padding: 16px; text-align: center; background: #fff; border-radius: 16px;">
@@ -171,8 +156,8 @@
   <!-- مأموریت‌های من -->
   <section class="section">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-      <h2 style="font-size: 20px; margin: 0;">🎯 مأموریت‌های من</h2>
-      <button type="button" onclick="go('map-detail')" style="background: none; border: none; color: var(--accent); font-size: 14px; font-weight: 800;">مشاهده همه</button>
+      <h2 style="font-size: 18px; margin: 0;">🎯 مأموریت‌های من</h2>
+      <button type="button" onclick="go('map-detail')" style="background: none; border: none; color: var(--accent); font-size: 13px; font-weight: 800;">مشاهده همه</button>
     </div>
     <div id="home-missions-list">
       <div class="empty" style="padding: 20px; font-size: 14px;">هنوز مأموریتی نساخته‌ای</div>
@@ -181,7 +166,7 @@
 
   <!-- آگهی‌های جدید -->
   <section class="section">
-    <h2>📋 آخرین آگهی‌ها</h2>
+    <h2 style="font-size: 18px;">📋 آخرین آگهی‌ها</h2>
     <div id="home-listings"></div>
   </section>
 </section>
@@ -232,53 +217,62 @@
   </section>
 
 <!-- ============ MISSION (Snap & Digikala Style) ============ -->
-<section class="screen" id="screen-mission" style="padding-bottom:110px; background: #f7f5ef;">
-  
+<section class="screen" id="screen-mission" style="padding-bottom:110px;">
+  <header class="modern-header">
+    <div class="mh-brand" onclick="go('home')">
+      <span class="leaf">🎯</span>
+      <span class="mh-title">مأموریت جدید</span>
+    </div>
+    <div style="flex:1"></div>
+    <button type="button" onclick="go('home')" style="background:none;border:none;font-size:24px;color:var(--muted);padding:8px;">✕</button>
+  </header>
+
   <div style="padding: 20px 16px;">
     <!-- کارت شغل کاربر (به سبک دیجی‌کالا) -->
-    <div class="card" style="background: #fff; border-radius: 20px; padding: 20px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
-      <div style="width: 60px; height: 60px; border-radius: 16px; background: #eef8f3; display: flex; align-items: center; justify-content: center; font-size: 32px;">
-        👨‍🌾
-      </div>
+    <div class="modern-mission-card">
+      <div class="mmc-icon">👨‍🌾</div>
       <div>
-        <div style="font-size: 13px; color: var(--muted); font-weight: 700;">شغل شما در تاراز</div>
-        <div id="mission-user-role" style="font-size: 20px; font-weight: 900; color: var(--forest); margin-top: 4px;">در حال بارگذاری...</div>
+        <div class="mmc-lbl">شغل شما در تاراز</div>
+        <div id="mission-user-role" class="mmc-val">در حال بارگذاری...</div>
       </div>
     </div>
 
     <!-- کادر درخواست (به سبک اسنپ) -->
-    <h3 style="font-size: 18px; font-weight: 900; color: var(--forest); margin-bottom: 12px;">چه کاری برایتان انجام دهیم؟</h3>
+    <h3 class="modern-section-title">چه کاری برایتان انجام دهیم؟</h3>
     <div style="position: relative; margin-bottom: 24px;">
-      <textarea id="mission-input" placeholder="مثلاً: ۵۰ رأس گوسفند از اصفهان به اهواز..." style="width: 100%; min-height: 120px; padding: 20px; border-radius: 20px; border: 2px solid var(--line); font-size: 16px; line-height: 1.8; box-shadow: 0 4px 12px rgba(0,0,0,0.03); outline: none; resize: none;" onfocus="showSuggestions()" onblur="setTimeout(hideSuggestions, 200)"></textarea>
+      <textarea id="mission-input" class="modern-textarea" placeholder="مثلاً: ۵۰ رأس گوسفند از اصفهان به اهواز..." onfocus="showSuggestions()" onblur="setTimeout(hideSuggestions, 200)"></textarea>
       
       <!-- منوی پیشنهادات (به سبک دیوار) -->
-      <div id="mission-suggestions" style="display:none; position:absolute; top:100%; left:0; right:0; background:#fff; border:1px solid var(--line); border-radius:16px; box-shadow:0 12px 24px rgba(0,0,0,0.1); z-index:10; overflow:hidden; margin-top: 8px;">
-        <div onclick="fillMissionInput('خرید گوسفند زنده')" style="padding:16px 20px; border-bottom:1px solid #f0f0eb; cursor:pointer; font-size:15px; color:var(--forest); display:flex; align-items:center; gap:12px;"><span>🐑</span> خرید گوسفند زنده</div>
-        <div onclick="fillMissionInput('نیاز به دامپزشک')" style="padding:16px 20px; border-bottom:1px solid #f0f0eb; cursor:pointer; font-size:15px; color:var(--forest); display:flex; align-items:center; gap:12px;"><span>🩺</span> نیاز به دامپزشک</div>
-        <div onclick="fillMissionInput('حمل بار به شهر دیگر')" style="padding:16px 20px; border-bottom:1px solid #f0f0eb; cursor:pointer; font-size:15px; color:var(--forest); display:flex; align-items:center; gap:12px;"><span>🚛</span> حمل بار به شهر دیگر</div>
-        <div onclick="fillMissionInput('خرید نهاده و کنسانتره')" style="padding:16px 20px; cursor:pointer; font-size:15px; color:var(--forest); display:flex; align-items:center; gap:12px;"><span>🌰</span> خرید نهاده و کنسانتره</div>
+      <div id="mission-suggestions" class="modern-suggestions">
+        <div onclick="fillMissionInput('خرید گوسفند زنده')" class="ms-item">🐑 خرید گوسفند زنده</div>
+        <div onclick="fillMissionInput('نیاز به دامپزشک')" class="ms-item">🩺 نیاز به دامپزشک</div>
+        <div onclick="fillMissionInput('حمل بار به شهر دیگر')" class="ms-item">🚛 حمل بار به شهر دیگر</div>
+        <div onclick="fillMissionInput('خرید نهاده و کنسانتره')" class="ms-item">🌰 خرید نهاده و کنسانتره</div>
       </div>
     </div>
 
     <!-- منطقه -->
-    <h3 style="font-size: 18px; font-weight: 900; color: var(--forest); margin-bottom: 12px;">در کدام منطقه؟</h3>
+    <h3 class="modern-section-title">در کدام منطقه؟</h3>
     <div style="position: relative; margin-bottom: 24px;">
-      <input id="mission-region" placeholder="مثلاً: اصفهان، یا شهرستان..." style="width: 100%; padding: 20px; border-radius: 20px; border: 2px solid var(--line); font-size: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); outline: none;">
+      <input id="mission-region" class="modern-input" placeholder="مثلاً: اصفهان، یا شهرستان...">
     </div>
 
     <!-- آپشن‌ها (به سبک فیلترهای دیوار) -->
-    <h3 style="font-size: 16px; font-weight: 900; color: var(--forest); margin-bottom: 12px;">آپشن‌های بیشتر:</h3>
-    <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 32px;">
-      <button type="button" class="chip-big" onclick="toggleMissionOption(this, 'اشتراکی')" style="border:2px solid var(--line); background: #fff; color: var(--forest); padding: 12px 20px; border-radius: 100px; font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 8px;">🤝 اشتراکی</button>
-      <button type="button" class="chip-big" onclick="toggleMissionOption(this, 'فوری')" style="border:2px solid var(--line); background: #fff; color: var(--forest); padding: 12px 20px; border-radius: 100px; font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 8px;">⚡ فوری</button>
-      <button type="button" class="chip-big" onclick="toggleMissionOption(this, 'فقط نزدیک من')" style="border:2px solid var(--line); background: #fff; color: var(--forest); padding: 12px 20px; border-radius: 100px; font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 8px;">📍 فقط نزدیک من</button>
-      <button type="button" class="chip-big" onclick="toggleMissionOption(this, 'بالای ۱۰هزار')" style="border:2px solid var(--line); background: #fff; color: var(--forest); padding: 12px 20px; border-radius: 100px; font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 8px;">📦 بالای ۱۰هزار</button>
+    <h3 class="modern-section-title">آپشن‌های بیشتر:</h3>
+    <div class="modern-chips">
+      <button type="button" class="modern-chip" onclick="toggleMissionOption(this, 'اشتراکی')">🤝 اشتراکی</button>
+      <button type="button" class="modern-chip" onclick="toggleMissionOption(this, 'فوری')">⚡ فوری</button>
+      <button type="button" class="modern-chip" onclick="toggleMissionOption(this, 'فقط نزدیک من')">📍 فقط نزدیک من</button>
+      <button type="button" class="modern-chip" onclick="toggleMissionOption(this, 'بالای ۱۰هزار')">📦 بالای ۱۰هزار</button>
     </div>
 
-    <button type="button" class="btn-gold" onclick="startMission()" style="width: 100%; min-height: 64px; font-size: 18px; font-weight: 900; border-radius: 20px; box-shadow: 0 8px 20px rgba(240,180,41,0.3);">🚀 شروع جستجو</button>
+    <button type="button" class="modern-btn mb-buy" onclick="startMission()" style="width:100%; margin-top:16px; flex-direction:row; padding:16px; border-radius:16px;">
+      <span class="mb-icon" style="font-size:24px;">🚀</span>
+      <span class="mb-label">شروع جستجو</span>
+    </button>
   </div>
   
-  <div id="mission-result"></div>
+  <div id="mission-result" style="padding: 0 16px 20px;"></div>
 </section>
 
 
