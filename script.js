@@ -2059,15 +2059,10 @@ if (openMapBtn) {
     } catch (e) { feedback.textContent = 'جستجوی آنلاین در دسترس نیست؛ اتصال اینترنت را بررسی کنید.'; }
   }
 
-// کد امن برای دکمه‌های نقشه
-var mapLocateBtn = document.getElementById('locate-btn');
-if (mapLocateBtn) {
-  mapLocateBtn.onclick = function() {
-    if(typeof tarazMapInstance !== 'undefined' && tarazMapInstance) {
-       tarazMapInstance.setView([32.4279, 53.6880], 5);
-    }
-  };
-}
+// اتصال دکمه‌های نقشه
+if(document.getElementById('locate-btn')) document.getElementById('locate-btn').onclick = () => tarazMapInstance.setView([32.4279, 53.6880], 5);
+if(document.getElementById('open-map')) document.getElementById('open-map').onclick = () => window.open('https://www.openstreetmap.org', '_blank');
+
 
 var mapOpenBtn = document.getElementById('open-map');
 if (mapOpenBtn) {
