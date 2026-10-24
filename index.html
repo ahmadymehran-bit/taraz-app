@@ -586,116 +586,60 @@
   </div>
 </section>
   
-<!-- ============ SCREEN: MAP & DETAIL (طرح نهایی) ============ -->
+<!-- ============ MAP & DETAIL SCREEN (New) ============ -->
 <section class="screen" id="screen-map-detail">
-  <div class="taraz-app">
-    
-    <!-- هدر بالای برنامه -->
-    <header class="app-header">
-      <div class="brand">
-        <div class="brand-mark">🌿</div>
-        <div>
-          <h1 class="brand-name">تاراز</h1>
-          <p class="brand-caption">بازار تخصصی دام و کشاورزی</p>
-        </div>
+  <header class="topbar">
+    <a class="brand" href="#" onclick="event.preventDefault(); go('home');"><span class="brand-symbol">ت</span><span class="brand-copy"><strong>تاراز</strong><small>بازار تخصصی دام و کشاورزی</small></span></a>
+    <label class="search-box" for="place-search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.3 4.3"/></svg>
+      <input id="place-search" type="search" placeholder="جستجوی شهر یا مکان..." autocomplete="off">
+      <button id="search-btn" class="search-submit" type="button">جستجو</button>
+    </label>
+    <button class="profile-button" type="button" aria-label="پروفایل" onclick="go('profile')">👤</button>
+  </header>
+  <main class="workspace">
+    <section class="map-section" aria-label="نقشه مسیر">
+      <div class="map-heading">
+        <div><span class="eyebrow">نقشه مأموریت</span><h1>تهران <span class="route-arrow">←</span> اصفهان</h1></div>
+        <span class="live-pill"><i></i> نقشه تعاملی</span>
       </div>
-      <div class="global-search">
-        <span>🔍</span>
-        <input type="text" placeholder="جستجو در تاراز...">
-        <span>🎤</span>
+      <div class="map-frame">
+        <div id="map" aria-label="نقشه تعاملی ایران"></div>
+        <div class="map-float map-status"><span class="status-icon">↗</span><span><b>مسیر پیشنهادی</b><small id="route-status">تهران تا اصفهان</small></span></div>
+        <button id="locate-btn" class="map-control" type="button" title="نمایش مسیر تهران تا اصفهان">⌖</button>
+        <div class="map-legend"><span class="legend-line"></span> مسیر حمل دام <span class="legend-dot"></span> مقصد</div>
       </div>
-      <div class="header-actions">
-        <button class="icon-button">🔔</button>
-<img class="avatar" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" alt="User">
+      <div class="route-summary">
+        <div><span class="summary-icon">⌁</span><span><small>مسافت تقریبی</small><strong id="distance">حدود ۴۵۰ کیلومتر</strong></span></div>
+        <div><span class="summary-icon">◷</span><span><small>زمان تقریبی مسیر</small><strong id="duration">۵ تا ۶ ساعت</strong></span></div>
+        <button id="open-map" class="text-action" type="button">باز کردن نقشه ↗</button>
       </div>
-    </header>
-
-    <!-- بدنه اصلی (نقشه و پنل) -->
-    <main class="market-workspace">
-      
-      <!-- بخش نقشه -->
-      <section class="map-panel">
-        <div id="leaflet-map" class="live-map"></div>
-        
-        <button class="map-overlay map-location-control">📍 موقعیت من</button>
-        
-        <div class="map-tools">
-          <button class="icon-button">🔍</button>
-          <button class="icon-button">🗺️</button>
-          <button class="icon-button">➤</button>
-        </div>
-
-        <!-- کارت راننده (نمونه) -->
-        <div class="driver-card">
-<img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" class="driver-photo" alt="Driver">
-          <div>
-            <h3 class="driver-name">رضا محمدی <span class="driver-rating">★ 4.8</span></h3>
-            <p class="driver-meta">دلیل فروش: دامدار معتبر | ۲۸۰ کیلومتر از مقصد</p>
-          </div>
-          <button class="btn btn-outline" style="padding: 8px;">💬 پیام</button>
+    </section>
+    <aside class="mission-panel" aria-label="جزئیات مأموریت خرید">
+      <div class="mission-topline"><span class="eyebrow">مأموریت خرید</span><span class="mission-number">#TR-2048</span></div>
+      <div class="mission-title-row"><div><h2>خرید ۵۰ رأس گوسفند</h2><p>از فروشنده معتبر، با حمل مطمئن</p></div><span class="animal-icon">🐑</span></div>
+      <div class="route-cities"><div class="city-point"><span class="point-dot origin"></span><div><small>مبدأ خرید</small><strong>تهران</strong></div></div><span class="city-connector"></span><div class="city-point"><span class="point-dot destination"></span><div><small>محل تحویل</small><strong>اصفهان</strong></div></div></div>
+      <div class="details-grid">
+        <div class="detail-card"><span class="detail-icon">🐑</span><span><small>تعداد</small><strong>۵۰ رأس</strong></span></div>
+        <div class="detail-card"><span class="detail-icon">🩺</span><span><small>وضعیت سلامت</small><strong>نیازمند تأیید</strong></span></div>
+        <div class="detail-card"><span class="detail-icon">🚚</span><span><small>حمل موردنیاز</small><strong>دام‌بر تهویه‌دار</strong></span></div>
+        <div class="detail-card"><span class="detail-icon">💳</span><span><small>پرداخت</small><strong>امکان بیعانه</strong></span></div>
+      </div>
+      <section class="option-section">
+        <div class="section-heading"><h3>آپشن‌های بیشتر</h3><span>اختیاری</span></div>
+        <div class="option-list">
+          <label class="option-row"><input type="checkbox" checked><span class="option-symbol">📍</span><span class="option-text"><b>فقط نزدیک من</b><small>نمایش فروشندگان اطراف</small></span><span class="check-ui"></span></label>
+          <label class="option-row"><input type="checkbox"><span class="option-symbol">⚡</span><span class="option-text"><b>خرید فوری</b><small>اولویت با پاسخ سریع</small></span><span class="check-ui"></span></label>
+          <label class="option-row"><input type="checkbox" checked><span class="option-symbol">🤝</span><span class="option-text"><b>حمل اشتراکی</b><small>تقسیم هزینه مسیر با خریدار دیگر</small></span><span class="check-ui"></span></label>
+          <label class="option-row"><input type="checkbox"><span class="option-symbol">📦</span><span class="option-text"><b>فرصت‌های ویژه</b><small>پیشنهادهای قیمت‌مناسب</small></span><span class="check-ui"></span></label>
         </div>
       </section>
-
-      <!-- پنل سفارش (سمت راست) -->
-      <aside class="order-panel">
-        
-        <div class="order-hero">
-          <div>
-            <span class="pill">🛒 خرید</span>
-            <h1>۵۰ رأس گوسفند</h1>
-            <p>از تهران به اصفهان</p>
-          </div>
-<img src="https://cdn.pixabay.com/photo/2016/08/10/18/21/sheep-1582178_640.jpg" alt="Sheep">
-        </div>
-
-        <div class="deadline-banner">
-          <div>⏱ مهلت ثبت درخواست: <strong>امروز تا ۲۲ ساعت</strong></div>
-          <span>🟢</span>
-        </div>
-
-        <ul class="order-details">
-          <li><span class="detail-label">مبدأ</span> <span class="detail-value">تهران</span> <span class="detail-icon">📍</span></li>
-          <li><span class="detail-label">مقصد</span> <span class="detail-value">اصفهان</span> <span class="detail-icon">🏁</span></li>
-          <li><span class="detail-label">تعداد</span> <span class="detail-value">۵۰ رأس</span> <span class="detail-icon">🐑</span></li>
-          <li><span class="detail-label">زمان تحویل</span> <span class="detail-value">فردا</span> <span class="detail-icon">📅</span></li>
-        </ul>
-
-        <h2 class="section-title">گزینه‌های حمل و نقل</h2>
-        <div class="transport-options">
-          <label class="transport-option">
-            <span class="radio-dot"></span>
-            <div><strong>ماشین سبک</strong><small>(تا ۱۰ رأس)</small></div>
-            <span class="transport-icon">🚐</span>
-          </label>
-          <label class="transport-option is-selected">
-            <span class="radio-dot">✓</span>
-            <div><strong>کامیون ویژه دام</strong><small>(۱۰ تا ۵۰ رأس)</small></div>
-            <span class="transport-icon">🚛</span>
-          </label>
-          <label class="transport-option">
-            <span class="radio-dot"></span>
-            <div><strong>حمل مشترک</strong><small>(با تقسیم هزینه)</small></div>
-            <span class="transport-icon">🤝</span>
-          </label>
-        </div>
-
-        <h2 class="section-title">خدمات تکمیلی</h2>
-        <div class="service-grid">
-          <div class="service-tile"><span class="service-icon">🩺</span> دامپزشک</div>
-          <div class="service-tile"><span class="service-icon">🛡️</span> بیمه حمل</div>
-          <div class="service-tile"><span class="service-icon">📄</span> مجوز حمل</div>
-          <div class="service-tile"><span class="service-icon">👨‍🌾</span> راننده تایید شده</div>
-          <div class="service-tile"><span class="service-icon">💳</span> بیعانه</div>
-          <div class="service-tile"><span class="service-icon">➕</span> بیشتر</div>
-        </div>
-
-        <button class="btn btn-gold submit-order">🤝 ثبت درخواست خرید</button>
-      </aside>
-
-    </main>
-  </div>
+      <div class="service-chips"><button type="button" class="service-chip is-active" aria-pressed="true">🩺 دامپزشک</button><button type="button" class="service-chip" aria-pressed="false">🚛 راننده تأییدشده</button><button type="button" class="service-chip" aria-pressed="false">🛡️ بیمه حمل</button></div>
+      <div class="mission-footer"><div class="privacy-note"><span>✓</span> ثبت درخواست رایگان است</div><button id="submit-mission" class="primary-button" type="button">پیدا کردن فروشنده <span>←</span></button><p id="feedback" class="feedback" role="status" aria-live="polite"></p></div>
+    </aside>
+  </main>
 </section>
- 
+
   <!-- ============ NAV ============ -->
 <nav class="nav" id="nav">
   <button type="button" data-nav="home" onclick="go('home')">
