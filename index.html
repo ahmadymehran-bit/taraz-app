@@ -650,122 +650,91 @@
 
   </div>
 </section>
-<!-- ============ MAP & DETAIL SCREEN (Modern Mobile) ============ -->
-<section class="screen" id="screen-map-detail" style="padding-bottom: 110px;">
+<!-- ============ MAP & DETAIL SCREEN (Modern with Request Box) ============ -->
+<section class="screen" id="screen-map-detail" style="padding-bottom: 110px; background: var(--paper);">
   
-  <!-- هدر صفحه نقشه -->
   <header class="modern-header" style="position: relative;">
     <div class="mh-brand" onclick="go('home')">
       <span class="leaf">🗺️</span>
-      <span class="mh-title">نقشه سفارش</span>
+      <span class="mh-title">نقشه و درخواست</span>
     </div>
     <div style="flex:1"></div>
     <button type="button" onclick="go('home')" style="background:none;border:none;font-size:24px;color:var(--muted);">✕</button>
   </header>
 
+  <!-- باکس نوشتن درخواست (مثل اسنپ) -->
+  <div style="padding: 16px;">
+    <div style="background: #fff; border: 2px solid var(--accent); border-radius: 20px; padding: 16px; box-shadow: 0 4px 12px rgba(25, 131, 99, 0.1);">
+      <label style="display:block; font-size: 13px; font-weight: 900; color: var(--forest); margin-bottom: 8px;">چه درخواستی دارید؟</label>
+      <textarea id="map-mission-input" placeholder="مثلاً: خرید ۵۰ رأس گوسفند از اصفهان..." style="width: 100%; min-height: 80px; border: none; background: #f7f7f2; border-radius: 12px; padding: 12px; font-family: inherit; font-size: 14px; outline: none; resize: none;"></textarea>
+      <button type="button" class="modern-btn mb-buy" onclick="go('mission')" style="width: 100%; margin-top: 12px; flex-direction: row; padding: 12px; border-radius: 12px;">
+        <span class="mb-icon" style="font-size: 20px;">🚀</span>
+        <span class="mb-label" style="font-size: 15px;">ثبت درخواست هوشمند</span>
+      </button>
+    </div>
+  </div>
+
   <!-- نقشه -->
-  <div style="position: relative; height: 40vh; min-height: 250px; width: 100%;">
-    <div id="map" style="width: 100%; height: 100%; z-index: 1;"></div>
+  <div style="position: relative; height: 35vh; min-height: 250px; width: 100%; margin-top: 8px;">
+    <div id="map" style="width: 100%; height: 100%; z-index: 1; border-radius: 24px 24px 0 0; overflow: hidden;"></div>
     
-    <!-- دکمه‌های شناور روی نقشه -->
-    <button class="map-control" style="position:absolute; top:16px; right:16px; z-index:500; width:40px; height:40px; border-radius:12px; background:#fff; border:1px solid var(--line); font-size:20px; box-shadow:var(--shadow);">🔍</button>
-    <button class="map-control" style="position:absolute; top:66px; right:16px; z-index:500; width:40px; height:40px; border-radius:12px; background:#fff; border:1px solid var(--line); font-size:20px; box-shadow:var(--shadow);">⌖</button>
+    <!-- دکمه‌های روی نقشه با آیدی‌های استاندارد -->
+    <button id="locate-btn" class="map-control" style="position:absolute; top:16px; right:16px; z-index:500; width:44px; height:44px; border-radius:12px; background:#fff; border:1px solid var(--line); font-size:20px; box-shadow:var(--shadow); display:flex; align-items:center; justify-content:center;">⌖</button>
+    <button id="open-map" class="map-control" style="position:absolute; top:16px; left:16px; z-index:500; width:44px; height:44px; border-radius:12px; background:#fff; border:1px solid var(--line); font-size:20px; box-shadow:var(--shadow); display:flex; align-items:center; justify-content:center;">🔍</button>
   </div>
 
   <!-- کارت جزئیات (کشویی) -->
-  <div style="position: relative; margin-top: -30px; z-index: 10; background: var(--paper); border-radius: 30px 30px 0 0; padding: 20px 16px; box-shadow: 0 -10px 20px rgba(0,0,0,0.05);">
+  <div style="position: relative; margin-top: -20px; z-index: 10; background: var(--paper); border-radius: 30px 30px 0 0; padding: 20px 16px; box-shadow: 0 -10px 20px rgba(0,0,0,0.05);">
     
     <!-- دستگیره کشویی -->
     <div style="width: 40px; height: 4px; background: var(--line); border-radius: 4px; margin: 0 auto 16px;"></div>
 
     <!-- تصویر و عنوان -->
     <div style="display: flex; gap: 12px; margin-bottom: 20px;">
-      <div style="width: 70px; height: 70px; border-radius: 16px; background: #e0f0ff; display: flex; align-items: center; justify-content: center; font-size: 36px;">🐑</div>
+      <div style="width: 60px; height: 60px; border-radius: 16px; background: #e0f0ff; display: flex; align-items: center; justify-content: center; font-size: 32px;">🐑</div>
       <div>
-        <h2 style="font-size: 18px; font-weight: 900; color: var(--forest); margin: 0 0 4px 0;">خرید ۵۰ رأس گوسفند</h2>
-        <div style="font-size: 13px; color: var(--muted);">از فروشنده معتبر، با حمل مطمئن</div>
+        <h2 style="font-size: 16px; font-weight: 900; color: var(--forest); margin: 0 0 4px 0;">خرید ۵۰ رأس گوسفند</h2>
+        <div style="font-size: 12px; color: var(--muted);">از فروشنده معتبر، با حمل مطمئن</div>
       </div>
     </div>
 
     <!-- مسیر (مبدا و مقصد) -->
-    <div style="display: flex; align-items: center; justify-content: space-between; background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 16px; margin-bottom: 20px;">
+    <div style="display: flex; align-items: center; justify-content: space-between; background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 14px; margin-bottom: 16px;">
       <div style="display: flex; align-items: center; gap: 8px;">
-        <div style="width: 12px; height: 12px; border-radius: 50%; background: var(--accent); border: 3px solid #d1f0e4;"></div>
+        <div style="width: 10px; height: 10px; border-radius: 50%; background: var(--accent); border: 2px solid #d1f0e4;"></div>
         <div>
-          <div style="font-size: 11px; color: var(--muted);">مبدأ خرید</div>
-          <div style="font-size: 14px; font-weight: 900; color: var(--forest);">تهران</div>
+          <div style="font-size: 10px; color: var(--muted);">مبدأ خرید</div>
+          <div style="font-size: 13px; font-weight: 900; color: var(--forest);">تهران</div>
         </div>
       </div>
       <div style="flex: 1; border-top: 2px dashed var(--line); margin: 0 12px;"></div>
       <div style="display: flex; align-items: center; gap: 8px;">
-        <div style="width: 12px; height: 12px; border-radius: 50%; background: var(--fire); border: 3px solid #ffd1d1;"></div>
+        <div style="width: 10px; height: 10px; border-radius: 50%; background: var(--fire); border: 2px solid #ffd1d1;"></div>
         <div>
-          <div style="font-size: 11px; color: var(--muted);">محل تحویل</div>
-          <div style="font-size: 14px; font-weight: 900; color: var(--forest);">اصفهان</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- جزئیات کوچک -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
-      <div style="background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 12px; display: flex; align-items: center; gap: 8px;">
-        <div style="font-size: 20px;">🐑</div>
-        <div>
-          <div style="font-size: 11px; color: var(--muted);">تعداد</div>
-          <div style="font-size: 13px; font-weight: 800; color: var(--forest);">۵۰ رأس</div>
-        </div>
-      </div>
-      <div style="background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 12px; display: flex; align-items: center; gap: 8px;">
-        <div style="font-size: 20px;">🚚</div>
-        <div>
-          <div style="font-size: 11px; color: var(--muted);">حمل</div>
-          <div style="font-size: 13px; font-weight: 800; color: var(--forest);">دام‌بر</div>
+          <div style="font-size: 10px; color: var(--muted);">محل تحویل</div>
+          <div style="font-size: 13px; font-weight: 900; color: var(--forest);">اصفهان</div>
         </div>
       </div>
     </div>
 
     <!-- گزینه‌ها -->
-    <h3 style="font-size: 15px; font-weight: 900; color: var(--forest); margin-bottom: 10px;">گزینه‌های حمل و نقل</h3>
-    <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px;">
-      <label style="display: flex; align-items: center; justify-content: space-between; background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 14px;">
+    <h3 style="font-size: 14px; font-weight: 900; color: var(--forest); margin-bottom: 10px;">گزینه‌های حمل و نقل</h3>
+    <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
+      <label style="display: flex; align-items: center; justify-content: space-between; background: #eef8f3; border: 2px solid var(--accent); border-radius: 14px; padding: 12px;">
         <div style="display: flex; align-items: center; gap: 10px;">
-          <span style="font-size: 24px;">🚛</span>
+          <span style="font-size: 20px;">🚛</span>
           <div>
-            <div style="font-size: 14px; font-weight: 800; color: var(--forest);">ماشین سبک</div>
-            <div style="font-size: 11px; color: var(--muted);">برای بارهای کم</div>
-          </div>
-        </div>
-        <input type="radio" name="transport" style="width: 20px; height: 20px; accent-color: var(--accent);">
-      </label>
-      <label style="display: flex; align-items: center; justify-content: space-between; background: #eef8f3; border: 2px solid var(--accent); border-radius: 16px; padding: 14px;">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <span style="font-size: 24px;">🚛</span>
-          <div>
-            <div style="font-size: 14px; font-weight: 800; color: var(--accent);">کامیون ویژه دام</div>
+            <div style="font-size: 13px; font-weight: 800; color: var(--accent);">کامیون ویژه دام</div>
             <div style="font-size: 11px; color: var(--accent);">تا ۵۰ رأس</div>
           </div>
         </div>
-        <input type="radio" name="transport" checked style="width: 20px; height: 20px; accent-color: var(--accent);">
-      </label>
-      <label style="display: flex; align-items: center; justify-content: space-between; background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 14px;">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <span style="font-size: 24px;">🤝</span>
-          <div>
-            <div style="font-size: 14px; font-weight: 800; color: var(--forest);">حمل مشترک</div>
-            <div style="font-size: 11px; color: var(--muted);">تقسیم هزینه مسیر</div>
-          </div>
-        </div>
-        <input type="radio" name="transport" style="width: 20px; height: 20px; accent-color: var(--accent);">
+        <input type="radio" name="transport" checked style="width: 18px; height: 18px; accent-color: var(--accent);">
       </label>
     </div>
 
-    <!-- دکمه ثبت -->
-    <button type="button" class="modern-btn mb-urgent" onclick="go('mission')" style="width: 100%; border-radius: 16px; padding: 16px; font-size: 16px;">
-      ثبت درخواست خرید 🛒
-    </button>
-
   </div>
 </section>
+
 
   <!-- ============ NAV ============ -->
 <nav class="nav" id="nav">
