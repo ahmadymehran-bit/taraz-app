@@ -341,3 +341,57 @@
   background: transparent;
   border-bottom: none;
 }
+/* ---------- اصلاح ظاهر فرم‌ها (خرید و فروش) ---------- */
+#screen-buy, #screen-sell, #screen-ready, #screen-detail {
+  background: var(--paper) !important;
+}
+
+.field input, 
+.field textarea, 
+.field select {
+  background-color: #ffffff !important;
+  color: var(--forest) !important;
+  border: 2px solid #e1e9e2 !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.02) !important;
+}
+
+.field input::placeholder, 
+.field textarea::placeholder {
+  color: #a0aea7 !important;
+  opacity: 1 !important;
+}
+
+.field input:focus, 
+.field textarea:focus, 
+.field select:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 4px rgba(25, 131, 99, 0.1) !important;
+}
+/* ---------- هدر صفحات داخلی ---------- */
+.sub-header {
+  background: rgba(255, 253, 248, 0.95) !important;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line) !important;
+  padding: 16px !important;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.sub-header .back-btn {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  font-size: 20px !important;
+  color: var(--forest) !important;
+}
+.sub-header .title {
+  font-size: 18px !important;
+  font-weight: 900;
+  color: var(--forest);
+}
