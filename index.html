@@ -585,70 +585,117 @@
 
   </div>
 </section>
-<!-- ============ SCREEN: MAP & DETAIL (چه می‌خواهم؟) ============ -->
-<section class="screen" id="screen-map-detail">
   
-  <!-- هدر بالای صفحه -->
-  <header class="map-detail-header">
-    <button type="button" class="back-btn" onclick="go('home')">→</button>
-    <div class="search-bar">
-      <input type="text" placeholder="جستجو در تاراز..." />
-      <button type="button" class="search-btn">🔍</button>
-    </div>
-  </header>
-
-  <!-- بدنه دو ستونه -->
-  <div class="map-detail-body">
+<!-- ============ SCREEN: MAP & DETAIL (طرح نهایی) ============ -->
+<section class="screen" id="screen-map-detail">
+  <div class="taraz-app">
     
-    <!-- سمت چپ: نقشه -->
-    <div class="map-container">
-      <div id="leaflet-map"></div>
-      
-      <!-- دکمه‌های شناور روی نقشه -->
-      <div class="map-floating-cards">
-        <button type="button" class="floating-card">📍 مبدأ</button>
-        <button type="button" class="floating-card">🏁 مقصد</button>
-        <button type="button" class="floating-card">🚛 نوع بار</button>
+    <!-- هدر بالای برنامه -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-mark">🌿</div>
+        <div>
+          <h1 class="brand-name">تاراز</h1>
+          <p class="brand-caption">بازار تخصصی دام و کشاورزی</p>
+        </div>
       </div>
-    </div>
+      <div class="global-search">
+        <span>🔍</span>
+        <input type="text" placeholder="جستجو در تاراز...">
+        <span>🎤</span>
+      </div>
+      <div class="header-actions">
+        <button class="icon-button">🔔</button>
+        <img class="avatar" src="https://i.pravatar.cc/150?img=11" alt="User">
+      </div>
+    </header>
 
-    <!-- سمت راست: پنل جزئیات -->
-    <aside class="detail-panel">
+    <!-- بدنه اصلی (نقشه و پنل) -->
+    <main class="market-workspace">
       
-      <div class="panel-header">
-        <h3>🛒 خرید ۵۰ راس گوسفند</h3>
-        <span>از تهران به اصفهان</span>
-      </div>
-      
-      <div class="panel-content">
-        <!-- کارت اطلاعات (مبدأ، مقصد، مسافت) -->
-        <div class="info-card">
-          <p><span>📍 مبدأ:</span> <strong>تهران</strong></p>
-          <p><span>🏁 مقصد:</span> <strong>اصفهان</strong></p>
-          <p><span>📏 مسافت:</span> <strong>-- کیلومتر</strong></p>
+      <!-- بخش نقشه -->
+      <section class="map-panel">
+        <div id="leaflet-map" class="live-map"></div>
+        
+        <button class="map-overlay map-location-control">📍 موقعیت من</button>
+        
+        <div class="map-tools">
+          <button class="icon-button">🔍</button>
+          <button class="icon-button">🗺️</button>
+          <button class="icon-button">➤</button>
         </div>
 
-        <!-- گزینه‌های حمل و نقل -->
-        <div style="margin-top: 10px; margin-bottom: 6px; font-size: 13px; font-weight: 800; color: #555;">گزینه‌های حمل و نقل</div>
-        <div class="option-card">🚛 حمل با کامیون</div>
-        <div class="option-card">🤝 حمل اشتراکی</div>
+        <!-- کارت راننده (نمونه) -->
+        <div class="driver-card">
+          <img src="https://i.pravatar.cc/150?img=12" class="driver-photo" alt="Driver">
+          <div>
+            <h3 class="driver-name">رضا محمدی <span class="driver-rating">★ 4.8</span></h3>
+            <p class="driver-meta">دلیل فروش: دامدار معتبر | ۲۸۰ کیلومتر از مقصد</p>
+          </div>
+          <button class="btn btn-outline" style="padding: 8px;">💬 پیام</button>
+        </div>
+      </section>
+
+      <!-- پنل سفارش (سمت راست) -->
+      <aside class="order-panel">
         
-        <!-- خدمات تکمیلی -->
-        <div style="margin-top: 10px; margin-bottom: 6px; font-size: 13px; font-weight: 800; color: #555;">خدمات تکمیلی</div>
-        <div class="option-card">🩺 نیاز به دامپزشک</div>
-        <div class="option-card">🛡️ بیمه حمل و نقل</div>
-      </div>
+        <div class="order-hero">
+          <div>
+            <span class="pill">🛒 خرید</span>
+            <h1>۵۰ رأس گوسفند</h1>
+            <p>از تهران به اصفهان</p>
+          </div>
+          <img src="https://images.unsplash.com/photo-1484557985045-edf25e08da73" alt="Sheep">
+        </div>
 
-      <div class="panel-footer">
-        <button type="button" class="primary-btn">🤝 ثبت درخواست خرید</button>
-      </div>
-      
-    </aside>
+        <div class="deadline-banner">
+          <div>⏱ مهلت ثبت درخواست: <strong>امروز تا ۲۲ ساعت</strong></div>
+          <span>🟢</span>
+        </div>
 
+        <ul class="order-details">
+          <li><span class="detail-label">مبدأ</span> <span class="detail-value">تهران</span> <span class="detail-icon">📍</span></li>
+          <li><span class="detail-label">مقصد</span> <span class="detail-value">اصفهان</span> <span class="detail-icon">🏁</span></li>
+          <li><span class="detail-label">تعداد</span> <span class="detail-value">۵۰ رأس</span> <span class="detail-icon">🐑</span></li>
+          <li><span class="detail-label">زمان تحویل</span> <span class="detail-value">فردا</span> <span class="detail-icon">📅</span></li>
+        </ul>
+
+        <h2 class="section-title">گزینه‌های حمل و نقل</h2>
+        <div class="transport-options">
+          <label class="transport-option">
+            <span class="radio-dot"></span>
+            <div><strong>ماشین سبک</strong><small>(تا ۱۰ رأس)</small></div>
+            <span class="transport-icon">🚐</span>
+          </label>
+          <label class="transport-option is-selected">
+            <span class="radio-dot">✓</span>
+            <div><strong>کامیون ویژه دام</strong><small>(۱۰ تا ۵۰ رأس)</small></div>
+            <span class="transport-icon">🚛</span>
+          </label>
+          <label class="transport-option">
+            <span class="radio-dot"></span>
+            <div><strong>حمل مشترک</strong><small>(با تقسیم هزینه)</small></div>
+            <span class="transport-icon">🤝</span>
+          </label>
+        </div>
+
+        <h2 class="section-title">خدمات تکمیلی</h2>
+        <div class="service-grid">
+          <div class="service-tile"><span class="service-icon">🩺</span> دامپزشک</div>
+          <div class="service-tile"><span class="service-icon">🛡️</span> بیمه حمل</div>
+          <div class="service-tile"><span class="service-icon">📄</span> مجوز حمل</div>
+          <div class="service-tile"><span class="service-icon">👨‍🌾</span> راننده تایید شده</div>
+          <div class="service-tile"><span class="service-icon">💳</span> بیعانه</div>
+          <div class="service-tile"><span class="service-icon">➕</span> بیشتر</div>
+        </div>
+
+        <button class="btn btn-gold submit-order">🤝 ثبت درخواست خرید</button>
+      </aside>
+
+    </main>
   </div>
 </section>
-
-  
+ 
   <!-- ============ NAV ============ -->
 <nav class="nav" id="nav">
   <button type="button" data-nav="home" onclick="go('home')">
