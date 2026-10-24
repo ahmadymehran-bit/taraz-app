@@ -11,6 +11,7 @@
 <meta name="apple-mobile-web-app-title" content="تاراز">
 <link rel="apple-touch-icon" href="https://i.ibb.co/TMNM2gDf/web-app-manifest-192x192.png">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="modern-ui.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>  
 </head>
 <body>
@@ -63,30 +64,68 @@
     </div>
   </section>
 
-  <!-- ============ HOME (جدید) ============ -->
-<section class="screen" id="screen-home">
- <header class="top">
-  <!-- بخش برند و لوگو -->
-  <a class="brand" href="#" onclick="event.preventDefault(); go('home');">
-    <span class="mark">ت</span>
-    <span>
-      <b>تاراز</b>
-      <small>بازار تخصصی دام و کشاورزی</small>
-    </span>
-  </a>
-  
-  <!-- کادر جستجو -->
-  <label class="search">
-    <span>⌕</span>
-    <input id="search" placeholder="جستجوی دام، محصول یا خدمت...">
-    <button id="searchBtn">جستجو</button>
-  </label>
-  
-  <!-- دکمه پروفایل -->
-  <button class="user" onclick="go('profile')">
-    👤 <span>مپروفایل</span>
-  </button>
+<!-- ============ MODERN HEADER ============ -->
+<header class="modern-header">
+  <div class="mh-brand" onclick="scrollToTop()">
+    <span class="leaf">🌿</span>
+    <span class="mh-title">تاراز</span>
+  </div>
+
+  <div class="mh-profile" onclick="go('profile')">
+    <div class="mh-avatar" id="header-avatar"></div>
+    <div class="mh-info">
+      <div class="mh-name" id="header-user-name">کاربر</div>
+      <div class="mh-meta">
+        <span id="header-user-role">شغل</span>
+        <span class="star">★ <span id="header-user-rating">۰</span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mh-bell" id="header-bell" onclick="go('notifs')">
+    🔔
+    <span class="bell-badge" id="bell-badge"></span>
+  </div>
 </header>
+
+<!-- ============ دکمه‌های اصلی ============ -->
+<div class="modern-actions">
+  <div class="row-2">
+    <button type="button" class="modern-btn mb-buy" onclick="go('buy')">
+      <span class="mb-icon">🛒</span>
+      <span class="mb-label">خرید</span>
+    </button>
+    <button type="button" class="modern-btn mb-sell" onclick="go('sell')">
+      <span class="mb-icon">💰</span>
+      <span class="mb-label">فروش</span>
+    </button>
+  </div>
+  <button type="button" class="modern-btn mb-urgent" onclick="goUrgentSell()">
+    <span class="mb-icon">⚡</span>
+    <span class="mb-label">خرید و فروش فوری</span>
+  </button>
+</div>
+
+<!-- ============ دسته‌بندی‌های گرد ============ -->
+<div class="modern-cats">
+  <button type="button" class="modern-cat" onclick="pickBrowseCat('livestock');go('browse')">
+    <span class="mc-icon">🐄</span>
+    <span class="mc-label">دام و دامداری</span>
+  </button>
+  <button type="button" class="modern-cat" onclick="pickBrowseCat('crops');go('browse')">
+    <span class="mc-icon">🌾</span>
+    <span class="mc-label">کشاورزی</span>
+  </button>
+  <button type="button" class="modern-cat" onclick="pickBrowseCat('vet_drugs');go('browse')">
+    <span class="mc-icon">🩺</span>
+    <span class="mc-label">دامپزشکی</span>
+  </button>
+  <button type="button" class="modern-cat" onclick="pickBrowseCat('agri_inputs');go('browse')">
+    <span class="mc-icon">🌱</span>
+    <span class="mc-label">گیاه‌پزشکی</span>
+  </button>
+</div>
+
 
   <!-- دکمه‌های اصلی (بزرگ و آیکونیک) -->
   <div class="action-panel" style="padding: 20px 16px;">
