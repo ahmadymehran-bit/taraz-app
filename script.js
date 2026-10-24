@@ -1272,6 +1272,11 @@ async function renderMyMissions() {
 
 function backFromDetail(){go(detailReturnTo||'home')}
 if(DB.user){ loadFavorites().then(function(){ if(currentScreen==='home')renderHome(); else if(currentScreen==='browse')renderBrowse(); }); }
+/* اسکرول به بالا — برای کلیک روی لوگو */
+function scrollToTop() {
+  const active = document.querySelector('.screen.active');
+  if (active) active.scrollTo({ top: 0, behavior: 'smooth' });
+}
 console.log('✓ Taraz v3.0 loaded');
 /* ============ ADMIN PANEL LOGIC ============ */
 const ADMIN_PHONE = '09163905174'; // شماره موبایل خودت رو اینجا بذار
