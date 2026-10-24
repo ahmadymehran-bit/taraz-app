@@ -1915,6 +1915,74 @@ async function submitRatingForMission(toPhone) {
     toast('خطا در ثبت امتیاز');
   }
 }
+/* ============ MAP & DETAIL SCREEN LOGIC ============ */
+document.addEventListener('DOMContentLoaded', function() {
+  // اگر صفحه نقشه در DOM وجود دارد، نقشه را راه‌اندازی کن
+  if (document.getElementById('map')) {
+    initMapDetail();
+  }
+});
+
+function initMapDetail() {
+  const tehran = [35.6892, 51.3890];
+  const esfahan = [32.6546, 51.6680];
+  const mapEl = document.getElementById('map');
+  const feedback = document.getElementById('feedback');
+
+  if (!window.L) {
+    mapEl.innerHTML = '<div class="map-fallback"><div class="fallback-route">تهران ⟶ اصفهان</div><p>کتابخانه نقشه بارگذاری نشد.</p><small>برای نقشه زنده، اتصال اینترنت و دسترسی به سرویس نقشه لازم است.</small></div>';
+    return;
+  }
+
+  const map = L.map('map', { zoomControl: false }).setView([34.25, 51.5], 5.4);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'
+  }).addTo(map);
+  L.control.zoom({ position: 'topleft' }).addTo(map);
+
+  const a = L.divIcon({ className: 'taraz-pin-wrap', html: '<span class="taraz-pin">مبدأ</span>', iconSize: [48, 38], iconAnchor: [24, 19] });
+  const b = L.divIcon({ className: 'taraz-pin-wrap', html: '<span class="taraz-pin destination-pin">مقصد</span>', iconSize: [54, 38], iconAnchor: [27, 19] });
+  L.marker(tehran, { icon: a }).addTo(map).bindPopup('<b>مبدأ خرید</b><br>تهران');
+  L.marker(esfahan, { icon: b }).addTo(map).bindPopup('<b>محل تحویل</b><br>اصفهان');
+  
+  const line = L.polyline([tehran, [34.8, 51.4], [33.7, 51.5], esfahan], { color: '#12835b', weight: 4, opacity: .9, dashArray: '8 8' }).addTo(map);
+  map.fitBounds(line.getBounds(), { padding: [35, 35] });
+
+  document.getElementById('locate-btn').onclick = () => map.fitBounds(line.getBounds(), { padding: [35, 35] });
+  document.getElementById('open-map').onclick = () => window.open('https://www.openstreetmap.org/directions?engine=fossgis_osrm_car&route=35.6892%2C51.3890%3B32.6546%2C51.6680', '_blank', 'noopener');
+
+  async function searchPlace() {
+    const q = document.getElementById('place-search').value.trim();
+    if (!q) { feedback.textContent = 'نام شهر یا مکان را وارد کنید.'; return; }
+    feedback.textContent = 'در حال جستجوی مکان…';
+    try {
+      const r = await fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=ir&q=' + encodeURIComponent(q), { headers: { 'Accept-Language': 'fa' } });
+      if (!r.ok) throw Error();
+      const data = await r.json();
+      if (!data.length) { feedback.textContent = 'مکانی پیدا نشد؛ نام شهر را دقیق‌تر وارد کنید.'; return; }
+      const p = data[0], lat = Number(p.lat), lon = Number(p.lon);
+      map.setView([lat, lon], 11);
+      L.popup().setLatLng([lat, lon]).setContent('<b>' + String(p.display_name).replace(/[<>]/g, '') + '</b>').openOn(map);
+      feedback.textContent = 'مکان روی نقشه نمایش داده شد.';
+    } catch (e) {
+      feedback.textContent = 'جستجوی آنلاین در دسترس نیست؛ اتصال اینترنت را بررسی کنید.';
+    }
+  }
+
+  document.getElementById('search-btn').onclick = searchPlace;
+  document.getElementById('place-search').addEventListener('keydown', e => { if (e.key === 'Enter') searchPlace(); });
+
+  document.querySelectorAll('.service-chip').forEach(x => x.onclick = () => {
+    const on = x.classList.toggle('is-active');
+    x.setAttribute('aria-pressed', String(on));
+  });
+
+  document.getElementById('submit-mission').onclick = () => {
+    const n = document.querySelectorAll('.option-row input:checked').length;
+    feedback.textContent = 'نمونه درخواست آماده است؛ ' + n + ' آپشن انتخاب شده. برای ثبت واقعی، بک‌اند تاراز باید متصل شود.';
+  };
+}
 
 /* ============================================================
    API LAYER 
