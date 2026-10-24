@@ -205,10 +205,10 @@ function productKey(title){
   return words.find(w=>!stop[w])||(title||'').split(' ')[0]||'نامشخص';
 }
 function extractQtyNum(str){
-  const en=String(str).split('').map(c=>{const i=FA_DIGITS.indexOf(c);return i>=0?String(i):c}).join('');
-  const m=en.match(/\d+/);
-  return m?Number(m[0]):1;
-}
+ const en = String(str).split('').map(c => {
+  const i = FA_DIGITS.indexOf(c);
+  return i !== -1 ? i : c;
+});
 function avgRating(phone){
   const rs=DB.ratings.filter(r=>r.toPhone===phone);
   if(!rs.length)return{avg:0,count:0};
