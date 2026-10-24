@@ -2059,8 +2059,23 @@ if (openMapBtn) {
     } catch (e) { feedback.textContent = 'جستجوی آنلاین در دسترس نیست؛ اتصال اینترنت را بررسی کنید.'; }
   }
 
-  document.getElementById('search-btn').onclick = searchPlace;
-  document.getElementById('place-search').addEventListener('keydown', e => { if (e.key === 'Enter') searchPlace(); });
+  // کد امن برای دکمه‌های نقشه (جلوگیری از کرش کردن)
+const locateBtn = document.getElementById('locate-btn');
+if (locateBtn) {
+  locateBtn.onclick = function() {
+    if(typeof tarazMapInstance !== 'undefined' && tarazMapInstance) {
+       tarazMapInstance.setView([32.4279, 53.6880], 5);
+    }
+  };
+}
+
+const openMapBtn = document.getElementById('open-map');
+if (openMapBtn) {
+  openMapBtn.onclick = function() {
+    window.open('https://www.openstreetmap.org', '_blank');
+  };
+}
+
 
   document.querySelectorAll('.service-chip').forEach(x => x.onclick = () => {
     const on = x.classList.toggle('is-active');
