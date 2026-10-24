@@ -1983,12 +1983,13 @@ function tarazStateStyle(feature) {
 /* رفتار هاور روی استان‌ها */
 function tarazOnEachState(feature, layer) {
   // استخراج نام استان (کلیدها در GeoJSON متفاوت است)
-  const name =
-    feature.properties?.name ||
-    feature.properties?.NAME_1 ||
-    feature.properties?.province ||
-    feature.properties?.NAME ||
-    'استان';
+ const name = (
+  feature.properties && feature.properties.name ||
+  feature.properties && feature.properties.NAME_1 ||
+  feature.properties && feature.properties.province ||
+  feature.properties && feature.properties.NAME ||
+  'استان'
+);
 
   layer.bindTooltip(name, {
     className: 'taraz-tooltip',
