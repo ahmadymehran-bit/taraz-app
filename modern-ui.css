@@ -1,0 +1,268 @@
+/* ============================================
+   MODERN-TARAZ — UI Layer V2 (2026)
+   فقط ظاهر — منطق دست نخورده
+   ============================================ */
+
+/* ---------- هدر جدید (Digikala-style) ---------- */
+.modern-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: rgba(255, 253, 248, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line);
+  min-height: 64px;
+}
+
+/* لوگو سمت راست */
+.modern-header .mh-brand {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  cursor: pointer;
+  user-select: none;
+}
+.modern-header .mh-brand .leaf {
+  font-size: 22px;
+  line-height: 1;
+}
+.modern-header .mh-brand .mh-title {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--forest);
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+/* کارت پروفایل وسط */
+.modern-header .mh-profile {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 5px 10px 5px 5px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(18, 61, 50, 0.05);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.modern-header .mh-profile:active {
+  transform: scale(0.98);
+}
+.modern-header .mh-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1f8062, #123d32);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 13px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.modern-header .mh-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.modern-header .mh-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  min-width: 0;
+  flex: 1;
+}
+.modern-header .mh-name {
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--forest);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.modern-header .mh-meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 1px;
+  font-size: 10px;
+  color: var(--muted);
+  font-weight: 700;
+}
+.modern-header .mh-meta .star {
+  color: var(--gold);
+  font-weight: 900;
+}
+
+/* زنگوله سمت چپ */
+.modern-header .mh-bell {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  flex-shrink: 0;
+  box-shadow: 0 3px 10px rgba(18, 61, 50, 0.05);
+  transition: transform 0.15s ease;
+}
+.modern-header .mh-bell:active {
+  transform: scale(0.92);
+}
+.modern-header .mh-bell .bell-badge {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  background: var(--fire);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 900;
+  padding: 1px 6px;
+  border-radius: 100px;
+  border: 2px solid #fffdf8;
+  min-width: 18px;
+  text-align: center;
+  display: none;
+}
+.modern-header .mh-bell .bell-badge.show {
+  display: block;
+}
+
+/* ---------- دکمه‌های خرید / فروش / فوری (طبق طرح) ---------- */
+.modern-actions {
+  padding: 16px 14px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.modern-actions .row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.modern-btn {
+  border: 0;
+  border-radius: 20px;
+  padding: 20px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.modern-btn:active {
+  transform: scale(0.97);
+}
+.modern-btn .mb-icon {
+  font-size: 40px;
+  line-height: 1;
+}
+.modern-btn .mb-label {
+  font-size: 18px;
+  font-weight: 900;
+  color: #fff;
+}
+
+/* خرید — سبز */
+.modern-btn.mb-buy {
+  background: linear-gradient(145deg, #219b70, #126a4c);
+  box-shadow: 0 9px 22px rgba(22, 132, 95, 0.28);
+}
+
+/* فروش — قرمز (طبق طرح ۱ و ۳) */
+.modern-btn.mb-sell {
+  background: linear-gradient(145deg, #ef5350, #cf292d);
+  box-shadow: 0 9px 22px rgba(233, 75, 75, 0.28);
+}
+
+/* فوری — طلایی (طبق طرح ۱ و ۳) */
+.modern-btn.mb-urgent {
+  flex-direction: row;
+  padding: 14px 18px;
+  background: linear-gradient(110deg, #f3c34b, #e2a91e);
+  box-shadow: 0 8px 20px rgba(239, 184, 46, 0.32);
+  gap: 8px;
+}
+.modern-btn.mb-urgent .mb-icon {
+  font-size: 24px;
+}
+.modern-btn.mb-urgent .mb-label {
+  color: #3d2d08;
+  font-size: 16px;
+}
+
+/* ---------- دسته‌بندی‌های گرد (طبق طرح ۳) ---------- */
+.modern-cats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 12px 14px 4px;
+}
+.modern-cat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 6px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  font-family: inherit;
+}
+.modern-cat:active {
+  transform: scale(0.96);
+}
+.modern-cat .mc-icon {
+  font-size: 26px;
+  line-height: 1;
+}
+.modern-cat .mc-label {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--forest);
+  text-align: center;
+  line-height: 1.3;
+}
+
+/* ---------- Nav: وسط سبز بشه ---------- */
+.nav button.nav-center {
+  background: linear-gradient(135deg, #219b70, #126a4c) !important;
+  box-shadow: 0 8px 24px rgba(22, 132, 95, 0.45), 0 0 0 4px #fff inset !important;
+  border: 3px solid #fff !important;
+}
+.nav button.nav-center span {
+  color: #fff !important;
+}
+
+/* ---------- پاکسازی کارت پروفایل قدیمی هدر (اگه مونده) ---------- */
+.top .header-profile-card {
+  display: none !important;
+}
+.top .header-bell {
+  display: none !important;
+}
