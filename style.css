@@ -630,3 +630,12 @@ body.no-nav .screen.active { padding-bottom: 0 !important; }
   .floating-card { padding: 10px 14px; font-size: 13px; }
   .panel-content { padding: 12px 16px; }
 }
+/* اطمینان از مخفی بودن صفحه نقشه تا زمانی که فعال نشود */
+#screen-map-detail {
+  display: none !important;
+}
+
+/* وقتی صفحه نقشه فعال شد، به حالت نمایشی خودش برگردد */
+#screen-map-detail.active {
+  display: flex !important;
+}
