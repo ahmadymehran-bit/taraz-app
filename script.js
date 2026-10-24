@@ -366,7 +366,7 @@ if (s === 'mission') {
   // ارسال رویداد برای راه‌اندازی نقشه و سایر کامپوننت‌ها
 document.dispatchEvent(
   new CustomEvent('taraz:screenShown', {
-    detail: { screenId: screenId }
+    detail: { screenId: s }
   })
 );
 
