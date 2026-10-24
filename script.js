@@ -258,7 +258,6 @@ async function renderHeaderAvatars(){
   if (ratingEl) ratingEl.textContent = r.count > 0 ? faDigits(r.avg.toFixed(1)) : '۰';
 }
 
-
 /* NOTIFICATIONS */
 async function updateBellBadge(){
 var u=DB.user;if(!u)return;
@@ -344,13 +343,6 @@ function go(s){
   if(map[s]){const b=document.querySelector('#nav button[data-nav="'+map[s]+'"]');if(b)b.classList.add('active')}
 if(s==='home') { loadFavorites().then(renderHome); updateHomeReadyButton(); }
   if(s==='browse'){ loadFavorites().then(renderBrowse); }
-  if (s === 'map-detail') {
-  setTimeout(() => {
-    if (typeof initTarazMap === 'function') {
-      initTarazMap(); // 👈 اسم دقیق تابعی که توی کدت داری
-    }
-  }, 300);
-}
   if(s==='services')renderServices();
   if(s==='capacity')renderCapacityDetail();
   if(s==='mission')renderMission();
@@ -754,8 +746,8 @@ async function renderServicesStep3(el){
   } catch(e) { console.warn('Ready fetch error:', e); }
   
   // فیلتر کردن ظرفیت‌های موجود (مثل قبل)
-  list = list.map(function(c){ /* ... کد قبلی ... */ });
-  list = list.filter(function(c){ /* ... کد قبلی ... */ });
+  list = list.map(function(c){ return { id: c.id, ownerPhone: c.owner_phone || c.ownerPhone, ownerName: c.owner_name || c.ownerName, serviceType: c.service_type || c.serviceType, typeId: c.type_id || c.typeId, title: c.title, region: c.region, routeFrom: c.route_from || c.routeFrom, routeTo: c.route_to || c.routeTo, capacityTotal: Number(c.capacity_total || c.capacityTotal), capacityUsed: Number(c.capacity_used || c.capacityUsed), price: Number(c.price), unit: c.unit, availableFrom: Number(c.available_from || c.availableFrom), availableTo: Number(c.available_to || c.availableTo), meta: c.meta, rating: Number(c.rating || 0), createdAt: Number(c.created_at || c.createdAt) }; });
+  list = list.filter(function(c){ return c.serviceType === servicesCurrentService && c.typeId === servicesCurrentType; });
   
   // 👇 نمایش خدمات‌دهنده‌های آنلاین در بالای لیست 👇
   var onlineHtml = '';
@@ -1219,11 +1211,6 @@ async function confirmMission(){
   setTimeout(function() { go('missions-list'); }, 1500);
 }
 
-
-
-
-
-
 async function renderMission(){
 var u=DB.user;if(!u)return;
 var result=null; try{result=await api.getMissions(u.phone)}catch(e){}
@@ -1272,13 +1259,6 @@ async function renderMyMissions() {
 
 function backFromDetail(){go(detailReturnTo||'home')}
 if(DB.user){ loadFavorites().then(function(){ if(currentScreen==='home')renderHome(); else if(currentScreen==='browse')renderBrowse(); }); }
-
-/* اسکرول به بالا — برای کلیک روی لوگو */
-function scrollToTop() {
-  const active = document.querySelector('.screen.active');
-  if (active) active.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
 console.log('✓ Taraz v3.0 loaded');
 /* ============ ADMIN PANEL LOGIC ============ */
 const ADMIN_PHONE = '09163905174'; // شماره موبایل خودت رو اینجا بذار
@@ -1992,112 +1972,15 @@ window.apiHealthCheck = async function() {
 };
 console.log('✓ API layer v1 loaded');
 
-/* ============ Taraz Map Logic (Fixed for Main App) ============ */
-
-// این متغیر نقشه را از دید ما خارج نگه می‌دارد
-let tarazMapInstance = null;
-
-function initTarazMap() {
-  const mapEl = document.getElementById('map');
-  if (!mapEl) return; // اگر عنصر نقشه در صفحه نبود، خارج شو
-
-  // اگر نقشه قبلاً ساخته شده، فقط سایز آن را آپدیت کن
-  if (tarazMapInstance) {
-    tarazMapInstance.invalidateSize();
-    return;
-  }
-
-  const tehran = [35.6892, 51.3890], esfahan = [32.6546, 51.6680];
-  const feedback = document.getElementById('feedback');
-
-  if (!window.L) {
-    mapEl.innerHTML = '<div class="map-fallback"><div class="fallback-route">تهران ⟶ اصفهان</div><p>کتابخانه نقشه بارگذاری نشد.</p></div>';
-    return;
-  }
-
-  // ساخت نقشه
-  tarazMapInstance = L.map('map', { zoomControl: false }).setView([34.25, 51.5], 5.4);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 18,
-    attribution: '&copy; OpenStreetMap'
-  }).addTo(tarazMapInstance);
-  
-  L.control.zoom({ position: 'topleft' }).addTo(tarazMapInstance);
-
-  // پین‌ها و مسیر
-  const a = L.divIcon({ className: 'taraz-pin-wrap', html: '<span class="taraz-pin">مبدأ</span>', iconSize: [48, 38], iconAnchor: [24, 19] });
-  const b = L.divIcon({ className: 'taraz-pin-wrap', html: '<span class="taraz-pin destination-pin">مقصد</span>', iconSize: [54, 38], iconAnchor: [27, 19] });
-  
-  L.marker(tehran, { icon: a }).addTo(tarazMapInstance).bindPopup('<b>مبدأ خرید</b><br>تهران');
-  L.marker(esfahan, { icon: b }).addTo(tarazMapInstance).bindPopup('<b>محل تحویل</b><br>اصفهان');
-  
-  const line = L.polyline([tehran, [34.8, 51.4], [33.7, 51.5], esfahan], { color: '#12835b', weight: 4, opacity: .9, dashArray: '8 8' }).addTo(tarazMapInstance);
-  tarazMapInstance.fitBounds(line.getBounds(), { padding: [35, 35] });
-
-  // کد امن برای دکمه‌های نقشه
-const locateBtn = document.getElementById('locate-btn');
-if (locateBtn) {
-  locateBtn.onclick = function() {
-    if(typeof tarazMapInstance !== 'undefined' && tarazMapInstance) {
-       tarazMapInstance.setView([32.4279, 53.6880], 5);
-    }
-  };
-}
-
-const openMapBtn = document.getElementById('open-map');
-if (openMapBtn) {
-  openMapBtn.onclick = function() {
-    window.open('https://www.openstreetmap.org', '_blank');
-  };
-}
-
-  async function searchPlace() {
-    const q = document.getElementById('place-search').value.trim();
-    if (!q) { feedback.textContent = 'نام شهر یا مکان را وارد کنید.'; return; }
-    feedback.textContent = 'در حال جستجوی مکان…';
-    try {
-      const r = await fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=ir&q=' + encodeURIComponent(q), { headers: { 'Accept-Language': 'fa' } });
-      if (!r.ok) throw Error();
-      const data = await r.json();
-      if (!data.length) { feedback.textContent = 'مکانی پیدا نشد؛ نام شهر را دقیق‌تر وارد کنید.'; return; }
-      const p = data[0], lat = Number(p.lat), lon = Number(p.lon);
-      tarazMapInstance.setView([lat, lon], 11);
-      L.popup().setLatLng([lat, lon]).setContent('<b>' + String(p.display_name).replace(/[<>]/g, '') + '</b>').openOn(tarazMapInstance);
-      feedback.textContent = 'مکان روی نقشه نمایش داده شد.';
-    } catch (e) { feedback.textContent = 'جستجوی آنلاین در دسترس نیست؛ اتصال اینترنت را بررسی کنید.'; }
-  }
-
-  document.getElementById('search-btn').onclick = searchPlace;
-  document.getElementById('place-search').addEventListener('keydown', e => { if (e.key === 'Enter') searchPlace(); });
-
-  document.querySelectorAll('.service-chip').forEach(x => x.onclick = () => {
-    const on = x.classList.toggle('is-active');
-    x.setAttribute('aria-pressed', String(on));
+/* Modern UI compatibility layer: intentionally guarded to avoid duplicating app handlers. */
+(function () {
+  'use strict';
+  document.addEventListener('click', function (event) {
+    const target = event.target && event.target.closest ? event.target.closest('[data-modern-scroll]') : null;
+    if (!target) return;
+    const selector = target.getAttribute('data-modern-scroll');
+    if (!selector) return;
+    const destination = document.querySelector(selector);
+    if (destination) destination.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
-
- const submitMissionBtn = document.getElementById('submit-mission');
-if (submitMissionBtn) {
-  submitMissionBtn.onclick = () => {
-    const n = document.querySelectorAll('.option-row input:checked').length;
-    const feedback = document.getElementById('feedback');
-    if (feedback) feedback.textContent = 'نمونه درخواست ( ' + n + ' ) انتخاب شده';
-  };
-}
-
-// ۱. وقتی صفحه عوض می‌شود (با تابع go)
-document.addEventListener('taraz:screenShown', (e) => {
-  if (e.detail && e.detail.screenId === 'map-detail') {
-    setTimeout(() => {
-      initTarazMap();
-      if (tarazMapInstance) tarazMapInstance.invalidateSize();
-    }, 300);
-  }
-});
-
-// ۲. اگر صفحه از قبل باز باشد
-document.addEventListener('DOMContentLoaded', () => {
-  const mapScreen = document.getElementById('screen-map-detail');
-  if (mapScreen && mapScreen.classList.contains('active')) {
-    setTimeout(() => initTarazMap(), 300);
-  }
-});
+})();
