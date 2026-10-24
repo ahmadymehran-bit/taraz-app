@@ -2033,8 +2033,15 @@ function initTarazMap() {
   tarazMapInstance.fitBounds(line.getBounds(), { padding: [35, 35] });
 
   // رویداد دکمه‌ها
-  document.getElementById('locate-btn').onclick = () => tarazMapInstance.fitBounds(line.getBounds(), { padding: [35, 35] });
-  document.getElementById('open-map').onclick = () => window.open('https://www.openstreetmap.org/directions?engine=fossgis_osrm_car&route=35.6892%2C51.3890%3B32.6546%2C51.6680', '_blank', 'noopener');
+ const locateBtn = document.getElementById('locate-btn');
+if (locateBtn) {
+  locateBtn.onclick = () => tarazMapInstance.setView([35.6892, 51.3890], 6);
+}
+
+const openMapBtn = document.getElementById('open-map');
+if (openMapBtn) {
+  openMapBtn.onclick = () => window.open('https://www.openstreetmap.org/?mlat=35.6892&mlon=51.3890#map=6/35.6892/51.3890', '_blank');
+}
 
   async function searchPlace() {
     const q = document.getElementById('place-search').value.trim();
