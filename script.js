@@ -363,6 +363,13 @@ if (s === 'mission') {
   renderMission();
 }
   renderHeaderAvatars(); updateChatBadge(); updateBellBadge();
+  // ارسال رویداد برای راه‌اندازی نقشه و سایر کامپوننت‌ها
+document.dispatchEvent(
+  new CustomEvent('taraz:screenShown', {
+    detail: { screenId: screenId }
+  })
+);
+
 }
 function backFromCapacity(){go(capacityReturnTo||'services')}
 function goUrgentSell(){go('sell');setTimeout(()=>enableUrgentSellMode(),50)}
@@ -1977,3 +1984,101 @@ window.apiHealthCheck = async function() {
   else { console.warn('✗ API not reachable'); if (typeof toast === 'function') toast('✗ اتصال به سرور برقرار نشد'); return false; }
 };
 console.log('✓ API layer v1 loaded');
+
+
+
+/* ==========================================================
+   TARAZ — نقشه تعاملی صفحه «چه می‌خواهم؟»
+   نسخه: 1.0 (راه‌اندازی اولیه نقشه و GeoJSON)
+   ========================================================== */
+
+// تنظیمات اولیه نقشه
+const TARAZ_MAP_CONFIG = {
+  geoJsonUrl: 'https://raw.githubusercontent.com/ssepehrnoush/Iran-geojson-map-boundaries/master/ir_states_boundaries_coordinates.geojson',
+  center: [32.4279, 53.688], // مرکز ایران
+  zoom: 5,
+  colors: {
+    border: '#123d32', // مرز استان‌ها
+    fill: '#1f8062', // رنگ داخل استان‌ها
+    fillHover: '#f0b429' // رنگ هاور
+  }
+};
+
+// متغیر سراسری برای نگهداری نمونه نقشه
+let tarazMapInstance = null;
+
+// تابع راه‌اندازی نقشه
+function initTarazMap() {
+  const container = document.getElementById('leaflet-map');
+  if (!container) return; // اگر کانتینر نبود، خارج شو
+
+  // اگر نقشه قبلاً ساخته شده، فقط سایز آن را آپدیت کن
+  if (tarazMapInstance) {
+    tarazMapInstance.invalidateSize();
+    return;
+  }
+
+  // ۱. ساخت نقشه
+  tarazMapInstance = L.map('leaflet-map').setView(TARAZ_MAP_CONFIG.center, TARAZ_MAP_CONFIG.zoom);
+
+  // ۲. اضافه کردن لایه کاشی‌ها (OpenStreetMap)
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap | تاراز'
+  }).addTo(tarazMapInstance);
+
+  // ۳. اضافه کردن GeoJSON استان‌های ایران
+  fetch(TARAZ_MAP_CONFIG.geoJsonUrl)
+    .then(response => response.json())
+    .then(data => {
+      L.geoJSON(data, {
+        style: function(feature) {
+          return {
+            color: TARAZ_MAP_CONFIG.colors.border,
+            weight: 1.5,
+            opacity: 0.85,
+            fillColor: TARAZ_MAP_CONFIG.colors.fill,
+            fillOpacity: 0.2
+          };
+        },
+        onEachFeature: function(feature, layer) {
+          // نام استان را از دیتا استخراج کن
+          const name = feature.properties.NAME_1 || feature.properties.name || 'استان';
+          
+          // اضافه کردن تولتیپ (هاور)
+          layer.bindTooltip(name, { sticky: true, direction: 'top' });
+
+          // افکت هاور
+          layer.on({
+            mouseover: function(e) {
+              e.target.setStyle({ fillColor: TARAZ_MAP_CONFIG.colors.fillHover, fillOpacity: 0.4 });
+            },
+            mouseout: function(e) {
+              e.target.setStyle({ fillColor: TARAZ_MAP_CONFIG.colors.fill, fillOpacity: 0.2 });
+            }
+          });
+        }
+      }).addTo(tarazMapInstance);
+    })
+    .catch(err => console.error('خطا در لود نقشه:', err));
+}
+
+// گوش دادن به رویداد تغییر صفحه برای راه‌اندازی نقشه
+// (چون نقشه در صفحه‌ای غیرفعال است، باید وقتی صفحه باز شد ساخته شود)
+document.addEventListener('taraz:screenShown', (e) => {
+  if (e.detail && e.detail.screenId === 'map-detail') {
+    // کمی تاخیر برای اطمینان از باز شدن کامل صفحه
+    setTimeout(() => {
+      initTarazMap();
+      if (tarazMapInstance) tarazMapInstance.invalidateSize();
+    }, 200);
+  }
+});
+
+// راه‌اندازی اولیه اگر صفحه از قبل باز باشد (برای تست دستی)
+document.addEventListener('DOMContentLoaded', () => {
+  const mapScreen = document.getElementById('screen-map-detail');
+  if (mapScreen && mapScreen.classList.contains('active')) {
+    setTimeout(() => initTarazMap(), 200);
+  }
+});
