@@ -639,3 +639,74 @@ body.no-nav .screen.active { padding-bottom: 0 !important; }
 #screen-map-detail.active {
   display: flex !important;
 }
+/* ==========================================================
+   اصلاحات نهایی ظاهر صفحه نقشه (TARAZ)
+   ========================================================== */
+
+/* ۱. مخفی کردن صفحه نقشه تا زمانی که فعال نشده */
+#screen-map-detail {
+  display: none !important;
+}
+
+/* ۲. وقتی صفحه نقشه باز شد، کل صفحه را پر کند */
+#screen-map-detail.active {
+  display: flex !important;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  background: #fff;
+}
+
+/* ۳. اصلاح دکمه‌های زوم Leaflet (که در عکس بیرون زده بودند) */
+#leaflet-map .leaflet-control-zoom {
+  margin-right: 15px !important;
+  margin-top: 15px !important;
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+}
+#leaflet-map .leaflet-control-zoom a {
+  background: #fff !important;
+  color: #123d32 !important;
+  border: none !important;
+  font-weight: 900;
+}
+
+/* ۴. اصلاح ظاهر پنل سمت راست */
+.detail-panel {
+  width: 380px;
+  background: #ffffff;
+  box-shadow: -5px 0 25px rgba(0,0,0,0.1);
+  z-index: 1000;
+}
+
+/* ۵. مخفی کردن منوی پایین وقتی در صفحه نقشه هستیم */
+#nav {
+  display: none !important;
+}
+
+/* ۶. اصلاح موقعیت دکمه‌های شناور روی نقشه */
+.map-floating-cards {
+  bottom: 30px;
+  left: 30px;
+  z-index: 1000;
+}
+
+/* ۷. موبایل: تبدیل به حالت تک‌ستونه با پنل پایینی */
+@media (max-width: 768px) {
+  .map-detail-body {
+    flex-direction: column;
+  }
+  .map-container {
+    flex: 1;
+    min-height: 50vh;
+  }
+  .detail-panel {
+    width: 100%;
+    height: 50vh;
+    border-radius: 20px 20px 0 0;
+    margin-top: -20px;
+  }
+}
