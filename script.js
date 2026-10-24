@@ -1977,7 +1977,7 @@ window.apiHealthCheck = async function() {
   else { console.warn('✗ API not reachable'); if (typeof toast === 'function') toast('✗ اتصال به سرور برقرار نشد'); return false; }
 };
 console.log('✓ API layer v1 loaded');
-/* ============ MAP & DETAIL SCREEN LOGIC ============ */
+/* ============ MAP & DETAIL SCREEN LOGIC (نسخه نهایی) ============ */
 let newMapInstance = null;
 
 function initMapDetail() {
@@ -2052,13 +2052,5 @@ document.addEventListener('taraz:screenShown', (e) => {
       initMapDetail();
       if (newMapInstance) newMapInstance.invalidateSize();
     }, 200);
-  }
-});
-
-// اگر صفحه از قبل باز بود
-document.addEventListener('DOMContentLoaded', () => {
-  const mapScreen = document.getElementById('screen-map-detail');
-  if (mapScreen && mapScreen.classList.contains('active')) {
-    setTimeout(() => initMapDetail(), 200);
   }
 });
