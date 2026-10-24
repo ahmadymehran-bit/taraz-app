@@ -395,3 +395,40 @@
   font-weight: 900;
   color: var(--forest);
 }
+
+/* ---------- تنظیم ابعاد عکس آگهی‌ها در بازار ---------- */
+.browse-card {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+}
+
+.browse-card .thumb {
+  height: 160px !important; /* ارتفاع ثابت برای همه عکس‌ها */
+  width: 100% !important;
+  aspect-ratio: auto !important;
+  flex-shrink: 0 !important;
+}
+
+.browse-card .thumb img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important; /* جلوگیری از کشیده شدن عکس */
+}
+
+.browse-card .body {
+  padding: 12px !important;
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.browse-card .title {
+  font-size: 14px !important;
+  height: 44px !important;
+  margin-bottom: 8px !important;
+}
+
+.browse-card .price-big {
+  margin-top: auto !important;
+}
