@@ -1,3 +1,16 @@
+/* متغیرهای رنگی اصلی (جایگزین theme-overrides.css) */
+:root {
+  --forest: #123d32;
+  --paper: #f7f7f2;
+  --ink: #18312b;
+  --muted: #71807a;
+  --line: #e1e9e2;
+  --accent: #198363;
+  --fire: #e94b4b;
+  --gold: #efb82e;
+  --pale: #eaf5ef;
+}
+
 /* ============================================
    MODERN-TARAZ — UI Layer V2 (2026)
    فقط ظاهر — منطق دست نخورده
