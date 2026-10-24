@@ -2077,13 +2077,6 @@ if (mapOpenBtn) {
 }
 
 
-const openMapBtn = document.getElementById('open-map');
-if (openMapBtn) {
-  openMapBtn.onclick = function() {
-    window.open('https://www.openstreetmap.org', '_blank');
-  };
-}
-
 
   document.querySelectorAll('.service-chip').forEach(x => x.onclick = () => {
     const on = x.classList.toggle('is-active');
