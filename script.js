@@ -344,6 +344,13 @@ function go(s){
   if(map[s]){const b=document.querySelector('#nav button[data-nav="'+map[s]+'"]');if(b)b.classList.add('active')}
 if(s==='home') { loadFavorites().then(renderHome); updateHomeReadyButton(); }
   if(s==='browse'){ loadFavorites().then(renderBrowse); }
+  if (s === 'map-detail') {
+  setTimeout(() => {
+    if (typeof initTarazMap === 'function') {
+      initTarazMap(); // 👈 اسم دقیق تابعی که توی کدت داری
+    }
+  }, 300);
+}
   if(s==='services')renderServices();
   if(s==='capacity')renderCapacityDetail();
   if(s==='mission')renderMission();
