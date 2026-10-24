@@ -2075,10 +2075,16 @@ document.addEventListener('taraz:screenShown', (e) => {
   }
 });
 
-// راه‌اندازی اولیه اگر صفحه از قبل باز باشد (برای تست دستی)
+// راه‌اندازی اولیه اگر صفحه از قبل باز باشد
 document.addEventListener('DOMContentLoaded', () => {
   const mapScreen = document.getElementById('screen-map-detail');
   if (mapScreen && mapScreen.classList.contains('active')) {
     setTimeout(() => initTarazMap(), 200);
   }
 });
+
+// اجرای مستقیم نقشه برای تست
+setTimeout(() => {
+  initTarazMap();
+  if (tarazMapInstance) tarazMapInstance.invalidateSize();
+}, 500);
