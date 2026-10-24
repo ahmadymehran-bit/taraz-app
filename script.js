@@ -2078,6 +2078,22 @@ if (mapOpenBtn) {
     x.setAttribute('aria-pressed', String(on));
   });
 
+document.addEventListener('DOMContentLoaded', () => {
+  const mapScreen = document.getElementById('screen-map-detail');
+  if (mapScreen && mapScreen.classList.contains('active')) {
+    setTimeout(() => { if(typeof initTarazMap === 'function') initTarazMap(); }, 300);
+  }
+});
+
+document.addEventListener('taraz:screenShown', (e) => {
+  if (e.detail && e.detail.screenId === 'map-detail') {
+    setTimeout(() => {
+      if(typeof initTarazMap === 'function') initTarazMap();
+      if (window.tarazMapInstance) window.tarazMapInstance.invalidateSize();
+    }, 300);
+  }
+});
+
 const submitMissionBtn = document.getElementById('submit-mission');
 if (submitMissionBtn) {
   submitMissionBtn.onclick = () => {
@@ -2086,21 +2102,3 @@ if (submitMissionBtn) {
     if (feedback) feedback.textContent = 'نمونه درخواست ( ' + n + ' ) انتخاب شده';
   };
 }
-  
-// ۱. وقتی صفحه عوض می‌شود (با تابع go)
-document.addEventListener('taraz:screenShown', (e) => {
-  if (e.detail && e.detail.screenId === 'map-detail') {
-    setTimeout(() => {
-      initTarazMap();
-      if (tarazMapInstance) tarazMapInstance.invalidateSize();
-    }, 300);
-  }
-});
-
-// ۲. اگر صفحه از قبل باز باشد
-document.addEventListener('DOMContentLoaded', () => {
-  const mapScreen = document.getElementById('screen-map-detail');
-  if (mapScreen && mapScreen.classList.contains('active')) {
-    setTimeout(() => initTarazMap(), 300);
-  }
-});
