@@ -432,3 +432,137 @@
 .browse-card .price-big {
   margin-top: auto !important;
 }
+/* ============================================
+   صفحه HOME و BROWSE (طراحی جدید)
+   ============================================ */
+
+/* هدر صفحه اصلی */
+.home-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background: var(--paper);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid var(--line);
+}
+
+.hh-right, .hh-left { display: flex; align-items: center; gap: 8px; }
+.hh-location {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #fff;
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--forest);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+}
+.hh-location .loc-icon { font-size: 14px; }
+.hh-location .loc-arrow { color: var(--muted); font-size: 14px; }
+
+.hh-center { display: flex; align-items: center; gap: 4px; }
+.hh-logo-text { font-size: 26px; font-weight: 900; color: var(--forest); letter-spacing: -1px; }
+.hh-logo-icon { font-size: 24px; }
+
+.hh-bell {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+}
+.hh-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1f8062, #123d32);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 900;
+  cursor: pointer;
+  overflow: hidden;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.hh-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+/* باکس جستجو */
+.home-search-wrapper { padding: 12px 16px; }
+.home-search-box {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 6px 6px 6px 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  cursor: text;
+}
+.home-search-box .hs-icon { font-size: 18px; color: var(--muted); margin-left: 8px; }
+.home-search-box input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--ink);
+  background: transparent;
+}
+.home-search-box .hs-filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #f7f7f2;
+  border-right: 1px solid var(--line);
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--forest);
+  cursor: pointer;
+}
+
+/* دسته‌بندی‌های افقی */
+.home-categories {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 0 16px 12px 16px;
+  scrollbar-width: none;
+}
+.home-categories::-webkit-scrollbar { display: none; }
+.hc-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  border: 1px solid var(--line);
+  padding: 8px 14px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--forest);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.hc-btn.active { background: var(--forest); color: #fff; border-color: var(--forest); }
+.hc-btn span { font-size: 16px; }
+
+/* اصلاح گرید در صفحه اصلی */
+#screen-home .browse-grid { padding-top: 4px; }
