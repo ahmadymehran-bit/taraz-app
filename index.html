@@ -64,32 +64,58 @@
     </div>
   </section>
 
-  <!-- ============ HOME (جدید) ============ -->
+<!-- ============ HOME (Divar Style) ============ -->
 <section class="screen" id="screen-home">
   
-  <!-- ============ MODERN HEADER ============ -->
-  <header class="modern-header">
-    <div class="mh-brand" onclick="scrollToTop()">
-      <span class="leaf">🌿</span>
-      <span class="mh-title">تاراز</span>
-    </div>
-
-    <div class="mh-profile" onclick="go('profile')">
-      <div class="mh-avatar" id="header-avatar"></div>
-      <div class="mh-info">
-        <div class="mh-name" id="header-user-name">کاربر</div>
-        <div class="mh-meta">
-          <span id="header-user-role">شغل</span>
-          <span class="star">★ <span id="header-user-rating">۰</span></span>
-        </div>
+  <!-- هدر جدید (لوکیشن راست، لوگو وسط، پروفایل چپ) -->
+  <header class="home-header">
+    <div class="hh-right">
+      <div class="hh-location" onclick="promptChangeCity()">
+        <span class="loc-icon">📍</span>
+        <span id="header-location-text">قم</span>
+        <span class="loc-arrow">⌄</span>
       </div>
     </div>
-
-    <div class="mh-bell" id="header-bell" onclick="go('notifs')">
-      🔔
-      <span class="bell-badge" id="bell-badge"></span>
+    
+    <div class="hh-center" onclick="scrollToTop()" style="cursor:pointer;">
+      <span class="hh-logo-text">تاراز</span>
+      <span class="hh-logo-icon">🌿</span>
+    </div>
+    
+    <div class="hh-left">
+      <div class="hh-bell" onclick="go('notifs')">
+        🔔
+        <span class="bell-badge" id="bell-badge"></span>
+      </div>
+      <div class="hh-avatar" id="header-avatar" onclick="go('profile')"></div>
     </div>
   </header>
+
+  <!-- باکس جستجوی سراسری -->
+  <div class="home-search-wrapper">
+    <div class="home-search-box" onclick="go('browse')">
+      <span class="hs-icon">🔍</span>
+      <input type="text" placeholder="جستجو در آگهی‌ها، دام‌ها، محصولات و ..." readonly style="cursor:pointer;">
+      <div class="hs-filter-btn" onclick="event.stopPropagation(); go('browse')">
+        <span>⚙️</span> فیلتر
+      </div>
+    </div>
+  </div>
+
+  <!-- دسته‌بندی‌های افقی -->
+  <div class="home-categories">
+    <button class="hc-btn active" onclick="pickBrowseCat('all'); go('browse')"><span>🔲</span> همه</button>
+    <button class="hc-btn" onclick="pickBrowseCat('livestock'); go('browse')"><span>🐄</span> دام</button>
+    <button class="hc-btn" onclick="pickBrowseCat('poultry'); go('browse')"><span>🐔</span> طیور</button>
+    <button class="hc-btn" onclick="pickBrowseCat('crops'); go('browse')"><span>🌾</span> کشاورزی</button>
+    <button class="hc-btn" onclick="pickBrowseCat('vet_drugs'); go('browse')"><span>💉</span> دارو</button>
+  </div>
+
+  <!-- لیست آگهی‌ها (از همین گرید برای بازار هم استفاده می‌شود) -->
+  <div class="section" style="padding: 10px 0 0 0;">
+    <div id="home-listings" class="browse-grid" style="padding: 0 16px;"></div>
+  </div>
+</section>
 
   <!-- ============ دکمه‌های اصلی ============ -->
   <div class="modern-actions">
@@ -171,30 +197,66 @@
 </section>
 
 
-  <!-- ============ BROWSE ============ -->
-  <section class="screen" id="screen-browse" style="padding-bottom:110px">
-    <div class="browse-header">
-      <div class="browse-search-big">
-        <span class="ic">🔍</span>
-        <input id="browse-search" placeholder="جستجو..." oninput="filterBrowse(this.value)">
-        <span class="clear-x" onclick="clearBrowseSearch()" id="browse-clear" hidden>×</span>
-      </div>
-      <button type="button" onclick="toggleFilterPanel()" style="width:100%;padding:12px;margin-top:10px;background:#eef8f3;color:var(--forest);border:2px solid var(--line);border-radius:14px;font-size:14px;font-weight:700;cursor:pointer">⚙️ فیلتر پیشرفته</button>
-      <div class="chips-row" id="browse-chips"></div>
-      <div class="filter-panel" id="browse-filter-panel" style="display:none">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-          <div><label style="font-size:12px;color:var(--muted);font-weight:700">قیمت از (تومان)</label><input id="filter-price-min" type="tel" inputmode="numeric" placeholder="۰" style="width:100%;padding:12px;border:2px solid var(--line);border-radius:12px;font-size:14px;direction:ltr;text-align:left;margin-top:4px"></div>
-          <div><label style="font-size:12px;color:var(--muted);font-weight:700">قیمت تا (تومان)</label><input id="filter-price-max" type="tel" inputmode="numeric" placeholder="∞" style="width:100%;padding:12px;border:2px solid var(--line);border-radius:12px;font-size:14px;direction:ltr;text-align:left;margin-top:4px"></div>
-        </div>
-        <div style="margin-bottom:10px"><label style="font-size:12px;color:var(--muted);font-weight:700">منطقه</label><input id="filter-region" type="text" placeholder="مثلاً: اهواز" style="width:100%;padding:12px;border:2px solid var(--line);border-radius:12px;font-size:14px;margin-top:4px"></div>
-        <div style="display:flex;gap:10px">
-          <button type="button" class="btn-green" onclick="applyFilters()" style="flex:1;min-height:50px;font-size:15px">اعمال فیلتر</button>
-          <button type="button" class="btn-outline" onclick="clearFilters()" style="flex:1;min-height:50px;font-size:15px">پاک کردن</button>
-        </div>
+<!-- ============ BROWSE (Market) ============ -->
+<section class="screen" id="screen-browse" style="padding-bottom:110px">
+  
+  <!-- هدر بازار -->
+  <header class="home-header">
+    <div class="hh-right">
+      <div class="hh-location" onclick="promptChangeCity()">
+        <span class="loc-icon">📍</span>
+        <span id="header-location-text">قم</span>
+        <span class="loc-arrow">⌄</span>
       </div>
     </div>
-    <div class="browse-grid" id="browse-grid"></div>
-  </section>
+    
+    <div class="hh-center">
+      <span class="hh-logo-text">تاراز</span>
+      <span class="hh-logo-icon">🌿</span>
+    </div>
+    
+    <div class="hh-left">
+      <div class="hh-bell" onclick="go('notifs')">
+        🔔
+        <span class="bell-badge" id="bell-badge"></span>
+      </div>
+      <div class="hh-avatar" id="header-avatar" onclick="go('profile')"></div>
+    </div>
+  </header>
+
+  <!-- باکس جستجو + فیلتر کوچک -->
+  <div class="home-search-wrapper">
+    <div class="home-search-box" style="padding: 6px 12px;">
+      <span class="hs-icon">🔍</span>
+      <input id="browse-search" type="text" placeholder="جستجو..." oninput="filterBrowse(this.value)">
+      <span class="clear-x" onclick="clearBrowseSearch()" id="browse-clear" hidden>×</span>
+      <div class="hs-filter-btn" onclick="toggleFilterPanel()" style="border-right: none; padding: 6px 8px; background: transparent;">
+        ⚙️
+      </div>
+    </div>
+  </div>
+
+  <!-- دسته‌بندی‌های افقی -->
+  <div class="home-categories" id="browse-chips">
+    <!-- این بخش با جاوااسکریپت (renderBrowseChips) پر می‌شه -->
+  </div>
+
+  <!-- پنل فیلتر پیشرفته (مخفی تا زمانی که دکمه فیلتر زده شود) -->
+  <div class="filter-panel" id="browse-filter-panel" style="display:none; padding: 0 16px 16px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+      <div><label style="font-size:12px;color:var(--muted);font-weight:700">قیمت از (تومان)</label><input id="filter-price-min" type="tel" inputmode="numeric" placeholder="۰" style="width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;font-size:14px;direction:ltr;text-align:left;margin-top:4px"></div>
+      <div><label style="font-size:12px;color:var(--muted);font-weight:700">قیمت تا (تومان)</label><input id="filter-price-max" type="tel" inputmode="numeric" placeholder="∞" style="width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;font-size:14px;direction:ltr;text-align:left;margin-top:4px"></div>
+    </div>
+    <div style="margin-bottom:10px"><label style="font-size:12px;color:var(--muted);font-weight:700">منطقه</label><input id="filter-region" type="text" placeholder="مثلاً: اهواز" style="width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;font-size:14px;margin-top:4px"></div>
+    <div style="display:flex;gap:10px">
+      <button type="button" class="btn-green" onclick="applyFilters()" style="flex:1;min-height:50px;font-size:15px">اعمال فیلتر</button>
+      <button type="button" class="btn-outline" onclick="clearFilters()" style="flex:1;min-height:50px;font-size:15px">پاک کردن</button>
+    </div>
+  </div>
+
+  <!-- گرید آگهی‌ها -->
+  <div class="browse-grid" id="browse-grid" style="padding: 0 16px;"></div>
+</section>
 
  <!-- ============ SERVICES ============ -->
 <section class="screen" id="screen-services" style="padding-bottom:110px">
