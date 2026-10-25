@@ -341,8 +341,9 @@ function go(s){
   document.querySelectorAll('#nav button').forEach(b=>b.classList.remove('active'));
   const map={home:'home',browse:'browse',services:'services',mission:'mission',profile:'profile',chatlist:'chatlist',buy:'home',sell:'home',settings:'profile',notifs:'home',capacity:'services',detail:'browse'};
   if(map[s]){const b=document.querySelector('#nav button[data-nav="'+map[s]+'"]');if(b)b.classList.add('active')}
-if(s==='home') { loadFavorites().then(renderHome); updateHomeReadyButton(); }
-  if(s==='browse'){ loadFavorites().then(renderBrowse); }
+// به دلیل جابجایی صفحه‌ها، renderBrowse برای صفحه Home و renderHome برای صفحه Browse اجرا میشه
+if(s==='home') { loadFavorites().then(renderBrowse); }
+if(s==='browse'){ loadFavorites().then(renderHome); updateHomeReadyButton(); }
   if(s==='services')renderServices();
   if(s==='capacity')renderCapacityDetail();
   if(s==='mission')renderMission();
