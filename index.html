@@ -64,119 +64,112 @@
     </div>
   </section>
 
-<!-- ============ HOME (Divar Style) ============ -->
-<section class="screen" id="screen-home">
-  
-  <!-- هدر جدید (لوکیشن راست، لوگو وسط، پروفایل چپ) -->
-  <header class="home-header">
-    <div class="hh-right">
-      <div class="hh-location" onclick="promptChangeCity()">
-        <span class="loc-icon">📍</span>
-        <span id="header-location-text">قم</span>
-        <span class="loc-arrow">⌄</span>
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>تاراز | سوپر اپ کشاورزی و دامداری</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="modern-ui.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ============ صفحه اصلی (HOME) ============ -->
+  <section class="screen active" id="screen-home">
+    <header class="home-header">
+      <div class="hh-right">
+        <div class="hh-location" onclick="promptChangeCity()">
+          <span class="loc-icon">📍</span>
+          <span id="header-location-text">قم</span>
+          <span class="loc-arrow">⌄</span>
+        </div>
+      </div>
+      <div class="hh-center" onclick="scrollToTop()" style="cursor:pointer;">
+        <span class="hh-logo-text">تاراز</span>
+        <span class="hh-logo-icon">🌿</span>
+      </div>
+      <div class="hh-left">
+        <div class="hh-bell" onclick="go('notifs')">
+          🔔
+          <span class="bell-badge" id="bell-badge"></span>
+        </div>
+        <div class="hh-avatar" id="header-avatar" onclick="go('profile')"></div>
+      </div>
+    </header>
+
+    <div class="home-search-wrapper">
+      <div class="home-search-box" onclick="go('browse')">
+        <span class="hs-icon">🔍</span>
+        <input type="text" placeholder="جستجو در آگهی‌ها، دام‌ها، محصولات و ..." readonly style="cursor:pointer;">
+        <div class="hs-filter-btn" onclick="event.stopPropagation(); go('browse')">
+          <span>⚙️</span> فیلتر
+        </div>
       </div>
     </div>
-    
-    <div class="hh-center" onclick="scrollToTop()" style="cursor:pointer;">
-      <span class="hh-logo-text">تاراز</span>
-      <span class="hh-logo-icon">🌿</span>
+
+    <div class="home-categories">
+      <button class="hc-btn active" onclick="go('browse')"><span>🔲</span> همه</button>
+      <button class="hc-btn" onclick="pickBrowseCat('livestock'); go('browse')"><span>🐄</span> دام</button>
+      <button class="hc-btn" onclick="pickBrowseCat('poultry'); go('browse')"><span>🐔</span> طیور</button>
+      <button class="hc-btn" onclick="pickBrowseCat('crops'); go('browse')"><span>🌾</span> کشاورزی</button>
+      <button class="hc-btn" onclick="pickBrowseCat('vet_drugs'); go('browse')"><span>💉</span> دارو</button>
     </div>
-    
-    <div class="hh-left">
-      <div class="hh-bell" onclick="go('notifs')">
-        🔔
-        <span class="bell-badge" id="bell-badge"></span>
-      </div>
-      <div class="hh-avatar" id="header-avatar" onclick="go('profile')"></div>
-    </div>
-  </header>
 
-  <!-- باکس جستجوی سراسری -->
-  <div class="home-search-wrapper">
-    <div class="home-search-box" onclick="go('browse')">
-      <span class="hs-icon">🔍</span>
-      <input type="text" placeholder="جستجو در آگهی‌ها، دام‌ها، محصولات و ..." readonly style="cursor:pointer;">
-      <div class="hs-filter-btn" onclick="event.stopPropagation(); go('browse')">
-        <span>⚙️</span> فیلتر
-      </div>
-    </div>
-  </div>
-
-  <!-- دسته‌بندی‌های افقی -->
-  <div class="home-categories">
-    <button class="hc-btn active" onclick="pickBrowseCat('all'); go('browse')"><span>🔲</span> همه</button>
-    <button class="hc-btn" onclick="pickBrowseCat('livestock'); go('browse')"><span>🐄</span> دام</button>
-    <button class="hc-btn" onclick="pickBrowseCat('poultry'); go('browse')"><span>🐔</span> طیور</button>
-    <button class="hc-btn" onclick="pickBrowseCat('crops'); go('browse')"><span>🌾</span> کشاورزی</button>
-    <button class="hc-btn" onclick="pickBrowseCat('vet_drugs'); go('browse')"><span>💉</span> دارو</button>
-  </div>
-
-  <!-- لیست آگهی‌ها (از همین گرید برای بازار هم استفاده می‌شود) -->
-  <div class="section" style="padding: 10px 0 0 0;">
-    <div id="home-listings" class="browse-grid" style="padding: 0 16px;"></div>
-  </div>
-</section>
-
-  <!-- ============ دکمه‌های اصلی ============ -->
-  <div class="modern-actions">
-    <div class="row-2">
-      <button type="button" class="modern-btn mb-buy" onclick="go('buy')">
-        <span class="mb-icon">🛒</span>
-        <span class="mb-label">خرید</span>
-      </button>
-      <button type="button" class="modern-btn mb-sell" onclick="go('sell')">
-        <span class="mb-icon">💰</span>
-        <span class="mb-label">فروش</span>
-      </button>
-    </div>
-    <button type="button" class="modern-btn mb-urgent" onclick="goUrgentSell()">
-      <span class="mb-icon">⚡</span>
-      <span class="mb-label">خرید و فروش فوری</span>
-    </button>
-  </div>
-
-  <!-- ============ دسته‌بندی‌های گرد ============ -->
-  <div class="modern-cats">
-    <button type="button" class="modern-cat" onclick="pickBrowseCat('livestock');go('browse')">
-      <span class="mc-icon">🐄</span>
-      <span class="mc-label">دام و دامداری</span>
-    </button>
-    <button type="button" class="modern-cat" onclick="pickBrowseCat('crops');go('browse')">
-      <span class="mc-icon">🌾</span>
-      <span class="mc-label">کشاورزی</span>
-    </button>
-    <button type="button" class="modern-cat" onclick="pickBrowseCat('vet_drugs');go('browse')">
-      <span class="mc-icon">🩺</span>
-      <span class="mc-label">دامپزشکی</span>
-    </button>
-    <button type="button" class="modern-cat" onclick="pickBrowseCat('agri_inputs');go('browse')">
-      <span class="mc-icon">🌱</span>
-      <span class="mc-label">گیاه‌پزشکی</span>
-    </button>
-  </div>
-
-  <!-- نبض بازار (مرجع قیمت) -->
-  <section class="section" style="padding-top: 12px;">
-    <h2 style="font-size: 18px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">📊 نبض بازار</h2>
-    <div style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;" id="market-pulse-container">
-      <!-- این بخش با جاوااسکریپت پر می‌شه -->
-      <div class="card" style="min-width: 140px; padding: 16px; text-align: center; background: #fff; border-radius: 16px;">
-        <div style="font-size: 32px; margin-bottom: 8px;">🐑</div>
-        <div style="font-size: 14px; font-weight: 800; color: var(--forest);">گوسفند شال</div>
-        <div style="font-size: 16px; font-weight: 900; color: var(--accent); margin-top: 6px;" id="pulse-sheep">در حال بارگذاری...</div>
-      </div>
-      <div class="card" style="min-width: 140px; padding: 16px; text-align: center; background: #fff; border-radius: 16px;">
-        <div style="font-size: 32px; margin-bottom: 8px;">🌾</div>
-        <div style="font-size: 14px; font-weight: 800; color: var(--forest);">گندم</div>
-        <div style="font-size: 16px; font-weight: 900; color: var(--accent); margin-top: 6px;" id="pulse-wheat">در حال بارگذاری...</div>
-      </div>
-      <div class="card" style="min-width: 140px; padding: 16px; text-align: center; background: #fff; border-radius: 16px;">
-        <div style="font-size: 32px; margin-bottom: 8px;">🌰</div>
-        <div style="font-size: 14px; font-weight: 800; color: var(--forest);">کنسانتره</div>
-        <div style="font-size: 16px; font-weight: 900; color: var(--accent); margin-top: 6px;" id="pulse-feed">در حال بارگذاری...</div>
-      </div>
+    <div class="section" style="padding: 10px 0 0 0;">
+      <div id="home-listings" class="browse-grid" style="padding: 0 16px;"></div>
     </div>
   </section>
+
+  <!-- ============ صفحه بازار (BROWSE) ============ -->
+  <section class="screen" id="screen-browse" style="padding-bottom:110px">
+    <header class="home-header">
+      <div class="hh-right">
+        <div class="hh-location" onclick="promptChangeCity()">
+          <span class="loc-icon">📍</span>
+          <span id="header-location-text">قم</span>
+          <span class="loc-arrow">⌄</span>
+        </div>
+      </div>
+      <div class="hh-center">
+        <span class="hh-logo-text">تاراز</span>
+        <span class="hh-logo-icon">🌿</span>
+      </div>
+      <div class="hh-left">
+        <div class="hh-bell" onclick="go('notifs')">🔔</div>
+        <div class="hh-avatar" id="header-avatar" onclick="go('profile')"></div>
+      </div>
+    </header>
+
+    <div class="home-search-wrapper">
+      <div class="home-search-box" style="padding: 6px 12px;">
+        <span class="hs-icon">🔍</span>
+        <input id="browse-search" type="text" placeholder="جستجو..." oninput="filterBrowse(this.value)">
+        <div class="hs-filter-btn" onclick="toggleFilterPanel()" style="border-right: none; padding: 6px 8px; background: transparent;">
+          ⚙️
+        </div>
+      </div>
+    </div>
+
+    <div class="home-categories" id="browse-chips"></div>
+    <div class="browse-grid" id="browse-grid" style="padding: 0 16px;"></div>
+  </section>
+
+  <!-- ============ منوی پایین ============ -->
+  <nav class="nav" id="nav">
+    <button type="button" data-nav="home" class="active" onclick="go('home')"><span>🏠</span>خانه</button>
+    <button type="button" data-nav="browse" onclick="go('browse')"><span>🔍</span>بازار</button>
+    <button type="button" data-nav="mission" class="nav-center" onclick="go('mission')"><span>🎯</span>چه می‌خواهم؟</button>
+    <button type="button" data-nav="services" onclick="go('services')"><span>🛠️</span>خدمات</button>
+    <button type="button" data-nav="chatlist" onclick="go('chatlist')"><span>💬</span>چت</button>
+  </nav>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
 
   <!-- مأموریت‌های من -->
   <section class="section">
@@ -197,10 +190,10 @@
 </section>
 
 
-<!-- ============ BROWSE (Market) ============ -->
+ <!-- ============ BROWSE (Market) ============ -->
 <section class="screen" id="screen-browse" style="padding-bottom:110px">
   
-  <!-- هدر بازار -->
+  <!-- هدر مدرن با لوکیشن، لوگو و پروفایل -->
   <header class="home-header">
     <div class="hh-right">
       <div class="hh-location" onclick="promptChangeCity()">
@@ -209,26 +202,23 @@
         <span class="loc-arrow">⌄</span>
       </div>
     </div>
-    
     <div class="hh-center">
       <span class="hh-logo-text">تاراز</span>
       <span class="hh-logo-icon">🌿</span>
     </div>
-    
     <div class="hh-left">
       <div class="hh-bell" onclick="go('notifs')">
         🔔
-        <span class="bell-badge" id="bell-badge"></span>
       </div>
       <div class="hh-avatar" id="header-avatar" onclick="go('profile')"></div>
     </div>
   </header>
 
-  <!-- باکس جستجو + فیلتر کوچک -->
+  <!-- باکس جستجو با دکمه فیلتر کوچک درون آن -->
   <div class="home-search-wrapper">
     <div class="home-search-box" style="padding: 6px 12px;">
       <span class="hs-icon">🔍</span>
-      <input id="browse-search" type="text" placeholder="جستجو..." oninput="filterBrowse(this.value)">
+      <input id="browse-search" type="text" placeholder="جستجو در بازار..." oninput="filterBrowse(this.value)">
       <span class="clear-x" onclick="clearBrowseSearch()" id="browse-clear" hidden>×</span>
       <div class="hs-filter-btn" onclick="toggleFilterPanel()" style="border-right: none; padding: 6px 8px; background: transparent;">
         ⚙️
@@ -236,12 +226,10 @@
     </div>
   </div>
 
-  <!-- دسته‌بندی‌های افقی -->
-  <div class="home-categories" id="browse-chips">
-    <!-- این بخش با جاوااسکریپت (renderBrowseChips) پر می‌شه -->
-  </div>
+  <!-- دسته‌بندی‌ها (توسط جاوااسکریپت پر می‌شود) -->
+  <div class="home-categories" id="browse-chips"></div>
 
-  <!-- پنل فیلتر پیشرفته (مخفی تا زمانی که دکمه فیلتر زده شود) -->
+  <!-- پنل فیلتر پیشرفته (مخفی) -->
   <div class="filter-panel" id="browse-filter-panel" style="display:none; padding: 0 16px 16px;">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
       <div><label style="font-size:12px;color:var(--muted);font-weight:700">قیمت از (تومان)</label><input id="filter-price-min" type="tel" inputmode="numeric" placeholder="۰" style="width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;font-size:14px;direction:ltr;text-align:left;margin-top:4px"></div>
@@ -254,9 +242,10 @@
     </div>
   </div>
 
-  <!-- گرید آگهی‌ها -->
+  <!-- گرید آگهی‌های بازار -->
   <div class="browse-grid" id="browse-grid" style="padding: 0 16px;"></div>
 </section>
+
 
  <!-- ============ SERVICES ============ -->
 <section class="screen" id="screen-services" style="padding-bottom:110px">
