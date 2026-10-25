@@ -1259,6 +1259,14 @@ async function renderMyMissions() {
 
 function backFromDetail(){go(detailReturnTo||'home')}
 if(DB.user){ loadFavorites().then(function(){ if(currentScreen==='home')renderHome(); else if(currentScreen==='browse')renderBrowse(); }); }
+function promptChangeCity() {
+  var city = prompt("نام شهر موردنظر را وارد کنید:", "قم");
+  if (city && city.trim()) {
+    document.querySelectorAll('#header-location-text').forEach(el => el.textContent = city.trim());
+    if(typeof toast === 'function') toast('محدوده نمایش روی ' + city.trim() + ' تنظیم شد.');
+  }
+}
+
 console.log('✓ Taraz v3.0 loaded');
 /* ============ ADMIN PANEL LOGIC ============ */
 const ADMIN_PHONE = '09163905174'; // شماره موبایل خودت رو اینجا بذار
