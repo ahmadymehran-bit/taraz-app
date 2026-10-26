@@ -432,3 +432,65 @@
 .browse-card .price-big {
   margin-top: auto !important;
 }
+
+/* ============================================
+   TARAZ V3 — پالت جدید (سبز تیره + کرم + طلایی)
+   فقط ظاهر. در حالت شب (data-theme="dark") رنگ‌ها تیره می‌شوند.
+   ============================================ */
+:root {
+  --t-forest: #0f4d3a;
+  --t-forest-dark: #0a3427;
+  --t-cream: #fdf8ec;
+  --t-gold: #e0b04a;
+  --t-gold-soft: #f3e3b3;
+  --t-card: #ffffff;
+  --t-text: #1c2e28;
+  --t-muted: #6f7f78;
+  --t-line: #e7e2d3;
+}
+
+body {
+  background: var(--t-cream);
+  color: var(--t-text);
+}
+
+/* نوار پایین: سفید، گرد، سایه نرم */
+.nav {
+  background: #ffffff !important;
+  border-top: 1px solid var(--t-line) !important;
+  box-shadow: 0 -4px 18px rgba(15, 77, 58, 0.08) !important;
+}
+.nav button {
+  color: var(--t-muted);
+}
+.nav button.active {
+  color: var(--t-forest);
+}
+
+/* دکمهٔ وسط «چه می‌خواهم؟»: طلایی، بدون رنگ آبی قدیمی.
+   !important لازم است چون index.html رنگ را inline گذاشته است. */
+.nav button.nav-center {
+  background: linear-gradient(135deg, #f3c95e, #d9a233) !important;
+  border: 4px solid #ffffff !important;
+  box-shadow: 0 8px 22px rgba(224, 176, 74, 0.45) !important;
+  color: var(--t-text) !important;
+}
+.nav button.nav-center span {
+  color: var(--t-text) !important;
+}
+
+/* حالت شب */
+[data-theme="dark"] body {
+  background: #0b1714;
+  color: #e6efea;
+}
+[data-theme="dark"] .nav {
+  background: #13221e !important;
+  border-top-color: #22362f !important;
+}
+[data-theme="dark"] .nav button {
+  color: #9fb3ab;
+}
+[data-theme="dark"] .nav button.active {
+  color: #8fd6b5;
+}
