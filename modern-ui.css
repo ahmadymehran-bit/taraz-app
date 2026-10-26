@@ -518,7 +518,7 @@ body {
   width: 96px;
   height: 96px;
   margin: 0 auto 10px;
-  background: url("logo.webp") center / contain no-repeat;
+  background: url("logo.png") center / contain no-repeat;
 }
 #screen-auth .auth-hero .tag {
   color: var(--t-muted);
