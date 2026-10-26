@@ -1229,6 +1229,25 @@ var el=document.getElementById('mission-history'); if(!el)return;
 if(!list.length){el.innerHTML='<div class="empty" style="padding:30px 20px"><span class="emoji">🎯</span>مأموریتی نساخته‌ای</div>';return}
 el.innerHTML=list.slice(0,10).map(function(m){ return '<div class="card"><b>🎯 '+esc((m.rawText||'').slice(0,50))+'</b><small>'+faDigits((m.steps||[]).length)+' مرحله · '+faPrice(m.total)+' تومان<br>'+timeAgo(m.createdAt)+'</small></div>'; }).join('');
 }
+async function buildTxSection(phone) {
+  var rv = null;
+  try { rv = await api._fetch('/api/escrows/' + encodeURIComponent(phone)); } catch(e) {}
+  var list = (rv && Array.isArray(rv.escrows)) ? rv.escrows : [];
+  var head = '<div style="margin:16px 16px 4px;font-weight:900;color:var(--forest);">💳 تراکنش‌های من</div>';
+  if (!list.length) return head + '<div class="empty" style="padding:12px;">هنوز تراکنشی ثبت نشده</div>';
+  return head + list.map(function(t) {
+    var isBuyer = t.buyerPhone === phone;
+    var st = t.status === 'released' ? 'آزاد شده' : t.status === 'pending' ? 'در انتظار' : esc(t.status || '');
+    var d = t.createdAt ? new Date(t.createdAt).toLocaleDateString('fa-IR') : '';
+    return '<div class="card" style="margin:8px 16px;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+      '<b>' + (isBuyer ? 'پرداخت بیعانه' : 'دریافت بیعانه') + '</b>' +
+      '<span style="font-size:12px;font-weight:900;">' + st + '</span></div>' +
+      '<small style="display:block;margin-top:6px;color:var(--muted);">' + faPrice(t.amount) + ' تومان · ' + esc(d) + '</small>' +
+      '</div>';
+  }).join('');
+}
+
 async function renderMyMissions() {
   const u = DB.user;
   if (!u) return;
@@ -1241,13 +1260,14 @@ async function renderMyMissions() {
   try {
     var result = await api.getMissions(u.phone);
     var list = (result && result.missions) ? result.missions : [];
+    var txHtml = await buildTxSection(u.phone);
     
     if (!list.length) {
-      container.innerHTML = '<div class="empty"><span class="emoji">🎯</span>هنوز مأموریتی نساخته‌ای</div>';
+      container.innerHTML = txHtml + '<div class="empty"><span class="emoji">🎯</span>هنوز مأموریتی نساخته‌ای</div>';
       return;
     }
     
-    container.innerHTML = list.map(function(m) {
+    container.innerHTML = txHtml + list.map(function(m) {
   var statusText = m.status === 'confirmed' ? 'تایید شده' : m.status === 'draft' ? 'پیش‌نویس' : 'در حال انجام';
   var statusColor = m.status === 'confirmed' ? '#16a34a' : '#9a6b00';
   return '<div class="card" style="margin:12px 16px; cursor:pointer;" onclick="viewMissionChain(\'' + m.id + '\')">' +
@@ -1797,7 +1817,7 @@ async function submitEscrow() {
   try {
     var res = await fetch('https://taraz-backend-prog.vercel.app/api/escrow', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders(),
       body: JSON.stringify(escrowData)
     });
     if (res.ok) {
