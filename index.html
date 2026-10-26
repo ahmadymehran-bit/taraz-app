@@ -253,6 +253,13 @@
       <span class="mb-icon">⚡</span>
       <span class="mb-label">خرید و فروش فوری</span>
     </button>
+    <button type="button" class="modern-btn" onclick="go('services')" style="background:linear-gradient(135deg,#0f766e,#14b8a6);color:#fff;">
+      <span class="mb-icon">🛠️</span>
+      <span class="mb-label">خدمات و مشاغل</span>
+    </button>
+    <div class="browse-ad-img">
+      <img src="image/auction-new.webp" alt="مزایده و خرید و فروش">
+    </div>
   </div>
 
 </div>
@@ -262,70 +269,6 @@
           <b style="color:var(--fire);font-size:17px">🔥 فروش فوری</b><small>با تخفیف ویژه، سریع‌تر بفروش</small>
         </div>
       </div>
-      <div class="field"><label>چی می‌فروشی؟</label><input id="sell-item-title" placeholder="مثلاً: گوسفند شال / گندم"></div>
-      <div class="field">
-        <label>دسته</label>
-        <select id="sell-category">
-          <option value="livestock">🐑 دام زنده</option><option value="poultry">🐔 طیور و جوجه</option><option value="crops">🌾 محصولات کشاورزی</option><option value="feed">🌰 نهاده</option><option value="forage">🌿 علوفه</option><option value="agri_inputs">🌱 بذر، کود</option><option value="vet_drugs">💉 دارو و واکسن</option><option value="vet_equipment">🩺 تجهیزات دامپزشکی</option><option value="farm_equipment">🔧 تجهیزات دامداری</option><option value="machinery">🚜 ماشین‌آلات</option>
-        </select>
-      </div>
-      <div id="livestock-fields" style="display:none; background: #f0f8f3; padding: 16px; border-radius: 16px; margin-top: 12px; border: 1px dashed #cfe5da;">
-  <h3 style="font-size: 15px; color: var(--forest); margin: 0 0 12px 0;">🐑 مشخصات تخصصی دام</h3>
-  <div class="field" style="margin-top: 0;">
-    <label>نژاد</label>
-    <select id="sell-breed">
-      <option value="shal">شال</option>
-      <option value="afshari">افشاری</option>
-      <option value="kordi">کردی</option>
-      <option value="lori">لری</option>
-      <option value="bakhtiari">بختیاری</option>
-      <option value="other">سایر</option>
-    </select>
-  </div>
-  <div class="field">
-    <label>وزن تقریبی (کیلوگرم)</label>
-    <input id="sell-weight" type="tel" inputmode="numeric" placeholder="مثلاً: ۴۵" style="direction:ltr;text-align:left">
-  </div>
-  <div class="field">
-    <label>سن (ماه)</label>
-    <input id="sell-age" type="tel" inputmode="numeric" placeholder="مثلاً: ۱۲" style="direction:ltr;text-align:left">
-  </div>
-  <div class="field">
-    <label>واکسیناسیون</label>
-    <select id="sell-vaccine">
-      <option value="yes">کامل (واکسینه شده)</option>
-      <option value="no">بدون واکسن</option>
-      <option value="partial">ناقص</option>
-    </select>
-  </div>
-</div>
-
-      <div class="field"><label>چقدر؟</label><input id="sell-qty" placeholder="مثلاً: ۵۰ رأس"></div>
-      <div class="field"><label>قیمت واحد (تومان)</label><input id="sell-price" type="tel" inputmode="numeric" placeholder="مثلاً: ۳۸۵۰۰۰" style="direction:ltr;text-align:left"></div>
-      <div class="field"><label>کجا؟</label><input id="sell-region" placeholder="مثلاً: اهواز"></div>
-      <div class="field">
-        <label>توضیحات (اختیاری)</label>
-        <textarea id="sell-desc" placeholder="..."></textarea>
-        <div class="sell-photos-wrap">
-          <label style="display:block;font-size:14px;font-weight:700;color:var(--muted);margin-bottom:6px">📷 عکس‌ها (حداکثر ۳)</label>
-          <button type="button" class="sell-photo-add" onclick="pickListingPhotos()"><span>➕ افزودن عکس</span></button>
-          <div class="sell-photos-grid" id="sell-photos-preview"></div>
-          <div style="margin-top:16px">
-            <label style="display:block;font-size:14px;font-weight:700;color:var(--muted);margin-bottom:6px">📍 موقعیت روی نقشه (اختیاری)</label>
-            <button type="button" class="sell-photo-add" onclick="toggleMapPicker()" id="map-toggle-btn"><span>🗺️ انتخاب موقعیت روی نقشه</span></button>
-            <div id="map-picker" style="display:none"></div>
-            <div class="map-help" id="map-help" style="display:none">روی نقشه کلیک کن تا موقعیت انتخاب بشه</div>
-          </div>
-        </div>
-      </div>
-      <div id="sell-urgent-fields" style="display:none;margin-top:16px;padding:16px;background:#fff5f5;border:2px dashed #f5c8cc;border-radius:16px">
-        <div class="field" style="margin-top:0">
-          <label>دلیل فروش فوری</label>
-          <select id="sell-urgent-reason"><option value="expiry">⏳ نزدیک به انقضا</option><option value="auction">🔥 حراج</option><option value="special">🎁 تخفیف ویژه</option><option value="overstock">📦 موجودی مازاد</option></select>
-        </div>
-        <div class="field"><label>قیمت قبلی (اختیاری)</label><input id="sell-old-price" type="tel" inputmode="numeric" placeholder="مثلاً: ۴۰۰۰۰۰" style="direction:ltr;text-align:left"></div>
-      </div>
-      <button type="button" class="btn-primary" id="sell-submit" onclick="postListing()" style="min-height:64px;font-size:18px">📤 منتشر کن</button>
     </div>
   </section>
 
