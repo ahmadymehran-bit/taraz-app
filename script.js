@@ -1024,7 +1024,7 @@ function submitRating(){
   if(!ratingTarget)return; if(!ratingScore){toast('امتیاز بده');return}
   const u=DB.user; const all=DB.ratings;
   all.push({id:'Rt'+Date.now(),fromPhone:u.phone,fromName:u.name,toPhone:ratingTarget.toPhone,score:ratingScore,comment:document.getElementById('rating-comment').value.trim(),createdAt:Date.now()});
-  DB.ratings=all; toast('ثبت شد ⭐'); closeRating(); renderProfile();
+  DB.ratings=all; toast('⚠ فقط روی این دستگاه ذخیره شد'); closeRating(); renderProfile();
 }
 document.querySelectorAll('#rating-stars .star-btn').forEach(btn=>{ btn.addEventListener('click',()=>{ ratingScore=Number(btn.dataset.v); document.querySelectorAll('#rating-stars .star-btn').forEach(s=>s.classList.toggle('on',Number(s.dataset.v)<=ratingScore)); const l=['','خیلی بد','بد','متوسط','خوب','عالی']; document.getElementById('rating-label').textContent=l[ratingScore]; }); });
 async function renderProfile(){
@@ -1627,7 +1627,7 @@ async function renderMissionChainView() {
   html += '<div style="font-size:22px; font-weight:900; color:var(--forest); margin-bottom:16px;">جمع کل: ' + faPrice(m.total) + ' تومان</div>';
   
   // 👇 دکمه ثبت بیعانه 👇
-  html += '<button type="button" class="btn-gold" style="min-height:60px; font-size:18px; width:100%; margin-bottom:12px;" onclick="openEscrowModal()">🔒 ثبت بیعانه (پرداخت امن)</button>';
+  html += '<button type="button" class="btn-gold" style="min-height:60px; font-size:18px; width:100%; margin-bottom:12px;" onclick="openEscrowModal()">🔒 ثبت بیعانه</button>';
   // 👆 تا اینجا 👆
   
   html += '<button type="button" class="btn-green" style="min-height:64px; font-size:18px; width:100%;" onclick="finalizeMission()">✅ نهایی کردن معامله</button>';
