@@ -114,37 +114,65 @@
   <!-- ============ HOME (جدید) ============ -->
 <section class="screen" id="screen-browse">
   <div class="bz">
-    <div class="bz-head"><h2>بازار دام زنده</h2><p>خرید مستقیم از دامدار، با مدارک و گواهی سلامت</p></div>
-    <div class="bz-tabs" id="bz-tabs">
-      <button class="on" onclick="bzTab(this,'sheep')">گوسفند</button>
-      <button onclick="bzTab(this,'cow')">گاو</button>
-      <button onclick="bzTab(this,'goat')">بز</button>
-      <button onclick="bzTab(this,'camel')">شتر</button>
+    <div class="bz-top">
+      <button class="bz-ic" onclick="go('profile')" aria-label="پروفایل">👤</button>
+      <div class="bz-logo"><b>تاراز 🍃</b><small>بازار تخصصی دام و کشاورزی</small></div>
+      <button class="bz-ic" onclick="go('notifs')" aria-label="اعلان‌ها">🔔</button>
     </div>
-    <div class="bz-panel">
-      <div class="bz-price"><div><small>آخرین قیمت هر کیلو وزن زنده</small><b id="bz-last">—</b></div><span class="bz-chg" id="bz-chg">—</span></div>
-      <div class="bz-spark" id="bz-spark"></div>
-      <label class="bz-check"><input type="checkbox" id="bz-cert" onchange="renderBazaar()"> فقط دام‌های دارای گواهی سلامت</label>
+    <div class="bz-scope">
+      <div class="bz-seg" id="bz-seg">
+        <button onclick="bzScope('mine')">محدوده من</button>
+        <button class="on" onclick="bzScope('city')">شهر</button>
+        <button onclick="bzScope('prov')">استان</button>
+      </div>
+      <select id="bz-place" onchange="bzPlace(this.value)"></select>
     </div>
-    <div class="bz-book">
-      <div class="bz-col"><h4>سفارش‌های فروش</h4><div class="bz-row bz-hd"><span>قیمت</span><span>تعداد</span></div><div id="bz-asks"></div></div>
-      <div class="bz-col"><h4>سفارش‌های خرید</h4><div class="bz-row bz-hd"><span>قیمت</span><span>تعداد</span></div><div id="bz-bids"></div></div>
+    <div class="bz-hero">
+      <h2>بازار دام زنده</h2>
+      <span class="bz-badge">قیمت مرجع هوشمند 📈</span>
     </div>
-    <h3 class="bz-sub">گله‌های آماده معامله</h3>
+    <div class="bz-ref">
+      <div class="bz-ref-r"><span class="bz-rt">📊 قیمت مرجع <span id="bz-rname"></span></span>
+        <div class="bz-big"><b id="bz-rprice">—</b><small id="bz-runit">تومان / کیلو</small></div>
+        <span class="bz-demo">نمونه نمایشی</span></div>
+      <div class="bz-ref-l"><button class="bz-trend" onclick="toast('نمایشی: نمودار روند قیمت بعداً اضافه می‌شود')">روند قیمت ← </button>
+        <div class="bz-range" id="bz-range"></div>
+        <div class="bz-src"><span>🛡 منابع معتبر</span><span>🕒 به‌روزرسانی امروز</span></div></div>
+    </div>
+    <div class="bz-cats" id="bz-cats"></div>
+    <div class="bz-buy">
+      <h3 id="bz-btitle">خرید</h3>
+      <div class="bz-two">
+        <div class="bz-box"><label>تعداد</label><div class="bz-step"><button onclick="bzStep('count',1)">+</button><b><span id="bz-count">5</span> <small id="bz-cu">رأس</small></b><button onclick="bzStep('count',-1)">−</button></div></div>
+        <div class="bz-box" id="bz-wbox"><label>میانگین وزن</label><div class="bz-step"><button onclick="bzStep('w',1)">+</button><b><span id="bz-w">250</span> <small>کیلو</small></b><button onclick="bzStep('w',-1)">−</button></div></div>
+      </div>
+      <div class="bz-two bz-est">
+        <div class="bz-box"><label>وزن کل تقریبی</label><b class="bz-gr" id="bz-tw">—</b></div>
+        <div class="bz-box"><label>مبلغ تقریبی</label><b id="bz-tp">—</b></div>
+      </div>
+      <p class="bz-note">ⓘ برآورد اولیه؛ قیمت نهایی پس از توافق طرفین</p>
+      <button class="bz-main" onclick="bzFind()">🔍 محاسبه و مشاهده فروشندگان</button>
+      <button class="bz-sell" onclick="toast('نمایشی: ثبت پیشنهاد فروش بعداً وصل می‌شود')">🏷 ثبت پیشنهاد فروش</button>
+    </div>
+    <div class="bz-sh" id="bz-sellers-h"><b id="bz-near">📍 فروشندگان</b><label class="bz-check"><input type="checkbox" id="bz-cert" onchange="renderBazaar()"> فقط دارای گواهی سلامت</label></div>
     <div id="bz-lots"></div>
+    <details class="bz-bookwrap"><summary>تالار قیمت (اردر بووک)</summary>
+      <div class="bz-book">
+        <div class="bz-col"><h4>سفارش‌های فروش</h4><div class="bz-row bz-hd"><span>قیمت</span><span>تعداد</span></div><div id="bz-asks"></div></div>
+        <div class="bz-col"><h4>سفارش‌های خرید</h4><div class="bz-row bz-hd"><span>قیمت</span><span>تعداد</span></div><div id="bz-bids"></div></div>
+      </div></details>
+    <div class="bz-mission" onclick="go('mission')"><span>‹</span><div><b>ادامه در مأموریت</b><small>تأیید خریدار و فروشنده ← هماهنگی دامپزشک و باربری</small></div><i>🤝</i></div>
     <div class="bz-sheet" id="bz-sheet" hidden>
       <div class="bz-card">
         <button class="bz-x" onclick="bzClose()">✕</button>
         <h3 id="bz-st"></h3>
         <div class="bz-meta" id="bz-sm"></div>
-        <label>سهم خرید: <b id="bz-pv">100%</b></label>
+        <label>سهم خرید از گله: <b id="bz-pv">100%</b></label>
         <input type="range" id="bz-pct" min="10" max="100" step="10" value="100" oninput="bzCalc()">
         <div class="bz-sum" id="bz-sum"></div>
-        <div class="bz-terms">
-          <h4>شرایط معامله</h4>
+        <div class="bz-terms"><h4>شرایط معامله</h4>
           <p>۱. پرداخت بیعانه (۲۰٪) هنگام ثبت سفارش؛ مبلغ تا تحویل نزد تاراز امانت می‌ماند.</p>
-          <p>۲. باقی‌مانده به‌صورت نقدی هنگام تحویل دام و پس از تأیید سلامت.</p>
-        </div>
+          <p>۲. باقی‌مانده به‌صورت نقدی هنگام تحویل دام و پس از تأیید سلامت.</p></div>
         <h4>بعد از خرید</h4>
         <div class="bz-opt"><label><input type="radio" name="bzpost" checked> حمل با راننده (پیشنهاد از آگهی‌های حمل)</label>
         <label><input type="radio" name="bzpost"> کشتار در کشتارگاه مشخص</label></div>
