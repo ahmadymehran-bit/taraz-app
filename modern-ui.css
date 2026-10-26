@@ -500,7 +500,10 @@ body {
    فقط ظاهر. ID ها و onclick ها دست نخورده‌اند.
    ============================================ */
 #screen-auth {
-  background: var(--t-cream);
+  background:
+    linear-gradient(rgba(253, 248, 236, 0.9), rgba(253, 248, 236, 0.97)),
+    url("image/wheat-field.webp") center top / cover no-repeat,
+    var(--t-cream);
   min-height: 100vh;
 }
 #screen-auth .auth-hero {
@@ -515,10 +518,10 @@ body {
 #screen-auth .auth-hero .logo::before {
   content: "";
   display: block;
-  width: 96px;
-  height: 96px;
+  width: 120px;
+  height: 120px;
   margin: 0 auto 10px;
-  background: url("logo.png") center / contain no-repeat;
+  background: url("image/farm-logo-cow-chicken.webp") center / contain no-repeat;
 }
 #screen-auth .auth-hero .tag {
   color: var(--t-muted);
