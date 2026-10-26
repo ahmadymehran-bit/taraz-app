@@ -949,3 +949,8 @@ body {
 
 /* فاصله گرید آگهی‌ها */
 #screen-home .browse-grid{padding:0 14px}
+#screen-home .mk-brand{gap:6px}
+#screen-home .mk-brand-text{font-size:34px;font-weight:900;color:#0f4d3a;line-height:1}
+#screen-home .mk-leaf{flex-shrink:0}
+#screen-home .mk-loc{border-radius:100px;padding:8px 14px}
+#screen-home .mk-round{position:relative}
