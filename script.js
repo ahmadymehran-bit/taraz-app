@@ -324,7 +324,7 @@ list=list.map(function(n){ return { id:n.id, type:n.type, icon:n.icon||'🔔', t
 list.sort(function(a,b){return b.createdAt-a.createdAt});
 var wrap=document.getElementById('notif-list'); if(!wrap)return;
 if(!list.length){ wrap.innerHTML='<div class="empty"><span class="emoji">🔔</span>اعلانی نیست</div>'; return; }
-wrap.innerHTML=list.map(function(n){ return '<div class="notif-card '+(n.read?'':'unread')+'"><div class="notif-ic">'+(n.icon||'🔔')+'</div><div class="notif-main"><b>'+n.title+'</b><small>'+n.body+'</small><span class="time">'+timeAgo(n.createdAt)+'</span></div></div>'; }).join('');
+wrap.innerHTML=list.map(function(n){ return '<div class="notif-card '+(n.read?'':'unread')+'"><div class="notif-ic">'+(n.icon||'🔔')+'</div><div class="notif-main"><b>'+esc(n.title)+'</b><small>'+esc(n.body)+'</small><span class="time">'+timeAgo(n.createdAt)+'</span></div></div>'; }).join('');
 var all=DB.notifications; all.forEach(function(n){n.read=true}); DB.notifications=all; updateBellBadge();
 }
 
@@ -639,15 +639,16 @@ async function renderHome(){
   el.innerHTML = list.length ? list.map(homeCard).join('') : '<div class="empty"><span class="emoji">🌾</span>آگهی‌ای نیست</div>';
 }
 
+function esc(v){return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
 function homeCard(l){
   const cat=catOf(l.categoryId);
   const photo=(l.photos&&l.photos.length)?l.photos[0]:PLACEHOLDER;
   var favActive = isFavorite(l.id) ? 'active' : ''; var favIcon = isFavorite(l.id) ? '♥' : '♡';
-var photoHTML='<div class="card-photo"><img src="'+photo+'">'+(l.photos&&l.photos.length>1?'<span class="count">'+faDigits(l.photos.length)+'</span>':'')+'<button type="button" class="fav-btn '+favActive+'" onclick="event.stopPropagation();toggleFavorite(\''+l.id+'\')">'+favIcon+'</button></div>';
+var photoHTML='<div class="card-photo"><img src="'+esc(photo)+'">'+(l.photos&&l.photos.length>1?'<span class="count">'+faDigits(l.photos.length)+'</span>':'')+'<button type="button" class="fav-btn '+favActive+'" onclick="event.stopPropagation();toggleFavorite(\''+l.id+'\')">'+favIcon+'</button></div>';
   const uBadge=l.urgent?'<div style="background:#ffe0e3;color:var(--fire);font-size:12px;font-weight:900;padding:4px 10px;border-radius:100px;display:inline-block;margin-bottom:6px">🔥 فوری</div>':'';
   const disc=l.oldPrice&&l.price<l.oldPrice?'<div style="background:var(--fire);color:#fff;font-size:12px;font-weight:900;padding:3px 8px;border-radius:100px;margin-bottom:6px;display:inline-block">تخفیف</div>':'';
   const priceHTML=l.oldPrice&&l.price<l.oldPrice?'<div><div style="font-size:13px;color:var(--muted);text-decoration:line-through;direction:ltr">'+faPrice(l.oldPrice)+'</div><div style="font-weight:900;color:var(--fire);font-size:18px;direction:ltr">'+faPrice(l.price)+'</div></div>':'<div style="font-weight:900;color:var(--forest);font-size:18px;direction:ltr">'+faPrice(l.price)+'</div><div style="font-size:11px;color:var(--muted)">تومان</div>';
-  return '<div class="card" onclick="openDetail(\''+l.id+'\',\'home\')" style="cursor:pointer"><div class="card-with-photo">'+photoHTML+'<div style="flex:1;min-width:0">'+uBadge+'<b>'+cat.icon+' '+l.title+'</b><small>'+l.sellerName+' · '+l.region+'<br>'+l.qty+' · '+timeAgo(l.createdAt)+'</small></div><div style="text-align:left;flex-shrink:0">'+disc+priceHTML+'</div></div></div>';
+  return '<div class="card" onclick="openDetail(\''+l.id+'\',\'home\')" style="cursor:pointer"><div class="card-with-photo">'+photoHTML+'<div style="flex:1;min-width:0">'+uBadge+'<b>'+cat.icon+' '+esc(l.title)+'</b><small>'+esc(l.sellerName)+' · '+esc(l.region)+'<br>'+esc(l.qty)+' · '+timeAgo(l.createdAt)+'</small></div><div style="text-align:left;flex-shrink:0">'+disc+priceHTML+'</div></div></div>';
 }
 function renderBrowseChips(){
   const el=document.getElementById('browse-chips');if(!el)return;
@@ -679,7 +680,7 @@ const cat=catOf(l.categoryId); const photo=(l.photos&&l.photos.length)?l.photos[
 const fire=l.urgent?'<div class="badge-fire">🔥</div>':'';
 const priceHTML=l.oldPrice&&l.price<l.oldPrice?'<span class="old">'+faPrice(l.oldPrice)+'</span>'+faPrice(l.price):faPrice(l.price);
 var favActive = isFavorite(l.id) ? 'active' : ''; var favIcon = isFavorite(l.id) ? '♥' : '♡';
-return '<div class="browse-card" onclick="openDetail(\''+l.id+'\',\'browse\')"><div class="thumb"><img src="'+photo+'">'+fire+'<button type="button" class="fav-btn '+favActive+'" onclick="event.stopPropagation();toggleFavorite(\''+l.id+'\')">'+favIcon+'</button></div><div class="body"><div class="title">'+cat.icon+' '+l.title+'</div><div class="region">📍 '+l.region+'</div><div class="price-big">'+priceHTML+' <span class="unit">تومان</span></div></div></div>';
+return '<div class="browse-card" onclick="openDetail(\''+l.id+'\',\'browse\')"><div class="thumb"><img src="'+esc(photo)+'">'+fire+'<button type="button" class="fav-btn '+favActive+'" onclick="event.stopPropagation();toggleFavorite(\''+l.id+'\')">'+favIcon+'</button></div><div class="body"><div class="title">'+cat.icon+' '+esc(l.title)+'</div><div class="region">📍 '+esc(l.region)+'</div><div class="price-big">'+priceHTML+' <span class="unit">تومان</span></div></div></div>';
 }
 async function renderBrowse(){
   renderBrowseSkeleton(); renderBrowseChips();
@@ -778,7 +779,7 @@ var s=serviceOf(c.serviceType); var t=serviceTypeOf(c.serviceType,c.typeId);
 var free=Number(c.capacityTotal||0) - Number(c.capacityUsed||0);
 var route=(c.routeFrom&&c.routeTo) ? (c.routeFrom+' ← '+c.routeTo) : c.region;
 var full=free<=0;
-return '<div class="capacity-big-card" onclick="openCapacity(\''+c.id+'\',\'services\')"><div class="head"><div class="avatar-big">'+t.icon+'</div><div class="info"><div class="name">'+c.ownerName+'</div><div class="route">📍 '+route+'</div></div></div><div class="avail-line '+(full?'full':'')+'">'+(full?'ظرفیت تکمیل':'✅ '+faDigits(free)+' '+c.unit+' آزاد')+'</div><div class="price-line"><span class="lbl">قیمت هر '+c.unit+'</span><span class="val">'+faPrice(c.price)+'</span></div><button type="button" class="reserve-btn" '+(full?'disabled':'')+' onclick="event.stopPropagation();openCapacity(\''+c.id+'\',\'services\')">'+(full?'تکمیل':'رزرو کن 📅')+'</button></div>';
+return '<div class="capacity-big-card" onclick="openCapacity(\''+c.id+'\',\'services\')"><div class="head"><div class="avatar-big">'+t.icon+'</div><div class="info"><div class="name">'+esc(c.ownerName)+'</div><div class="route">📍 '+esc(route)+'</div></div></div><div class="avail-line '+(full?'full':'')+'">'+(full?'ظرفیت تکمیل':'✅ '+faDigits(free)+' '+c.unit+' آزاد')+'</div><div class="price-line"><span class="lbl">قیمت هر '+c.unit+'</span><span class="val">'+faPrice(c.price)+'</span></div><button type="button" class="reserve-btn" '+(full?'disabled':'')+' onclick="event.stopPropagation();openCapacity(\''+c.id+'\',\'services\')">'+(full?'تکمیل':'رزرو کن 📅')+'</button></div>';
 }
 function openCapacity(id,returnTo){ capacityReturnTo=returnTo||currentScreen||'services'; currentCapacityId=id; go('capacity'); }
 function renderCapacityDetail(){
@@ -794,7 +795,7 @@ function renderCapacityDetail(){
     if(bks.length){ actionBlock+='<div style="margin-top:20px"><h2 style="font-size:20px;margin:0 0 12px 16px">📨 رزروها</h2>'; actionBlock+=bks.map(b=>'<div class="booking-card"><div class="head"><b>'+b.customerName+'</b><span class="status '+b.status+'">'+(b.status==='pending'?'در انتظار':b.status==='confirmed'?'تأیید':'تکمیل')+'</span></div><small>'+faDigits(b.qty)+' '+c.unit+' · '+faPrice(b.total)+' تومان<br>'+timeAgo(b.createdAt)+'</small>'+(b.status==='pending'?'<button type="button" class="btn-green" style="margin-top:12px;padding:14px" onclick="acceptBooking(\''+b.id+'\')">تأیید</button>':'')+(b.status==='confirmed'?'<button type="button" class="btn-blue" style="margin-top:12px;padding:14px" onclick="completeBooking(\''+b.id+'\')">تکمیل شد</button>':'')+'</div>').join(''); actionBlock+='</div>'; }
   } else if(free>0){ actionBlock='<div class="field"><label>چقدر می‌خواهی؟</label><input id="book-qty" type="tel" inputmode="numeric" placeholder="مثلاً: ۵" style="direction:ltr;text-align:left"></div><button type="button" class="btn-green" onclick="submitBooking(\''+c.id+'\')" style="min-height:64px;font-size:18px">📅 رزرو کن</button>'; } else { actionBlock='<div class="card" style="background:#ffe0e3;border-color:#f5c8cc;text-align:center"><b style="color:var(--fire);font-size:17px">ظرفیت تکمیل است</b></div>'; }
   const body=document.getElementById('capacity-detail-body');
-  body.innerHTML='<div class="capacity-big-card" style="cursor:default;margin:0 16px 0"><div class="head"><div class="avatar-big">'+t.icon+'</div><div class="info"><div class="name">'+c.ownerName+'</div><div class="route">📍 '+route+'</div></div></div><div class="avail-line '+(free<=0?'full':'')+'">'+(free>0?'✅ '+faDigits(free)+' '+c.unit+' آزاد':'ظرفیت تکمیل')+'</div><div class="price-line"><span class="lbl">قیمت هر '+c.unit+'</span><span class="val">'+faPrice(c.price)+'</span></div></div><div style="padding:0 16px 16px">'+actionBlock+'</div>';
+  body.innerHTML='<div class="capacity-big-card" style="cursor:default;margin:0 16px 0"><div class="head"><div class="avatar-big">'+t.icon+'</div><div class="info"><div class="name">'+esc(c.ownerName)+'</div><div class="route">📍 '+esc(route)+'</div></div></div><div class="avail-line '+(free<=0?'full':'')+'">'+(free>0?'✅ '+faDigits(free)+' '+c.unit+' آزاد':'ظرفیت تکمیل')+'</div><div class="price-line"><span class="lbl">قیمت هر '+c.unit+'</span><span class="val">'+faPrice(c.price)+'</span></div></div><div style="padding:0 16px 16px">'+actionBlock+'</div>';
 }
 function submitBooking(capacityId){
   const u=DB.user;if(!u){go('auth');return}
@@ -952,7 +953,7 @@ else { convs = DB.conversations.filter(function(c){ return c.buyerPhone === u.ph
 convs.sort(function(a,b){ return b.lastMessageAt - a.lastMessageAt; });
 var body = document.getElementById('chatlist-body'); if(!body) return;
 if(!convs.length){ body.innerHTML = '<div class="empty"><span class="emoji">💬</span>گفتگویی نیست</div>'; return; }
-body.innerHTML = convs.map(function(c){ var isSeller = u.phone === c.sellerPhone; var otherName = isSeller ? c.buyerName : c.sellerName; var msgs = DB.messages.filter(function(m){ return m.convId === c.id; }).sort(function(a,b){ return a.createdAt - b.createdAt; }); var last = msgs[msgs.length - 1]; var unread = msgs.filter(function(m){ return m.fromPhone !== u.phone && !m.read; }).length; var preview = last ? ((last.fromPhone === u.phone ? 'شما: ' : '') + (last.text.length > 40 ? last.text.slice(0,40) + '…' : last.text)) : 'شروع گفتگو'; return '<div class="conv-card" onclick="openChat(\'' + c.id + '\')"><div class="conv-avatar">' + initials(otherName) + '</div><div class="conv-main"><div class="conv-name"><span>' + otherName + '</span><span class="conv-time">' + timeAgo(c.lastMessageAt) + '</span></div><div class="conv-preview">' + preview + '</div></div>' + (unread ? '<span class="unread-badge">' + faDigits(unread) + '</span>' : '') + '</div>'; }).join('');
+body.innerHTML = convs.map(function(c){ var isSeller = u.phone === c.sellerPhone; var otherName = isSeller ? c.buyerName : c.sellerName; var msgs = DB.messages.filter(function(m){ return m.convId === c.id; }).sort(function(a,b){ return a.createdAt - b.createdAt; }); var last = msgs[msgs.length - 1]; var unread = msgs.filter(function(m){ return m.fromPhone !== u.phone && !m.read; }).length; var preview = last ? ((last.fromPhone === u.phone ? 'شما: ' : '') + (last.text.length > 40 ? last.text.slice(0,40) + '…' : last.text)) : 'شروع گفتگو'; return '<div class="conv-card" onclick="openChat(\'' + c.id + '\')"><div class="conv-avatar">' + initials(otherName) + '</div><div class="conv-main"><div class="conv-name"><span>' + esc(otherName) + '</span><span class="conv-time">' + timeAgo(c.lastMessageAt) + '</span></div><div class="conv-preview">' + esc(preview) + '</div></div>' + (unread ? '<span class="unread-badge">' + faDigits(unread) + '</span>' : '') + '</div>'; }).join('');
 }
 async function renderChat(){
 var u = DB.user; if(!u || !currentConvId) return;
@@ -970,7 +971,7 @@ var body = document.getElementById('chat-body'); if(!body) return;
 if(!thread.length){ body.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:15px;padding:50px 20px">اولین پیام را بفرست</div>'; }
 else {
 var html = ''; var lastDay = '';
-thread.forEach(function(m){ var d = new Date(m.createdAt); var dayStr = faDigits(d.toLocaleDateString('fa-IR')); if(dayStr !== lastDay){ html += '<div class="chat-day">' + dayStr + '</div>'; lastDay = dayStr; } var mine = m.fromPhone === u.phone; var t = new Date(m.createdAt); var hh = faDigits(String(t.getHours()).padStart(2,'0')); var mm = faDigits(String(t.getMinutes()).padStart(2,'0')); html += '<div class="msg ' + (mine ? 'me' : 'them') + '">' + m.text + '<span class="msg-time">' + hh + ':' + mm + '</span></div>'; });
+thread.forEach(function(m){ var d = new Date(m.createdAt); var dayStr = faDigits(d.toLocaleDateString('fa-IR')); if(dayStr !== lastDay){ html += '<div class="chat-day">' + dayStr + '</div>'; lastDay = dayStr; } var mine = m.fromPhone === u.phone; var t = new Date(m.createdAt); var hh = faDigits(String(t.getHours()).padStart(2,'0')); var mm = faDigits(String(t.getMinutes()).padStart(2,'0')); html += '<div class="msg ' + (mine ? 'me' : 'them') + '">' + esc(m.text) + '<span class="msg-time">' + hh + ':' + mm + '</span></div>'; });
 body.innerHTML = html;
 }
 setTimeout(function(){ body.scrollTop = body.scrollHeight; }, 50); updateChatBadge();
@@ -1072,15 +1073,15 @@ body.innerHTML=favList.map(function(l){ var normalized={ id:l.id, sellerPhone:l.
   } else if(section==='bookings'){
     title.textContent='📅 رزروهای من'; const list=DB.bookings.filter(b=>b.customerPhone===u.phone).sort((a,b)=>b.createdAt-a.createdAt);
     if(!list.length){body.innerHTML='<div class="empty"><span class="emoji">📅</span>رزروی نداری</div>';return}
-    body.innerHTML=list.map(b=>{ const c=DB.capacities.find(x=>x.id===b.capacityId); return '<div class="booking-card"><div class="head"><b>'+(c?c.title:'ظرفیت حذف شده')+'</b><span class="status '+b.status+'">'+(b.status==='pending'?'در انتظار':b.status==='confirmed'?'تأیید':'تکمیل')+'</span></div><small>'+faDigits(b.qty)+' '+(c?c.unit:'')+' · '+faPrice(b.total)+' تومان<br>'+timeAgo(b.createdAt)+'</small></div>'; }).join('');
+    body.innerHTML=list.map(b=>{ const c=DB.capacities.find(x=>x.id===b.capacityId); return '<div class="booking-card"><div class="head"><b>'+esc(c?c.title:'ظرفیت حذف شده')+'</b><span class="status '+b.status+'">'+(b.status==='pending'?'در انتظار':b.status==='confirmed'?'تأیید':'تکمیل')+'</span></div><small>'+faDigits(b.qty)+' '+(c?c.unit:'')+' · '+faPrice(b.total)+' تومان<br>'+timeAgo(b.createdAt)+'</small></div>'; }).join('');
   } else if(section==='requests'){
     title.textContent='📨 درخواست‌های خرید'; const list=DB.requests.filter(r=>r.buyerPhone===u.phone).sort((a,b)=>b.createdAt-a.createdAt);
     if(!list.length){body.innerHTML='<div class="empty"><span class="emoji">📨</span>درخواستی نداری</div>';return}
-    body.innerHTML=list.map(r=>'<div class="card"><b>'+r.listingTitle+'</b><small>فروشنده: '+r.sellerName+'<br>'+timeAgo(r.createdAt)+'</small></div>').join('');
+    body.innerHTML=list.map(r=>'<div class="card"><b>'+esc(r.listingTitle)+'</b><small>فروشنده: '+esc(r.sellerName)+'<br>'+timeAgo(r.createdAt)+'</small></div>').join('');
   } else if(section==='reviews'){
     title.textContent='⭐ امتیازهای من'; const list=DB.ratings.filter(x=>x.toPhone===u.phone).sort((a,b)=>b.createdAt-a.createdAt);
     if(!list.length){body.innerHTML='<div class="empty"><span class="emoji">⭐</span>هنوز امتیازی نگرفته‌ای</div>';return}
-    body.innerHTML=list.map(r=>'<div class="card"><div class="row"><b>'+r.fromName+'</b><span style="color:var(--gold);font-size:18px">'+'★'.repeat(r.score)+'☆'.repeat(5-r.score)+'</span></div>'+(r.comment?'<div style="margin-top:10px;font-size:14px;color:var(--muted);line-height:2">"'+r.comment+'"</div>':'')+'</div>').join('');
+    body.innerHTML=list.map(r=>'<div class="card"><div class="row"><b>'+esc(r.fromName)+'</b><span style="color:var(--gold);font-size:18px">'+'★'.repeat(r.score)+'☆'.repeat(5-r.score)+'</span></div>'+(r.comment?'<div style="margin-top:10px;font-size:14px;color:var(--muted);line-height:2">"'+esc(r.comment)+'"</div>':'')+'</div>').join('');
   }
   go('profile-sub');
 }
@@ -1223,7 +1224,7 @@ list=list.map(function(m){ return { id:m.id, ownerPhone:m.owner_phone||m.ownerPh
 list.sort(function(a,b){return b.createdAt-a.createdAt});
 var el=document.getElementById('mission-history'); if(!el)return;
 if(!list.length){el.innerHTML='<div class="empty" style="padding:30px 20px"><span class="emoji">🎯</span>مأموریتی نساخته‌ای</div>';return}
-el.innerHTML=list.slice(0,10).map(function(m){ return '<div class="card"><b>🎯 '+(m.rawText||'').slice(0,50)+'</b><small>'+faDigits((m.steps||[]).length)+' مرحله · '+faPrice(m.total)+' تومان<br>'+timeAgo(m.createdAt)+'</small></div>'; }).join('');
+el.innerHTML=list.slice(0,10).map(function(m){ return '<div class="card"><b>🎯 '+esc((m.rawText||'').slice(0,50))+'</b><small>'+faDigits((m.steps||[]).length)+' مرحله · '+faPrice(m.total)+' تومان<br>'+timeAgo(m.createdAt)+'</small></div>'; }).join('');
 }
 async function renderMyMissions() {
   const u = DB.user;
