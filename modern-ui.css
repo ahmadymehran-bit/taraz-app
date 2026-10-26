@@ -520,8 +520,13 @@ body {
   letter-spacing: 0;
 }
 #screen-auth .auth-hero .logo::before {
-  content: none;
-  display: none;
+  content: "";
+  display: block;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 10px;
+  background: url("image/farm-logo-cow-chicken.webp") center / contain no-repeat;
+  mix-blend-mode: multiply;
 }
 #screen-auth .auth-hero .tag {
   color: var(--t-muted);
