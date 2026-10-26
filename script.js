@@ -654,10 +654,10 @@ var photoHTML='<div class="card-photo"><img src="'+esc(photo)+'">'+(l.photos&&l.
 }
 function renderBrowseChips(){
   const el=document.getElementById('browse-chips');if(!el)return;
-  const all=[{id:'livestock',short:'دام و دامداری',icon:'🐄'},{id:'crops',short:'کشاورزی',icon:'🌾'},{id:'vet_drugs',short:'دامپزشکی',icon:'🩺'},{id:'agri_inputs',short:'گیاه‌پزشکی',icon:'🌱'}];
+  const all=[{id:'livestock',short:'دامداری',icon:'🐄'},{id:'crops',short:'کشاورزی',icon:'🌾'},{id:'vet_drugs',short:'دامپزشکی',icon:'🩺'},{id:'services',short:'خدمات',icon:'🛠️'}];
   el.innerHTML=all.map(c=>'<button type="button" class="chip-big'+(browseCategory===c.id?' active':'')+'" onclick="pickBrowseCat(\''+c.id+'\')"><span class="ic">'+c.icon+'</span>'+c.short+'</button>').join('');
 }
-function pickBrowseCat(id){browseCategory=(browseCategory===id)?'all':id;renderBrowse()}
+function pickBrowseCat(id){if(id==='services'){go('services');return}browseCategory=(browseCategory===id)?'all':id;renderBrowse()}
 function filterBrowse(v){browseSearch=v.toLowerCase();const c=document.getElementById('browse-clear');if(c)c.hidden=!v;renderBrowse()}
 var _browseFilters = { priceMin: 0, priceMax: 0, region: '' };
 function toggleFilterPanel(){
