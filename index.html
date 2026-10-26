@@ -87,6 +87,32 @@
       </div>
     </div>
     <div class="browse-grid" id="browse-grid"></div>
+        <div class="mk-topbar">
+      <button type="button" class="mk-loc" onclick="toggleFilterPanel()" aria-label="منطقه">
+        <span class="mk-loc-pin">📍</span>
+        <span class="mk-loc-text" id="mk-loc-text">همه ایران</span>
+        <span class="mk-loc-arrow">⌄</span>
+      </button>
+      <div class="mk-brand" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+        <span class="mk-brand-text">تاراز</span>
+        <svg class="mk-leaf" viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path fill="#0f8a5f" d="M20 3C10 3 4 8 4 15c0 1.6.4 3 1 4 1.5-5 5-8.5 10-10.5-4 3-7 6.5-8.5 11.5 1 .6 2.3 1 3.5 1 7 0 10-6 10-18z"/></svg>
+      </div>
+      <div class="mk-actions">
+        <button type="button" class="mk-round" onclick="go('notifs')" aria-label="اعلان‌ها">🔔<span class="bell-badge" id="home-bell-badge"></span></button>
+        <button type="button" class="mk-round mk-round-avatar" id="home-avatar" onclick="go('profile')" aria-label="پروفایل">👤</button>
+      </div>
+    </div>
+    <div class="browse-header">
+      <div class="mk-search-row">
+        <div class="browse-search-big">
+          <span class="ic">🔍</span>
+          <input id="browse-search" placeholder="جستجو..." oninput="filterBrowse(this.value)">
+          <span class="clear-x" onclick="clearBrowseSearch()" id="browse-clear" hidden>×</span>
+        </div>
+        <button type="button" class="mk-filter-btn" onclick="toggleFilterPanel()">⚙️ فیلتر پیشرفته</button>
+      </div>
+      <div class="chips-row" id="browse-chips"></div>
+
   </section>
 
   <!-- ============ HOME (جدید) ============ -->
