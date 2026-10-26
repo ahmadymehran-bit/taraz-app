@@ -711,9 +711,12 @@ function goServicesStep3(serviceId,typeId){
 function servicesBack(){
   if(servicesStep===3)goServicesStep2(servicesCurrentService); else if(servicesStep===2)goServicesStep1(); else go('browse');
 }
+function renderServicesForm(el){
+  el.innerHTML='<div style="padding:0 16px 40px"><h3 style="margin:0 0 4px">➕ ثبت شغل من</h3><div class="sub">اگر راننده، کمباین‌دار، دامپزشک یا قصاب هستی اینجا ثبت کن</div><div class="field"><label>چه کاری؟</label><select id="cap-service" onchange="updateCapTypes()">'+SERVICES.map(s=>'<option value="'+s.id+'">'+s.icon+' '+s.title+'</option>').join('')+'</select></div><div class="field"><label>دقیقاً چه؟</label><select id="cap-type"></select></div><div class="field"><label>اسم شغل / وسیله</label><input id="cap-title" placeholder="مثلاً: کامیون یخچال‌دار"></div><div class="field"><label>کجایی؟</label><input id="cap-region" placeholder="مثلاً: اصفهان"></div><div class="field"><label>مسیر (اختیاری)</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><input id="cap-from" placeholder="از"><input id="cap-to" placeholder="به"></div></div><div class="field"><label>چقدر ظرفیت داری؟</label><input id="cap-total" type="tel" inputmode="numeric" placeholder="مثلاً: ۱۵" style="direction:ltr;text-align:left"></div><div class="field"><label>قیمت هر واحد (تومان)</label><input id="cap-price" type="tel" inputmode="numeric" placeholder="مثلاً: ۳۵۰۰۰۰" style="direction:ltr;text-align:left"></div><div class="field"><label>از چه تاریخی آزادی؟</label><input id="cap-from-date" type="date"></div><button type="button" class="btn-green" onclick="submitCreateCapacity()" style="min-height:60px;font-size:17px">✅ ثبت کن</button></div></div>'; updateCapTypes();
+}
 function renderServices(){
   const el=document.getElementById('services-content'); if(!el)return;
-  if(servicesStep===1)renderServicesStep1(el); else if(servicesStep===2)renderServicesStep2(el); else renderServicesStep3(el);
+  renderServicesForm(el);
 }
 function renderServicesStep1(el){
   el.innerHTML='<div class="service-grid">'+SERVICES.map(s=>{ const cnt=DB.capacities.filter(c=>c.serviceType===s.id).length; return '<div class="service-step-card" onclick="goServicesStep2(\''+s.id+'\')"><div class="ic">'+s.icon+'</div><div class="t">'+s.title+'</div><div class="cnt">'+faDigits(cnt)+' نفر</div></div>'; }).join('')+'</div>';
@@ -823,7 +826,7 @@ var cap={ id:'C'+Date.now(), ownerPhone:u.phone, ownerName:u.name, serviceType:s
 var result=null; try{result=await api.createCapacity(cap)}catch(e){}
 var all=DB.capacities;all.push(cap);DB.capacities=all;
 if(result&&result.ok){toast('✓ ثبت شد')}else{toast('⚠ محلی ذخیره شد')}
-closeCreateCapacity(); goServicesStep3(serviceType,typeId);
+closeCreateCapacity(); goServicesStep1();
 }
 function resetSellForm(){
 ['sell-item-title','sell-qty','sell-price','sell-region','sell-desc','sell-old-price'].forEach(function(id){ var el=document.getElementById(id); if(el)el.value=''; });
