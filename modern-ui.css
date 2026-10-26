@@ -600,3 +600,93 @@ body {
 #screen-auth .btn-green:active {
   background: var(--t-forest-dark) !important;
 }
+
+/* ============================================
+   UI STEP 3 — هدر، جستجو، دسته‌بندی‌ها (رنگ کرم / سبز / طلایی)
+   فقط ظاهر؛ ساختار HTML و کلاس‌ها دست نخورده
+   ============================================ */
+
+/* هدر بالا: کرم شیشه‌ای با خط طلایی زیر */
+.modern-header {
+  background: rgba(253, 248, 236, 0.94) !important;
+  border-bottom: 1px solid rgba(224, 176, 74, 0.45) !important;
+  box-shadow: 0 2px 10px rgba(15, 77, 58, 0.05);
+}
+.modern-header .mh-title {
+  color: var(--t-forest, #0f4d3a) !important;
+}
+
+/* نوار جستجو: بزرگ‌تر، گرد، با حاشیه سبز هنگام فوکوس */
+.browse-header {
+  background: var(--t-cream, #fdf8ec) !important;
+  border-bottom: 1px solid rgba(224, 176, 74, 0.35) !important;
+  padding: 14px 16px 10px !important;
+}
+.browse-search-big {
+  min-height: 52px;
+  border: 1.5px solid rgba(15, 77, 58, 0.14) !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.browse-search-big:focus-within {
+  border-color: var(--t-forest, #0f4d3a) !important;
+  box-shadow: 0 0 0 4px rgba(224, 176, 74, 0.22) !important;
+}
+.browse-search-big input {
+  font-family: inherit;
+  color: var(--t-text, #1d2b25);
+}
+.browse-search-big input::placeholder {
+  color: var(--t-muted, #7a8a82);
+}
+.browse-search-big .ic {
+  color: var(--t-gold, #e0b04a) !important;
+}
+
+/* دکمه فیلتر پیشرفته */
+.browse-header > button[onclick="toggleFilterPanel()"] {
+  background: #fff !important;
+  border: 1.5px solid rgba(15, 77, 58, 0.14) !important;
+  border-radius: 14px !important;
+  color: var(--t-forest, #0f4d3a) !important;
+}
+
+/* چیپ‌های دسته‌بندی: قرص‌های کرم، فعال = سبز جنگلی با متن کرم */
+.chips-row {
+  gap: 8px !important;
+  padding: 12px 16px 4px !important;
+}
+.chip-big {
+  background: #fff !important;
+  border: 1.5px solid rgba(15, 77, 58, 0.14) !important;
+  color: var(--t-forest, #0f4d3a) !important;
+  padding: 10px 16px !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  border-radius: 999px !important;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.chip-big:active {
+  transform: scale(0.96);
+}
+.chip-big .ic {
+  font-size: 18px !important;
+}
+.chip-big.active {
+  background: var(--t-forest, #0f4d3a) !important;
+  border-color: var(--t-forest, #0f4d3a) !important;
+  color: var(--t-cream, #fdf8ec) !important;
+  box-shadow: 0 4px 12px rgba(15, 77, 58, 0.18) !important;
+}
+
+/* دسته‌بندی‌های گرد در صفحه اصلی */
+.modern-cat {
+  background: var(--t-cream, #fdf8ec) !important;
+  border: 1px solid rgba(224, 176, 74, 0.4) !important;
+  box-shadow: 0 2px 8px rgba(15, 77, 58, 0.05);
+}
+.modern-cat:hover {
+  border-color: var(--t-gold, #e0b04a) !important;
+}
+.modern-cat .mc-label {
+  color: var(--t-forest, #0f4d3a) !important;
+}
