@@ -1795,6 +1795,12 @@ function closeEscrowModal() {
   if (el) el.remove();
 }
 
+function stepSellerPhone(m) {
+  var s = m && m.steps && m.steps[0];
+  if (!s) return 'unknown';
+  var cap = (DB.capacities || []).find(function(c){ return c.id === s.refId; });
+  return cap && cap.ownerPhone ? cap.ownerPhone : (s.refId || 'unknown');
+}
 async function submitEscrow() {
   var m = _currentChainMission;
   if (!m) return;
@@ -1810,7 +1816,7 @@ async function submitEscrow() {
   var escrowData = {
     mission_id: m.id,
     buyer_phone: DB.user.phone,
-    seller_phone: m.steps[0] ? m.steps[0].refId : 'unknown',
+    seller_phone: stepSellerPhone(m),
     amount: amount
   };
   
@@ -1869,7 +1875,7 @@ function fillMissionInput(text) {
 function openRatingModalForMission(mission) {
   // پیدا کردن طرف مقابل (فروشنده یا خریدار)
   var u = DB.user;
-  var otherPhone = mission.steps[0] && mission.steps[0].refId ? mission.steps[0].refId : 'unknown';
+  var otherPhone = stepSellerPhone(mission);
   var otherName = mission.steps[0] ? mission.steps[0].subtitle : 'طرف مقابل';
   
   var html = '<div class="modal-overlay show" id="rating-modal-new" onclick="if(event.target===this)closeRatingModalNew()">';
