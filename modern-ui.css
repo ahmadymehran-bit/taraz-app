@@ -763,3 +763,109 @@ body {
   color: var(--t-gold-dark, #b8860b) !important;
   font-size: 11px !important;
 }
+
+/* ===================================================================
+   UI STEP 5 — صفحه جزئیات آگهی و پروفایل (فقط CSS)
+   =================================================================== */
+
+/* هدر فرعی (جزئیات) */
+#screen-detail .sub-header{
+  background:var(--t-cream,#fdf8ec);
+  border-bottom:2px solid var(--t-gold,#e0b04a);
+  box-shadow:0 4px 14px rgba(15,77,58,.06);
+}
+#screen-detail .sub-header .title{font-size:19px;color:var(--t-forest,#0f4d3a);}
+#screen-detail .sub-header .back-btn{
+  width:42px;height:42px;display:flex;align-items:center;justify-content:center;
+  border-radius:50%;background:#fff;border:1.5px solid var(--t-line,#e8dfc8);
+  padding:0;font-size:22px;
+}
+
+/* کارت اصلی جزئیات */
+#screen-detail .detail-card{
+  border:1.5px solid var(--t-line,#e8dfc8) !important;
+  border-radius:24px !important;
+  box-shadow:0 10px 28px rgba(15,77,58,.08) !important;
+  padding:22px !important;
+}
+#screen-detail .detail-title{
+  font-size:23px;font-weight:900;color:var(--t-forest,#0f4d3a);
+  line-height:1.6;
+}
+#screen-detail .detail-meta{
+  background:#fbf8f0;border:1px solid var(--t-line,#e8dfc8);
+  border-radius:16px;padding:12px 14px;margin-top:6px;
+}
+#screen-detail .detail-meta b{color:var(--t-forest,#0f4d3a);}
+
+/* بلوک قیمت: کرم با حاشیه طلایی */
+#screen-detail .detail-price-block{
+  background:linear-gradient(135deg,#fdf8ec,#ffffff) !important;
+  border:2px solid var(--t-gold,#e0b04a) !important;
+  border-radius:22px !important;
+  padding:20px !important;
+  box-shadow:0 6px 18px rgba(224,176,74,.18);
+}
+#screen-detail .detail-price-block .lbl{color:var(--t-muted,#7a7566);}
+#screen-detail .detail-price-block .val{
+  font-size:34px;color:var(--t-forest,#0f4d3a);
+}
+#screen-detail .detail-price-block .discount{
+  background:linear-gradient(135deg,#e0b04a,#c9962b);
+  color:#fff;
+}
+#screen-detail .old-price{color:var(--t-muted,#7a7566);}
+
+/* نوار اقدام: دکمه‌های سبز و کرم */
+#screen-detail .btn-green{
+  border-radius:18px;min-height:56px;font-size:16px;font-weight:900;
+  background:linear-gradient(135deg,#0f4d3a,#1f6b50);
+  box-shadow:0 8px 20px rgba(15,77,58,.25);
+}
+#screen-detail .btn-red{border-radius:18px;min-height:52px;font-weight:900;}
+
+/* نقشه جزئیات */
+#screen-detail #map-detail{
+  border:1.5px solid var(--t-line,#e8dfc8);
+  box-shadow:0 6px 16px rgba(15,77,58,.08);
+}
+
+/* پروفایل: هدر سبز با حاشیهٔ طلایی */
+#screen-profile > div:nth-of-type(1){
+  background:linear-gradient(180deg,#0f4d3a 0%,#1f6b50 100%) !important;
+  border-bottom:3px solid var(--t-gold,#e0b04a);
+  border-radius:0 0 32px 32px !important;
+  box-shadow:0 10px 26px rgba(15,77,58,.22);
+}
+#screen-profile #profile-avatar{
+  border-color:var(--t-gold,#e0b04a) !important;
+}
+
+/* آمار و منوهای پروفایل */
+#screen-profile #profile-stats{
+  border:1.5px solid var(--t-line,#e8dfc8) !important;
+  border-radius:22px !important;
+  box-shadow:0 8px 22px rgba(15,77,58,.07) !important;
+}
+#screen-profile .stat-val{font-weight:900;}
+#screen-profile .profile-menu-item{
+  padding:16px 16px !important;
+}
+#screen-profile .profile-menu-item:active{transform:scale(.985);}
+#screen-profile .profile-menu-item .ic{
+  border-radius:16px !important;
+  border:1.5px solid var(--t-line,#e8dfc8) !important;
+  background:var(--t-cream,#fdf8ec) !important;
+}
+#screen-profile .profile-menu-item .body b{color:var(--t-forest,#0f4d3a);}
+#screen-profile .profile-menu-item .arrow{color:var(--t-gold,#e0b04a);}
+#screen-profile > div:nth-of-type(2) > div{
+  border:1.5px solid var(--t-line,#e8dfc8) !important;
+  border-radius:22px !important;
+  box-shadow:0 8px 22px rgba(15,77,58,.07) !important;
+}
+#screen-profile .btn-outline{
+  border:2px solid var(--t-forest,#0f4d3a);
+  color:var(--t-forest,#0f4d3a);
+  background:#fff;
+}
