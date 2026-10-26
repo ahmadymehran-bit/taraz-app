@@ -209,10 +209,11 @@ function extractQtyNum(str){
   const m=en.match(/\d+/);
   return m?Number(m[0]):1;
 }
-function avgRating(phone){
-  const rs=DB.ratings.filter(r=>r.toPhone===phone);
+async function avgRating(phone){
+  var res=null; try{res=await api.getRatings(phone)}catch(e){}
+  var rs=(res&&Array.isArray(res.ratings))?res.ratings:[];
   if(!rs.length)return{avg:0,count:0};
-  const s=rs.reduce((a,b)=>a+b.score,0);
+  const s=rs.reduce((a,b)=>a+Number(b.score||0),0);
   return{avg:s/rs.length,count:rs.length};
 }
 function setAvatar(el,u){if(!el||!u)return;el.innerHTML='';if(u.avatar){const i=document.createElement('img');i.src=u.avatar;el.appendChild(i)}else{el.textContent=initials(u.name)}}
@@ -1022,11 +1023,12 @@ function openRating(toPhone,toName){
   document.getElementById('rating-modal').classList.add('show');
 }
 function closeRating(){document.getElementById('rating-modal').classList.remove('show');ratingTarget=null;ratingScore=0}
-function submitRating(){
+async function submitRating(){
   if(!ratingTarget)return; if(!ratingScore){toast('امتیاز بده');return}
-  const u=DB.user; const all=DB.ratings;
-  all.push({id:'Rt'+Date.now(),fromPhone:u.phone,fromName:u.name,toPhone:ratingTarget.toPhone,score:ratingScore,comment:document.getElementById('rating-comment').value.trim(),createdAt:Date.now()});
-  DB.ratings=all; toast('⚠ فقط روی این دستگاه ذخیره شد'); closeRating(); renderProfile();
+  const u=DB.user; if(!u)return;
+  const resR=await api.createRating({id:'Rt'+Date.now(),fromPhone:u.phone,fromName:u.name,toPhone:ratingTarget.toPhone,score:ratingScore,comment:document.getElementById('rating-comment').value.trim()});
+  if(!resR||!resR.ok){toast('خطا در ثبت امتیاز. دوباره وارد شوید'); return}
+  toast('✓ امتیاز شما ثبت شد'); closeRating(); renderProfile();
 }
 document.querySelectorAll('#rating-stars .star-btn').forEach(btn=>{ btn.addEventListener('click',()=>{ ratingScore=Number(btn.dataset.v); document.querySelectorAll('#rating-stars .star-btn').forEach(s=>s.classList.toggle('on',Number(s.dataset.v)<=ratingScore)); const l=['','خیلی بد','بد','متوسط','خوب','عالی']; document.getElementById('rating-label').textContent=l[ratingScore]; }); });
 async function renderProfile(){
@@ -1080,7 +1082,7 @@ body.innerHTML=favList.map(function(l){ var normalized={ id:l.id, sellerPhone:l.
     if(!list.length){body.innerHTML='<div class="empty"><span class="emoji">📨</span>درخواستی نداری</div>';return}
     body.innerHTML=list.map(r=>'<div class="card"><b>'+esc(r.listingTitle)+'</b><small>فروشنده: '+esc(r.sellerName)+'<br>'+timeAgo(r.createdAt)+'</small></div>').join('');
   } else if(section==='reviews'){
-    title.textContent='⭐ امتیازهای من'; const list=DB.ratings.filter(x=>x.toPhone===u.phone).sort((a,b)=>b.createdAt-a.createdAt);
+    title.textContent='⭐ امتیازهای من'; var rv=null; try{rv=await api.getRatings(u.phone)}catch(e){} const list=(rv&&Array.isArray(rv.ratings))?rv.ratings.slice().sort((a,b)=>b.createdAt-a.createdAt):[];
     if(!list.length){body.innerHTML='<div class="empty"><span class="emoji">⭐</span>هنوز امتیازی نگرفته‌ای</div>';return}
     body.innerHTML=list.map(r=>'<div class="card"><div class="row"><b>'+esc(r.fromName)+'</b><span style="color:var(--gold);font-size:18px">'+'★'.repeat(r.score)+'☆'.repeat(5-r.score)+'</span></div>'+(r.comment?'<div style="margin-top:10px;font-size:14px;color:var(--muted);line-height:2">"'+esc(r.comment)+'"</div>':'')+'</div>').join('');
   }
@@ -1896,18 +1898,15 @@ async function submitRatingForMission(toPhone) {
   var comment = document.getElementById('new-rating-comment').value.trim();
   
   try {
-    await fetch('https://taraz-backend-prog.vercel.app/api/ratings', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        id: 'Rt' + Date.now(),
-        fromPhone: u.phone,
-        fromName: u.name,
-        toPhone: toPhone,
-        score: score,
-        comment: comment
-      })
+    var resR = await api.createRating({
+      id: 'Rt' + Date.now(),
+      fromPhone: u.phone,
+      fromName: u.name,
+      toPhone: toPhone,
+      score: score,
+      comment: comment
     });
+    if (!resR || !resR.ok) throw new Error('rating failed');
     toast('✓ امتیاز شما ثبت شد');
     closeRatingModalNew();
     go('missions-list');
