@@ -135,27 +135,16 @@
     </button>
   </div>
 
-  <!-- نبض بازار (مرجع قیمت) -->
-  <section class="section" style="padding-top: 12px;">
-    <h2 style="font-size: 18px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">📊 نبض بازار</h2>
-    <div style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;" id="market-pulse-container">
-      <!-- این بخش با جاوااسکریپت پر می‌شه -->
-      <div class="card" style="min-width: 140px; padding: 16px; text-align: center; background: #fff; border-radius: 16px;">
-        <div style="font-size: 32px; margin-bottom: 8px;">🐑</div>
-        <div style="font-size: 14px; font-weight: 800; color: var(--forest);">گوسفند شال</div>
-        <div style="font-size: 16px; font-weight: 900; color: var(--accent); margin-top: 6px;" id="pulse-sheep">در حال بارگذاری...</div>
+  <!-- ============ خدمات (منتقل‌شده از صفحه خدمات) ============ -->
+  <section class="section" id="browse-services" style="padding-top: 12px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 12px;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <button type="button" class="back-btn" id="services-back" onclick="servicesBack()" style="display:none">→</button>
+        <h2 id="services-title" style="font-size: 18px; margin: 0;">🛠️ خدمات و مشاغل</h2>
       </div>
-      <div class="card" style="min-width: 140px; padding: 16px; text-align: center; background: #fff; border-radius: 16px;">
-        <div style="font-size: 32px; margin-bottom: 8px;">🌾</div>
-        <div style="font-size: 14px; font-weight: 800; color: var(--forest);">گندم</div>
-        <div style="font-size: 16px; font-weight: 900; color: var(--accent); margin-top: 6px;" id="pulse-wheat">در حال بارگذاری...</div>
-      </div>
-      <div class="card" style="min-width: 140px; padding: 16px; text-align: center; background: #fff; border-radius: 16px;">
-        <div style="font-size: 32px; margin-bottom: 8px;">🌰</div>
-        <div style="font-size: 14px; font-weight: 800; color: var(--forest);">کنسانتره</div>
-        <div style="font-size: 16px; font-weight: 900; color: var(--accent); margin-top: 6px;" id="pulse-feed">در حال بارگذاری...</div>
-      </div>
+      <button type="button" class="btn-blue" onclick="openCreateCapacity()" style="max-width: 150px; padding: 8px 12px; font-size: 13px;">➕ ثبت خدمت</button>
     </div>
+    <div id="services-content"></div>
   </section>
 
   <!-- مأموریت‌های من -->
@@ -174,16 +163,6 @@
     <h2 style="font-size: 18px;">📋 آخرین آگهی‌ها</h2>
     <div id="home-listings"></div>
   </section>
-</section>
-
-
- <!-- ============ SERVICES ============ -->
-<section class="screen" id="screen-services" style="padding-bottom:110px">
-  <div class="sub-header">
-    <button type="button" class="back-btn" id="services-back" onclick="servicesBack()" style="display:none">→</button>
-    <div class="title" id="services-title">🛠️ خدمات و مشاغل</div>
-  </div>
-  <div id="services-content"></div>
 </section>
 
 
