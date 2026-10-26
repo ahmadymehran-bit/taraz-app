@@ -584,7 +584,7 @@ function renderSellPhotoPreviews(){
 var wrap=document.getElementById('sell-photos-preview'); if(!wrap)return;
 var photos=window._tempListingPhotos||[];
 if(!photos.length){wrap.innerHTML='';return}
-wrap.innerHTML=photos.map(function(p,i){ return '<div class="photo-preview-item"><img src="'+p+'"><button type="button" class="photo-remove" onclick="removeSellPhoto('+i+')">×</button></div>'; }).join('');
+wrap.innerHTML=photos.map(function(p,i){ return '<div class="photo-preview-item"><img src="'+esc(p)+'"><button type="button" class="photo-remove" onclick="removeSellPhoto('+i+')">×</button></div>'; }).join('');
 }
 function removeSellPhoto(index){
 var photos=window._tempListingPhotos||[]; photos.splice(index,1); window._tempListingPhotos=photos; renderSellPhotoPreviews();
@@ -910,7 +910,7 @@ if(isMine){ actionBlock='<button type="button" class="btn-red" onclick="deleteLi
 var loc = l.location; var mapHTML = '';
 if(loc && loc.lat && loc.lng){ mapHTML = '<div style="margin-top:20px;padding-top:16px;border-top:2px dashed var(--line)"><b style="font-size:15px">📍 موقعیت روی نقشه</b><div id="map-detail" style="height:250px;border-radius:14px;margin-top:10px;border:2px solid #e0e0e0"></div></div>'; }
 var body=document.getElementById('detail-body');
-body.innerHTML='<div style="padding:16px 16px 0"><div class="detail-card" style="margin:0"><span class="pill" style="display:inline-block;background:#eef8f3;color:var(--accent);font-size:13px;font-weight:900;padding:6px 14px;border-radius:100px">'+cat.icon+' '+cat.short+'</span><div class="detail-title" style="margin-top:14px">'+l.title+'</div><div class="detail-meta">فروشنده: <b>'+l.sellerName+'</b><br>📍 '+l.region+'<br>📦 '+l.qty+'<br>🕒 '+timeAgo(l.createdAt)+'</div>'+(r.count?'<div class="rate-badge-big">⭐ '+faDigits(r.avg.toFixed(1))+' از '+faDigits(r.count)+' نفر</div>':'')+'<div class="detail-price-block">'+(l.oldPrice&&l.price<l.oldPrice?'<div class="old-price">'+faPrice(l.oldPrice)+'</div>':'')+'<div class="lbl">قیمت هر واحد</div><div class="val">'+faPrice(l.price)+'</div>'+(l.oldPrice&&l.price<l.oldPrice?'<div class="discount">🔥 تخفیف ویژه</div>':'')+'</div>'+(l.desc?'<div style="margin-top:20px;padding-top:16px;border-top:2px dashed var(--line)"><b style="font-size:15px">توضیحات</b><div style="font-size:14px;color:var(--muted);margin-top:8px;line-height:2">'+l.desc+'</div></div>':'')+'</div>'+mapHTML+actionBlock+'</div>';
+body.innerHTML='<div style="padding:16px 16px 0"><div class="detail-card" style="margin:0"><span class="pill" style="display:inline-block;background:#eef8f3;color:var(--accent);font-size:13px;font-weight:900;padding:6px 14px;border-radius:100px">'+cat.icon+' '+cat.short+'</span><div class="detail-title" style="margin-top:14px">'+esc(l.title)+'</div><div class="detail-meta">فروشنده: <b>'+esc(l.sellerName)+'</b><br>📍 '+esc(l.region)+'<br>📦 '+esc(l.qty)+'<br>🕒 '+timeAgo(l.createdAt)+'</div>'+(r.count?'<div class="rate-badge-big">⭐ '+faDigits(r.avg.toFixed(1))+' از '+faDigits(r.count)+' نفر</div>':'')+'<div class="detail-price-block">'+(l.oldPrice&&l.price<l.oldPrice?'<div class="old-price">'+faPrice(l.oldPrice)+'</div>':'')+'<div class="lbl">قیمت هر واحد</div><div class="val">'+faPrice(l.price)+'</div>'+(l.oldPrice&&l.price<l.oldPrice?'<div class="discount">🔥 تخفیف ویژه</div>':'')+'</div>'+(l.desc?'<div style="margin-top:20px;padding-top:16px;border-top:2px dashed var(--line)"><b style="font-size:15px">توضیحات</b><div style="font-size:14px;color:var(--muted);margin-top:8px;line-height:2">'+esc(l.desc)+'</div></div>':'')+'</div>'+mapHTML+actionBlock+'</div>';
 go('detail');
   if(loc && loc.lat && loc.lng){ setTimeout(function(){ if(window._mapDetail){window._mapDetail.remove();} window._mapDetail = L.map('map-detail').setView([loc.lat, loc.lng], 13); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '© OpenStreetMap' }).addTo(window._mapDetail); L.marker([loc.lat, loc.lng]).addTo(window._mapDetail); }, 100); }
 }
@@ -1174,7 +1174,7 @@ function showMissionThinking(parsed){
 }
 function renderMissionChain(m){
   const el=document.getElementById('mission-result');
-  el.innerHTML='<div style="padding:16px 0">'+m.steps.map((s,i)=>'<div class="mission-step"><div class="num">'+faDigits(i+1)+'</div><div class="head"><div class="ic">'+s.icon+'</div><div class="t"><b>'+s.title+'</b><small>'+s.subtitle+'</small></div><span class="status '+s.status+'">'+(s.status==='ok'?'✓':'⚠')+'</span></div><div class="why"><b>چرا؟</b> '+s.why+'</div><div class="price-line"><span class="l">'+faDigits(s.qty)+' '+s.unit+' × '+faPrice(s.price)+'</span><span class="v">'+faPrice(s.total)+'</span></div></div>').join('')+'<div class="mission-total"><div class="row"><span>جمع کل</span><span class="v big">'+faPrice(m.total)+' تومان</span></div></div><button type="button" class="btn-green" style="min-height:64px;font-size:18px" onclick="confirmMission()">✅ تأیید و رزرو همه</button><button type="button" class="btn-outline" onclick="discardMission()">انصراف</button></div>';
+  el.innerHTML='<div style="padding:16px 0">'+m.steps.map((s,i)=>'<div class="mission-step"><div class="num">'+faDigits(i+1)+'</div><div class="head"><div class="ic">'+s.icon+'</div><div class="t"><b>'+esc(s.title)+'</b><small>'+esc(s.subtitle)+'</small></div><span class="status '+s.status+'">'+(s.status==='ok'?'✓':'⚠')+'</span></div><div class="why"><b>چرا؟</b> '+esc(s.why)+'</div><div class="price-line"><span class="l">'+faDigits(s.qty)+' '+s.unit+' × '+faPrice(s.price)+'</span><span class="v">'+faPrice(s.total)+'</span></div></div>').join('')+'<div class="mission-total"><div class="row"><span>جمع کل</span><span class="v big">'+faPrice(m.total)+' تومان</span></div></div><button type="button" class="btn-green" style="min-height:64px;font-size:18px" onclick="confirmMission()">✅ تأیید و رزرو همه</button><button type="button" class="btn-outline" onclick="discardMission()">انصراف</button></div>';
 }
 function discardMission(){currentMissionDraft=null;document.getElementById('mission-result').innerHTML='';toast('لغو شد')}
 async function confirmMission(){
@@ -1250,7 +1250,7 @@ async function renderMyMissions() {
   var statusColor = m.status === 'confirmed' ? '#16a34a' : '#9a6b00';
   return '<div class="card" style="margin:12px 16px; cursor:pointer;" onclick="viewMissionChain(\'' + m.id + '\')">' +
          '<div style="display:flex;justify-content:space-between;align-items:center;">' +
-         '<b style="color:var(--forest);">' + (m.rawText || 'مأموریت بدون عنوان').substring(0, 40) + '...</b>' +
+         '<b style="color:var(--forest);">' + esc((m.rawText || 'مأموریت بدون عنوان').substring(0, 40)) + '...</b>' +
          '<span style="background:#e3f6ec;color:' + statusColor + ';padding:4px 10px;border-radius:100px;font-size:12px;font-weight:900;">' + statusText + '</span>' +
          '</div>' +
          '<small style="display:block;margin-top:8px;color:var(--muted);">' + faDigits((m.steps||[]).length) + ' مرحله · ' + faPrice(m.total) + ' تومان · مشاهده زنجیره 🔗</small>' +
@@ -1317,7 +1317,7 @@ async function renderAdminPanel() {
     if (listingsRes && listingsRes.listings && listingsRes.listings.length > 0) {
       listEl.innerHTML = listingsRes.listings.map(function(l) {
         return '<div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">' +
-               '<div><b>' + l.title + '</b><br><small>' + l.seller_name + ' - ' + l.region + '</small></div>' +
+               '<div><b>' + esc(l.title) + '</b><br><small>' + esc(l.seller_name) + ' - ' + esc(l.region) + '</small></div>' +
                '<button type="button" class="btn-red" style="width:auto;padding:8px 12px;margin:0" onclick="adminDeleteListing(\'' + l.id + '\')">حذف</button>' +
                '</div>';
       }).join('');
@@ -1606,8 +1606,8 @@ async function renderMissionChainView() {
     serviceSteps.forEach(function(s, idx) {
       html += '<div class="chain-node" style="background:#fff8e6; border:2px solid #f0b429; border-radius:20px; padding:16px; width:100%; text-align:center;">';
       html += '<div style="font-size:40px; margin-bottom:8px;">' + s.icon + '</div>';
-      html += '<b style="color:#8a6400;">' + s.title + '</b>';
-      html += '<div style="font-size:13px; color:var(--muted); margin-top:4px;">' + s.subtitle + '</div>';
+      html += '<b style="color:#8a6400;">' + esc(s.title) + '</b>';
+      html += '<div style="font-size:13px; color:var(--muted); margin-top:4px;">' + esc(s.subtitle) + '</div>';
       html += '</div>';
       html += '<div style="width:3px; height:30px; background:var(--accent);"></div>';
     });
