@@ -1066,3 +1066,16 @@ body {
 .bz-sum{background:var(--paper);border-radius:12px;padding:10px;margin:10px 0}.bz-sum div{display:flex;justify-content:space-between;padding:3px 0;font-size:13px}
 .bz-terms{background:#fff8e6;border-radius:12px;padding:10px;font-size:12.5px}.bz-terms h4,.bz-card>h4{margin:10px 0 6px;font-size:13px}.bz-terms p{margin:3px 0}
 .bz-opt label{display:block;padding:6px 0;font-size:13px}
+.bz-src{gap:8px!important}
+.bz-src span{display:flex;align-items:center;justify-content:space-between;gap:6px;background:#e8f6ef;border:1px solid #bfe3d2;color:var(--forest);border-radius:12px;padding:7px 10px;font-size:12.5px;white-space:nowrap}
+.bz-src span:last-child{background:var(--paper);border-color:var(--line);color:var(--ink)}
+.bz-ref-l{min-width:150px}
+/* ===== تصاویر واقعی بازار ===== */
+.bz-cats button{padding:6px 4px 9px}
+.bz-cats button img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;margin-bottom:4px}
+.bz-cats button span{font-size:12px}
+.bz-cats button.on img{outline:2px solid var(--accent);outline-offset:-2px}
+.bz-av{width:56px;height:56px;padding:0;overflow:hidden;border:2px solid #fff;box-shadow:0 1px 4px #0002}
+.bz-av img{width:100%;height:100%;object-fit:cover}
+.bz-bh{display:flex;align-items:center;gap:10px;margin-bottom:10px}.bz-bh h3{margin:0}
+.bz-bh img{width:52px;height:52px;border-radius:14px;object-fit:cover;border:1px solid var(--line)}
