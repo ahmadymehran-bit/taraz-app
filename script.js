@@ -499,6 +499,7 @@ async function executeDeleteAccount() {
   }
 }
 
+function authHeaders(){var h={'Content-Type':'application/json'};try{var t=localStorage.getItem('taraz.token');if(t)h['Authorization']='Bearer '+t;}catch(e){}return h;}
 function logout(){try{localStorage.removeItem('taraz.token')}catch(e){}DB.user=null;currentConvId=null;currentCapacityId=null;go('auth')}
 var _mapPicker = null; var _mapMarker = null; var _tempListingLocation = null;
 function toggleMapPicker(){
@@ -871,7 +872,7 @@ if(result && result.ok){ toast('✓ آگهی منتشر شد'); } else { toast('
 try {
   await fetch('https://taraz-backend-prog.vercel.app/api/match-alert', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: authHeaders(),
     body: JSON.stringify({
       listing_id: item.id,
       route_from: item.region,
@@ -1494,7 +1495,7 @@ async function saveReadyProfile() {
   try {
     var res = await fetch('https://taraz-backend-prog.vercel.app/api/ready', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders(),
       body: JSON.stringify(profile)
     });
     if (res.ok) {
@@ -1532,7 +1533,7 @@ async function addWatchCondition() {
   try {
     var res = await fetch('https://taraz-backend-prog.vercel.app/api/watches', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders(),
       body: JSON.stringify(watchData)
     });
     if (res.ok) {
