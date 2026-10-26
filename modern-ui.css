@@ -501,11 +501,12 @@ body {
    ============================================ */
 #screen-auth {
   background-color: var(--t-cream);
-  background-image: url("image/farm-logo-cow-chicken.webp");
-  background-position: center;
-  background-size: cover;
+  background-image:
+    linear-gradient(rgba(253, 248, 236, 0.88), rgba(253, 248, 236, 0.96)),
+    url("image/wheat-field.webp");
+  background-position: center top;
+  background-size: cover, 150% auto;
   background-repeat: no-repeat;
-  background-blend-mode: multiply;
   background-attachment: fixed;
   min-height: 100vh;
 }
@@ -519,12 +520,8 @@ body {
   letter-spacing: 0;
 }
 #screen-auth .auth-hero .logo::before {
-  content: "";
-  display: block;
-  width: 120px;
-  height: 120px;
-  margin: 0 auto 10px;
-  background: url("image/farm-logo-cow-chicken.webp") center / contain no-repeat;
+  content: none;
+  display: none;
 }
 #screen-auth .auth-hero .tag {
   color: var(--t-muted);
