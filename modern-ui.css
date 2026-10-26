@@ -494,3 +494,101 @@ body {
 [data-theme="dark"] .nav button.active {
   color: #8fd6b5;
 }
+
+/* ============================================
+   TARAZ V3 — صفحهٔ ورود / ثبت‌نام
+   فقط ظاهر. ID ها و onclick ها دست نخورده‌اند.
+   ============================================ */
+#screen-auth {
+  background: var(--t-cream);
+  min-height: 100vh;
+}
+#screen-auth .auth-hero {
+  padding: 48px 24px 12px;
+}
+#screen-auth .auth-hero .logo {
+  color: var(--t-forest);
+  font-size: 52px;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+#screen-auth .auth-hero .logo::before {
+  content: "";
+  display: block;
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 10px;
+  background: url("logo.webp") center / contain no-repeat;
+}
+#screen-auth .auth-hero .tag {
+  color: var(--t-muted);
+  font-size: 15px;
+}
+
+/* تب ورود / ثبت‌نام */
+#screen-auth .auth-tabs {
+  background: #efe9d8;
+  border-radius: 18px;
+  margin: 18px 24px 0;
+}
+#screen-auth .auth-tab {
+  border-radius: 14px;
+  color: var(--t-muted);
+}
+#screen-auth .auth-tab.active {
+  background: var(--t-forest);
+  color: #ffffff;
+  box-shadow: 0 6px 16px rgba(15, 77, 58, 0.25);
+}
+
+/* کارت فرم */
+#screen-auth .auth-form {
+  background: var(--t-card);
+  margin: 18px 24px 24px;
+  padding: 24px 20px;
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(15, 77, 58, 0.08);
+  border: 1px solid var(--t-line);
+}
+
+/* ورودی‌ها */
+#screen-auth .field label {
+  color: var(--t-text);
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 6px;
+  display: block;
+}
+#screen-auth input,
+#screen-auth select {
+  width: 100%;
+  border: 1.5px solid var(--t-line);
+  border-radius: 16px;
+  background: #fffdf7;
+  padding: 14px 16px;
+  font-size: 16px;
+  color: var(--t-text);
+  font-family: inherit;
+  box-sizing: border-box;
+  outline: none;
+}
+#screen-auth input:focus,
+#screen-auth select:focus {
+  border-color: var(--t-gold);
+  box-shadow: 0 0 0 4px rgba(224, 176, 74, 0.2);
+}
+
+/* دکمهٔ اصلی: سبز تیره، گرد */
+#screen-auth .btn-primary,
+#screen-auth .btn-green {
+  background: var(--t-forest) !important;
+  color: #ffffff !important;
+  border: 0;
+  border-radius: 18px !important;
+  width: 100%;
+  box-shadow: 0 10px 22px rgba(15, 77, 58, 0.28);
+}
+#screen-auth .btn-primary:active,
+#screen-auth .btn-green:active {
+  background: var(--t-forest-dark) !important;
+}
