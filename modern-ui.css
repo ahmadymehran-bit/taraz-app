@@ -869,3 +869,74 @@ body {
   color:var(--t-forest,#0f4d3a);
   background:#fff;
 }
+
+/* ===== UI STEP 7 ===== */
+/* 1) ۴ دسته در یک ردیف، آیکون لوگو‌ای گرد و نام زیرش */
+#screen-home #browse-chips.chips-row {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 6px !important;
+  overflow: visible !important;
+  padding: 10px 12px 4px !important;
+  margin: 0 !important;
+  flex-wrap: nowrap !important;
+}
+#screen-home #browse-chips .chip-big {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 6px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  line-height: 1.3 !important;
+  text-align: center !important;
+  min-width: 0 !important;
+  white-space: normal !important;
+  color: var(--t-forest, #0f4d3a) !important;
+}
+#screen-home #browse-chips .chip-big .ic {
+  width: 58px !important;
+  height: 58px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 26px !important;
+  background: #eef8f3 !important;
+  border: 2px solid rgba(15, 77, 58, 0.14) !important;
+  box-shadow: 0 3px 8px rgba(15, 77, 58, 0.08) !important;
+}
+#screen-home #browse-chips .chip-big.active .ic {
+  background: var(--t-forest, #0f4d3a) !important;
+  border-color: var(--t-forest, #0f4d3a) !important;
+  box-shadow: 0 4px 12px rgba(15, 77, 58, 0.25) !important;
+}
+#screen-home #browse-chips .chip-big.active {
+  color: var(--t-forest, #0f4d3a) !important;
+}
+
+/* 2) قلب‌ها (fav-btn) باید همیشه داخل کارت ثابت بمانند و با اسکرول جابه‌جا نشوند */
+.browse-card,
+.card,
+.card-with-photo,
+.card-photo,
+.browse-card .thumb,
+.thumb {
+  position: relative !important;
+  overflow: hidden !important;
+}
+.fav-btn {
+  position: absolute !important;
+  top: 8px !important;
+  left: 8px !important;
+  z-index: 2 !important;
+  pointer-events: auto;
+}
+.fav-btn:not(.active) {
+  animation: none !important;
+}
