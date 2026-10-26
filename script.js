@@ -331,10 +331,11 @@ var all=DB.notifications; all.forEach(function(n){n.read=true}); DB.notification
 
 /* NAVIGATION */
 function go(s){
+  if(s==='services')s='browse';
   if(!DB.user&&s!=='auth')s='auth';
   if(s==='detail'&&!currentDetailId)s='browse';
   if(s==='chat'&&!currentConvId)s='chatlist';
-  if(s==='capacity'&&!currentCapacityId)s='services';
+  if(s==='capacity'&&!currentCapacityId)s='browse';
   document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
   const target=document.getElementById('screen-'+s); if(target)target.classList.add('active');
   currentScreen=s;
@@ -344,8 +345,7 @@ function go(s){
   if(map[s]){const b=document.querySelector('#nav button[data-nav="'+map[s]+'"]');if(b)b.classList.add('active')}
 // به دلیل جابجایی صفحه‌ها، renderBrowse برای صفحه Home و renderHome برای صفحه Browse اجرا میشه
 if(s==='home') { loadFavorites().then(renderBrowse); }
-if(s==='browse'){ loadFavorites().then(renderHome); updateHomeReadyButton(); }
-  if(s==='services')renderServices();
+if(s==='browse'){ loadFavorites().then(renderHome); updateHomeReadyButton(); renderServices(); }
   if(s==='capacity')renderCapacityDetail();
   if(s==='mission')renderMission();
   if(s==='profile')renderProfile();
@@ -657,7 +657,7 @@ function renderBrowseChips(){
   const all=[{id:'livestock',short:'دامداری',icon:'🐄'},{id:'crops',short:'کشاورزی',icon:'🌾'},{id:'vet_drugs',short:'دامپزشکی',icon:'🩺'},{id:'services',short:'خدمات',icon:'🛠️'}];
   el.innerHTML=all.map(c=>'<button type="button" class="chip-big'+(browseCategory===c.id?' active':'')+'" onclick="pickBrowseCat(\''+c.id+'\')"><span class="ic">'+c.icon+'</span>'+c.short+'</button>').join('');
 }
-function pickBrowseCat(id){if(id==='services'){go('services');return}browseCategory=(browseCategory===id)?'all':id;renderBrowse()}
+function pickBrowseCat(id){if(id==='services'){go('browse');return}browseCategory=(browseCategory===id)?'all':id;renderBrowse()}
 function filterBrowse(v){browseSearch=v.toLowerCase();const c=document.getElementById('browse-clear');if(c)c.hidden=!v;renderBrowse()}
 var _browseFilters = { priceMin: 0, priceMax: 0, region: '' };
 function toggleFilterPanel(){
