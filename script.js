@@ -245,6 +245,7 @@ async function renderHeaderAvatars(){
   // آواتار
   const avatarEl = document.getElementById('header-avatar');
   if (avatarEl) setAvatar(avatarEl, u);
+  const hAv = document.getElementById('home-avatar'); if (hAv) setAvatar(hAv, u);
   
   // نام کاربر
   const nameEl = document.getElementById('header-user-name');
@@ -267,6 +268,7 @@ var result=null; try{result=await api.getNotifications(u.phone)}catch(e){}
 var unread=0;
 if(result&&result.notifications){ unread=result.notifications.filter(function(n){return !n.read}).length; } else { unread=DB.notifications.filter(function(n){return !n.read}).length; }
 badge.textContent=faDigits(unread); badge.classList.toggle('show',unread>0);
+var hb=document.getElementById('home-bell-badge'); if(hb){hb.textContent=faDigits(unread); hb.classList.toggle('show',unread>0);}
 }
 var _favoritesCache = [];
 async function loadFavorites(){
