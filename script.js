@@ -1988,6 +1988,16 @@ window.apiHealthCheck = async function() {
 };
 console.log('✓ API layer v1 loaded');
 
+/* Service Worker: ثبت برای کش آفلاین و اعلان‌ها (خطا برنامه را متوقف نمی‌کند) */
+(function () {
+  if (!('serviceWorker' in navigator)) return;
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('/service-worker.js').catch(function (e) {
+      console.warn('SW register failed:', e);
+    });
+  });
+})();
+
 /* Modern UI compatibility layer: intentionally guarded to avoid duplicating app handlers. */
 (function () {
   'use strict';
