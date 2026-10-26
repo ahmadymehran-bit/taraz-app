@@ -1008,3 +1008,35 @@ body {
 
 /* STEP 15: بازار داخل صفحه ثبت فروش */
 .sell-bazaar-wrap{padding:12px 16px 0}
+
+/* ===== بازار دام زنده ===== */
+.bz{padding:14px 16px 24px;max-width:720px;margin:auto;direction:rtl}
+.bz-head h2{margin:4px 0;font-size:20px;color:var(--forest)}.bz-head p{margin:0 0 12px;color:var(--muted);font-size:13px}
+.bz-tabs{display:flex;gap:8px;overflow-x:auto;margin-bottom:12px}
+.bz-tabs button{flex:1;padding:9px 14px;border:1px solid var(--line);background:#fff;border-radius:12px;color:var(--ink);white-space:nowrap}
+.bz-tabs button.on{background:var(--forest);color:#fff;border-color:var(--forest)}
+.bz-panel,.bz-col,.bz-lot{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:var(--shadow)}
+.bz-price{display:flex;justify-content:space-between;align-items:center}
+.bz-price small{display:block;color:var(--muted);font-size:12px}.bz-price b{font-size:22px;color:var(--forest)}
+.bz-chg{padding:4px 10px;border-radius:20px;font-size:13px;background:#e8f6ef;color:#1f8062}
+.bz-spark{display:flex;align-items:flex-end;gap:4px;height:46px;margin:12px 0}
+.bz-spark i{flex:1;background:#bfe3d3;border-radius:3px 3px 0 0}
+.bz-check{display:flex;gap:8px;align-items:center;font-size:13px;padding-top:8px;border-top:1px solid var(--line)}
+.bz-book{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.bz-col h4{margin:0 0 8px;font-size:13px}
+.bz-row{display:flex;justify-content:space-between;font-size:12.5px;padding:4px 6px;border-radius:6px;margin-bottom:2px}
+.bz-hd{color:var(--muted);font-size:11px}.bz-row.ask{background:#fdeeee;color:#c0392b}.bz-row.bid{background:#e8f6ef;color:#1f8062}
+.bz-sub{margin:16px 0 8px;font-size:15px}
+.bz-lot{margin-bottom:10px}.bz-lt{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.bz-ok,.bz-no{font-size:11px;padding:3px 8px;border-radius:20px;white-space:nowrap}.bz-ok{background:#e8f6ef;color:#1f8062}.bz-no{background:#f1f1f1;color:#888}
+.bz-lm{color:var(--muted);font-size:12.5px;margin:6px 0}
+.bz-lb{display:flex;justify-content:space-between;align-items:center}.bz-lb small{font-size:11px;color:var(--muted);font-weight:400}
+.bz-lb button,.bz-go{background:var(--forest);color:#fff;border:0;border-radius:12px;padding:9px 22px}
+.bz-empty{text-align:center;color:var(--muted)}
+.bz-sheet{position:fixed;inset:0;background:#0007;z-index:3000;display:flex;align-items:flex-end;justify-content:center}.bz-sheet[hidden]{display:none}
+.bz-card{background:#fff;width:100%;max-width:560px;max-height:90vh;overflow:auto;border-radius:22px 22px 0 0;padding:20px;position:relative;direction:rtl}
+.bz-card h3{margin:0 0 4px}.bz-x{position:absolute;left:14px;top:14px;border:0;background:#eee;border-radius:50%;width:30px;height:30px}
+.bz-meta{color:var(--muted);font-size:13px;margin-bottom:12px}.bz-card input[type=range]{width:100%;accent-color:#1f8062}
+.bz-sum{background:var(--paper);border-radius:12px;padding:10px;margin:10px 0}.bz-sum div{display:flex;justify-content:space-between;padding:3px 0;font-size:13px}
+.bz-terms{background:#fff8e6;border-radius:12px;padding:10px;font-size:12.5px}.bz-terms h4,.bz-card>h4{margin:10px 0 6px;font-size:13px}.bz-terms p{margin:3px 0}
+.bz-opt label{display:block;padding:6px 0;font-size:13px}.bz-go{width:100%;margin-top:12px;padding:13px;font-size:15px}
