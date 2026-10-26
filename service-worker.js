@@ -1,36 +1,54 @@
-var CACHE_NAME = 'taraz-v1';
-var urlsToCache = ['./', './index.html', './manifest.json'];
+/* تاراز - Service Worker (نسخه ۲)
+   استراتژی: شبکه اول (همیشه آخرین نسخه)، اگر آفلاین بود از کش استفاده می‌شود.
+   /api/ و دامنه‌های خارجی کش نمی‌شوند. */
+var CACHE_NAME = 'taraz-v2';
+var PRECACHE = ['./', './index.html', './manifest.json'];
 
 self.addEventListener('install', function(event){
-event.waitUntil(caches.open(CACHE_NAME).then(function(cache){
-return cache.addAll(urlsToCache).catch(function(e){ console.warn(e); });
-}));
+event.waitUntil(
+caches.open(CACHE_NAME).then(function(cache){
+return cache.addAll(PRECACHE).catch(function(e){ console.warn(e); });
+})
+);
 self.skipWaiting();
 });
 
 self.addEventListener('activate', function(event){
-event.waitUntil(caches.keys().then(function(names){
-return Promise.all(names.filter(function(n){ return n !== CACHE_NAME; }).map(function(n){ return caches.delete(n); }));
-}));
-self.clients.claim();
+event.waitUntil(
+caches.keys().then(function(names){
+return Promise.all(
+names.filter(function(n){ return n !== CACHE_NAME; }).map(function(n){ return caches.delete(n); })
+);
+}).then(function(){ return self.clients.claim(); })
+);
 });
 
 self.addEventListener('fetch', function(event){
-if(event.request.method !== 'GET') return;
-if(event.request.url.indexOf('/api/') >= 0) return;
-if(event.request.url.indexOf('liara.run') >= 0) return;
-if(event.request.url.indexOf('ibb.co') >= 0) return;
+var req = event.request;
+if(req.method !== 'GET') return;
 
-event.respondWith(caches.match(event.request).then(function(response){
-if(response) return response;
-return fetch(event.request).then(function(res){
-if(!res || res.status !== 200 || res.type !== 'basic') return res;
-var resClone = res.clone();
-caches.open(CACHE_NAME).then(function(cache){ cache.put(event.request, resClone); });
+var url = new URL(req.url);
+// فقط فایل‌های همین سایت؛ API و منابع خارجی دست نمی‌خورند
+if(url.origin !== self.location.origin) return;
+if(url.pathname.indexOf('/api/') === 0) return;
+
+event.respondWith(
+fetch(req).then(function(res){
+if(res && res.status === 200 && res.type === 'basic'){
+var copy = res.clone();
+caches.open(CACHE_NAME).then(function(cache){ cache.put(req, copy); });
+}
 return res;
-}).catch(function(){ return caches.match('./index.html'); });
-}));
+}).catch(function(){
+return caches.match(req).then(function(cached){
+if(cached) return cached;
+if(req.mode === 'navigate') return caches.match('./index.html');
+return new Response('', { status: 503, statusText: 'Offline' });
 });
+})
+);
+});
+
 /* ============ PUSH NOTIFICATIONS ============ */
 self.addEventListener('push', function(event){
 var data = { title: 'تاراز', body: 'پیام جدید', icon: '/web-app-manifest-192x192.png' };
