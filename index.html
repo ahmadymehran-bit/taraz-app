@@ -133,38 +133,26 @@
       <span class="mb-icon">⚡</span>
       <span class="mb-label">خرید و فروش فوری</span>
     </button>
+    <button type="button" class="modern-btn" onclick="go('services')" style="background:linear-gradient(135deg,#0f766e,#14b8a6);color:#fff;">
+      <span class="mb-icon">🛠️</span>
+      <span class="mb-label">خدمات و مشاغل</span>
+    </button>
   </div>
+</section>
 
-  <!-- ============ خدمات (منتقل‌شده از صفحه خدمات) ============ -->
-  <section class="section" id="browse-services" style="padding-top: 12px;">
-    <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 12px;">
+
+
+  <!-- ============ SERVICES (صفحه خدمات و مشاغل) ============ -->
+  <section class="screen" id="screen-services">
+    <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 16px 16px 12px;">
       <div style="display: flex; align-items: center; gap: 8px;">
-        <button type="button" class="back-btn" id="services-back" onclick="servicesBack()" style="display:none">→</button>
+        <button type="button" class="back-btn" id="services-back" onclick="servicesBack()">→</button>
         <h2 id="services-title" style="font-size: 18px; margin: 0;">🛠️ خدمات و مشاغل</h2>
       </div>
       <button type="button" class="btn-blue" onclick="openCreateCapacity()" style="max-width: 150px; padding: 8px 12px; font-size: 13px;">➕ ثبت خدمت</button>
     </div>
     <div id="services-content"></div>
   </section>
-
-  <!-- مأموریت‌های من -->
-  <section class="section">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-      <h2 style="font-size: 18px; margin: 0;">🎯 مأموریت‌های من</h2>
-      <button type="button" onclick="go('map-detail')" style="background: none; border: none; color: var(--accent); font-size: 13px; font-weight: 800;">مشاهده همه</button>
-    </div>
-    <div id="home-missions-list">
-      <div class="empty" style="padding: 20px; font-size: 14px;">هنوز مأموریتی نساخته‌ای</div>
-    </div>
-  </section>
-
-  <!-- آگهی‌های جدید -->
-  <section class="section">
-    <h2 style="font-size: 18px;">📋 آخرین آگهی‌ها</h2>
-    <div id="home-listings"></div>
-  </section>
-</section>
-
 
   <!-- ============ CAPACITY DETAIL ============ -->
   <section class="screen" id="screen-capacity">
