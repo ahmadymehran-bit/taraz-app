@@ -2030,10 +2030,10 @@ console.log('✓ API layer v1 loaded');
 
 /* ===== بازار دام زنده (نمایشی؛ بدون اتصال به سرور) ===== */
 var BZ={cat:'calf',scope:'city',place:'قم',count:5,w:250,lot:null,
-cats:{calf:{t:'گوساله',i:'🐮',img:'image/bz-calf.webp',p:320000,lo:310000,hi:330000,c:5,cs:1,w:250,ws:10,u:'رأس'},
+cats:{calf:{t:'گوساله',i:'🐮',img:'image/bz-calf-v2.webp',p:320000,lo:310000,hi:330000,c:5,cs:1,w:250,ws:10,u:'رأس'},
 cow:{t:'گاو',i:'🐄',img:'image/bz-cow.webp',p:280000,lo:270000,hi:290000,c:2,cs:1,w:500,ws:10,u:'رأس'},
 sheep:{t:'گوسفند',i:'🐑',img:'image/bz-sheep.webp',p:320000,lo:300000,hi:340000,c:20,cs:5,w:55,ws:5,u:'رأس'},
-lamb:{t:'بره',i:'🐏',img:'image/bz-lamb.webp',p:360000,lo:350000,hi:370000,c:20,cs:5,w:30,ws:5,u:'رأس'},
+lamb:{t:'بره',i:'🐏',img:'image/bz-lamb-v2.webp',p:360000,lo:350000,hi:370000,c:20,cs:5,w:30,ws:5,u:'رأس'},
 bird:{t:'طیور',i:'🐓',img:'image/bz-bird.webp',p:95000,lo:90000,hi:100000,c:200,cs:50,w:2.5,ws:.5,u:'قطعه'},
 agri:{t:'محصولات کشاورزی',i:'🌱',img:'image/wheat-stalks.webp',p:14000,lo:13000,hi:15000,c:10,cs:1,w:1000,ws:0,u:'تن'}},
 places:{city:['قم','تهران','اصفهان','مشهد','شیراز','تبریز'],prov:['قم','تهران','اصفهان','خراسان رضوی','فارس','آذربایجان شرقی'],mine:['قم']}};
