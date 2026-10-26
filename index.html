@@ -113,6 +113,45 @@
 
   <!-- ============ HOME (جدید) ============ -->
 <section class="screen" id="screen-browse">
+  <div class="bz">
+    <div class="bz-head"><h2>بازار دام زنده</h2><p>خرید مستقیم از دامدار، با مدارک و گواهی سلامت</p></div>
+    <div class="bz-tabs" id="bz-tabs">
+      <button class="on" onclick="bzTab(this,'sheep')">گوسفند</button>
+      <button onclick="bzTab(this,'cow')">گاو</button>
+      <button onclick="bzTab(this,'goat')">بز</button>
+      <button onclick="bzTab(this,'camel')">شتر</button>
+    </div>
+    <div class="bz-panel">
+      <div class="bz-price"><div><small>آخرین قیمت هر کیلو وزن زنده</small><b id="bz-last">—</b></div><span class="bz-chg" id="bz-chg">—</span></div>
+      <div class="bz-spark" id="bz-spark"></div>
+      <label class="bz-check"><input type="checkbox" id="bz-cert" onchange="renderBazaar()"> فقط دام‌های دارای گواهی سلامت</label>
+    </div>
+    <div class="bz-book">
+      <div class="bz-col"><h4>سفارش‌های فروش</h4><div class="bz-row bz-hd"><span>قیمت</span><span>تعداد</span></div><div id="bz-asks"></div></div>
+      <div class="bz-col"><h4>سفارش‌های خرید</h4><div class="bz-row bz-hd"><span>قیمت</span><span>تعداد</span></div><div id="bz-bids"></div></div>
+    </div>
+    <h3 class="bz-sub">گله‌های آماده معامله</h3>
+    <div id="bz-lots"></div>
+    <div class="bz-sheet" id="bz-sheet" hidden>
+      <div class="bz-card">
+        <button class="bz-x" onclick="bzClose()">✕</button>
+        <h3 id="bz-st"></h3>
+        <div class="bz-meta" id="bz-sm"></div>
+        <label>سهم خرید: <b id="bz-pv">100%</b></label>
+        <input type="range" id="bz-pct" min="10" max="100" step="10" value="100" oninput="bzCalc()">
+        <div class="bz-sum" id="bz-sum"></div>
+        <div class="bz-terms">
+          <h4>شرایط معامله</h4>
+          <p>۱. پرداخت بیعانه (۲۰٪) هنگام ثبت سفارش؛ مبلغ تا تحویل نزد تاراز امانت می‌ماند.</p>
+          <p>۲. باقی‌مانده به‌صورت نقدی هنگام تحویل دام و پس از تأیید سلامت.</p>
+        </div>
+        <h4>بعد از خرید</h4>
+        <div class="bz-opt"><label><input type="radio" name="bzpost" checked> حمل با راننده (پیشنهاد از آگهی‌های حمل)</label>
+        <label><input type="radio" name="bzpost"> کشتار در کشتارگاه مشخص</label></div>
+        <button class="bz-go" onclick="bzOrder()">ثبت سفارش و پرداخت بیعانه</button>
+      </div>
+    </div>
+  </div>
 </section>
 
 
