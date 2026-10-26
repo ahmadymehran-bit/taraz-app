@@ -344,7 +344,7 @@ function go(s){
   if(map[s]){const b=document.querySelector('#nav button[data-nav="'+map[s]+'"]');if(b)b.classList.add('active')}
 // به دلیل جابجایی صفحه‌ها، renderBrowse برای صفحه Home و renderHome برای صفحه Browse اجرا میشه
 if(s==='home') { loadFavorites().then(renderBrowse); }
-if(s==='browse'){ loadFavorites().then(renderHome); updateHomeReadyButton(); }
+if(s==='browse'){ renderBazaar(); loadFavorites().then(renderHome); updateHomeReadyButton(); }
   if(s==='capacity')renderCapacityDetail();
   if(s==='services')renderServices();
   if(s==='mission')renderMission();
@@ -2026,3 +2026,36 @@ console.log('✓ API layer v1 loaded');
     if (destination) destination.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 })();
+
+
+/* ===== بازار دام زنده (نمایشی؛ بدون اتصال به سرور) ===== */
+var BZ={kind:'sheep',lot:null,names:{sheep:'گوسفند',cow:'گاو',goat:'بز',camel:'شتر'},
+base:{sheep:395000,cow:310000,goat:340000,camel:280000},
+lots:{sheep:[{n:'۲۰۰ رأس بره نژاد لری',q:200,w:38,p:395000,c:1,r:'لرستان'},{n:'۸۰ رأس میش مولد',q:80,w:52,p:385000,c:1,r:'خوزستان'},{n:'۴۰ رأس بره پرواری',q:40,w:42,p:402000,c:0,r:'همدان'}],
+cow:[{n:'۳۰ رأس گوساله پرواری',q:30,w:320,p:310000,c:1,r:'اصفهان'},{n:'۱۲ رأس گاو شیری',q:12,w:520,p:295000,c:0,r:'قزوین'}],
+goat:[{n:'۶۰ رأس بز مرخوش',q:60,w:35,p:340000,c:1,r:'کرمان'}],
+camel:[{n:'۸ رأس شتر جوان',q:8,w:380,p:280000,c:1,r:'سیستان'}]}};
+function bzFa(n){return Number(n).toLocaleString('fa-IR')}
+function bzTab(b,k){BZ.kind=k;document.querySelectorAll('#bz-tabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on');renderBazaar()}
+function renderBazaar(){
+  var b=BZ.base[BZ.kind],g=function(i){return document.getElementById(i)};if(!g('bz-asks'))return;
+  g('bz-last').textContent=bzFa(b)+' تومان';
+  g('bz-chg').textContent='+۱٫۲٪';g('bz-chg').className='bz-chg up';
+  var pts=[.96,.97,.95,.98,.99,.985,1,1.01,1.0,1.012],sp='';
+  pts.forEach(function(p){sp+='<i style="height:'+Math.round((p-.93)*1400)+'%"></i>'});g('bz-spark').innerHTML=sp;
+  var asks='',bids='';
+  for(var i=0;i<5;i++){asks+='<div class="bz-row ask"><span>'+bzFa(b+(5-i)*2000)+'</span><span>'+bzFa(10+i*14)+'</span></div>';bids+='<div class="bz-row bid"><span>'+bzFa(b-(i+1)*2000)+'</span><span>'+bzFa(20+i*9)+'</span></div>'}
+  g('bz-asks').innerHTML=asks;g('bz-bids').innerHTML=bids;
+  var only=g('bz-cert').checked,h='';
+  BZ.lots[BZ.kind].forEach(function(l,i){if(only&&!l.c)return;
+    h+='<div class="bz-lot"><div class="bz-lt"><b>'+l.n+'</b>'+(l.c?'<span class="bz-ok">گواهی سلامت ✓</span>':'<span class="bz-no">بدون گواهی</span>')+'</div><div class="bz-lm">'+l.r+' · وزن میانگین '+bzFa(l.w)+' کیلو · '+bzFa(l.q)+' رأس</div><div class="bz-lb"><strong>'+bzFa(l.p)+' <small>تومان/کیلو</small></strong><button onclick="bzOpen('+i+')">خرید</button></div></div>'});
+  g('bz-lots').innerHTML=h||'<p class="bz-empty">گله‌ای با این فیلتر پیدا نشد.</p>';
+}
+function bzOpen(i){BZ.lot=BZ.lots[BZ.kind][i];var l=BZ.lot;document.getElementById('bz-st').textContent=l.n;
+  document.getElementById('bz-sm').textContent=l.r+' · '+bzFa(l.q)+' رأس · '+(l.c?'دارای گواهی سلامت':'بدون گواهی سلامت');
+  document.getElementById('bz-pct').value=100;bzCalc();document.getElementById('bz-sheet').hidden=false}
+function bzClose(){document.getElementById('bz-sheet').hidden=true}
+function bzCalc(){var l=BZ.lot;if(!l)return;var p=+document.getElementById('bz-pct').value,n=Math.max(1,Math.round(l.q*p/100)),tot=n*l.w*l.p;
+  document.getElementById('bz-pv').textContent=bzFa(p)+'٪ ('+bzFa(n)+' رأس)';
+  document.getElementById('bz-sum').innerHTML='<div><span>مبلغ کل</span><b>'+bzFa(tot)+' تومان</b></div><div><span>بیعانه (۲۰٪)</span><b>'+bzFa(Math.round(tot*.2))+' تومان</b></div><div><span>باقی‌مانده نقدی هنگام تحویل</span><b>'+bzFa(Math.round(tot*.8))+' تومان</b></div>'}
+function bzOrder(){bzClose();toast('نمایشی: ثبت سفارش هنوز به سرور وصل نیست')}
