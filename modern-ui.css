@@ -1356,3 +1356,41 @@ input::placeholder, textarea::placeholder { color: var(--fg-muted) !important; }
   display: flex !important; align-items: center !important; justify-content: center !important;
 }
 .nav button.nav-center .fab-plus { font-size: 40px !important; line-height: 1 !important; font-weight: 300 !important; color: #2a1d00 !important; margin: 0 !important; }
+
+/* ===== بازطراحی صفحه خانه مطابق نمونه: مرز مشخص، هم‌رنگ پس‌زمینه ===== */
+#screen-home { background: linear-gradient(180deg,#0d3328 0%,#0a2119 100%) !important; }
+#screen-home .modern-header .mh-title { color: #e0b04a !important; }
+#screen-home .browse-header { background: transparent !important; border: 0 !important; padding: 0 12px 4px !important; }
+#screen-home .browse-header .browse-search-big {
+  background: rgba(255,255,255,.03) !important; border: 1.5px solid rgba(224,176,74,.55) !important;
+  border-radius: 16px !important; min-height: 52px !important; box-shadow: none !important;
+}
+#screen-home .browse-header .browse-search-big input { background: transparent !important; color: #fff6d6 !important; }
+#screen-home .browse-header .browse-search-big input::placeholder { color: rgba(255,246,214,.55) !important; }
+#screen-home .browse-header button[onclick="toggleFilterPanel()"] {
+  display: inline-flex !important; align-items: center !important; gap: 8px !important;
+  width: auto !important; height: 34px !important; padding: 0 14px !important; margin: 10px 0 0 !important;
+  margin-right: auto !important; background: transparent !important; color: #e0b04a !important;
+  border: 1.5px solid rgba(224,176,74,.6) !important; border-radius: 999px !important; font-size: 13px !important;
+}
+#screen-home #browse-chips .chip-big {
+  background: rgba(255,255,255,.03) !important; border: 1.5px solid rgba(224,176,74,.45) !important;
+  border-radius: 16px !important; min-height: 92px !important; padding: 14px 4px !important; color: #fff6d6 !important;
+  box-shadow: none !important;
+}
+#screen-home #browse-chips .chip-big .ic { background: transparent !important; box-shadow: none !important; color: #e0b04a !important; }
+#screen-home #browse-chips .chip-big.active { background: rgba(224,176,74,.12) !important; border-color: #e0b04a !important; }
+#screen-home #browse-chips .chip-big:not(.chip-wide) { background: rgba(255,255,255,.03) !important; }
+#screen-home #browse-chips .chip-wide { border: 1.5px solid rgba(224,176,74,.7) !important; border-radius: 16px !important; }
+#screen-home .browse-grid .card {
+  background: rgba(255,255,255,.04) !important; border: 1px solid rgba(224,176,74,.35) !important;
+  border-radius: 16px !important; box-shadow: none !important;
+}
+#screen-home .modern-header .mh-bell { border: 1.5px solid rgba(224,176,74,.45) !important; background: transparent !important; }
+/* دکمه ثبت آگهی: دایره طلایی + متن زیر + */
+.nav button.nav-center {
+  width: 66px !important; height: 66px !important; border-radius: 50% !important; padding: 0 !important;
+  flex-direction: column !important; gap: 0 !important;
+}
+.nav button.nav-center .fab-plus { font-size: 34px !important; line-height: 1 !important; }
+.nav button.nav-center .fab-txt { font-size: 10px !important; font-weight: 800 !important; line-height: 1 !important; color: #2a1d00 !important; }
