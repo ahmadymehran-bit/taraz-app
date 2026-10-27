@@ -1092,3 +1092,33 @@ body {
 #screen-home .browse-grid > .browse-card {
   width: 100% !important;
 }
+
+/* ===== HOME: کارت آگهی به سبک طرح ===== */
+#screen-home .browse-card {
+  background:#fff !important; border-radius:18px !important; overflow:hidden !important;
+  box-shadow:0 4px 14px rgba(15,60,40,.10) !important; border:0 !important;
+  padding:0 !important; display:block !important;
+}
+#screen-home .browse-card .thumb { position:relative !important; height:170px !important; margin:0 !important; border-radius:0 !important; }
+#screen-home .browse-card .thumb img { width:100% !important; height:100% !important; object-fit:cover !important; display:block; }
+#screen-home .browse-card .fav-btn {
+  position:absolute !important; top:10px !important; left:10px !important; right:auto !important;
+  width:38px !important; height:38px !important; border-radius:50% !important;
+  background:#fff !important; color:#e5484d !important; border:0 !important; font-size:18px !important;
+  box-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+#screen-home .browse-card .bc-region {
+  position:absolute; bottom:10px; right:10px; background:#1e6b4a; color:#fff;
+  font-size:12px; padding:5px 11px; border-radius:20px; font-weight:600;
+}
+#screen-home .browse-card .body { padding:12px 14px 14px !important; text-align:right; }
+#screen-home .browse-card .body .title { font-weight:800 !important; font-size:16px !important; color:#14281f !important; margin:0 0 4px !important; }
+#screen-home .browse-card .bc-qty { font-size:13px; color:#6b7a72; margin-bottom:6px; }
+#screen-home .browse-card .bc-price { font-weight:800; font-size:17px; color:#1e8a5a; margin-bottom:8px; }
+#screen-home .browse-card .bc-price .unit { font-size:12px; font-weight:600; }
+#screen-home .browse-card .bc-foot { display:flex; justify-content:space-between; align-items:center; font-size:12px; color:#6b7a72; margin-bottom:10px; }
+#screen-home .browse-card .bc-seller { color:#f5a524; font-weight:600; }
+#screen-home .browse-card .bc-chat {
+  width:100%; height:40px; border:0; border-radius:12px; background:#1e6b4a; color:#fff;
+  font-weight:700; font-size:14px; cursor:pointer; font-family:inherit;
+}
