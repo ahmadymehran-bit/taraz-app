@@ -2106,3 +2106,8 @@ function applyProfileRole(role){
   var badge = document.getElementById('profile-role-badge');
   if(badge){ badge.innerHTML = '<b>' + esc(role) + '</b><span>' + esc(t.label) + '</span>'; }
 }
+
+/* ===== صفحه ثبت آگهی: انتخاب خرید/فروش و زیرصفحه دسته‌بندی ===== */
+var postMode='buy';
+function postPick(m){postMode=m;var t=document.getElementById('post-sub-title');if(t)t.textContent=(m==='buy'?'ثبت آگهی خرید':'ثبت آگهی فروش');go('post-sub')}
+function postCat(c){go(postMode)}

@@ -1519,3 +1519,44 @@ body, .screen { background: linear-gradient(180deg, #13402f 0%, #0b2a22 100%) !i
 /* لوگوی اصلی اپ در صفحه ورود/ثبت‌نام */
 #screen-auth .auth-hero .auth-logo-img { display: block; width: 120px; height: 120px; object-fit: contain; margin: 0 auto 8px; filter: drop-shadow(0 4px 10px rgba(0,0,0,.35)); }
 #screen-auth .auth-hero .auth-logo-img { width: 104px; height: auto; border-radius: 0; }
+
+/* ستاره‌های امتیاز زیر عکس پروفایل */
+#screen-profile .pf-avatar-wrap { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+#screen-profile .pf-stars-box {
+  display: flex; gap: 1px; direction: ltr; padding: 3px 8px; border-radius: 999px; font-size: 12px; line-height: 1;
+  background: #163f32; border: 1px solid rgba(239,184,46,.45); box-shadow: 0 3px 8px rgba(0,0,0,.3);
+}
+#screen-profile .pf-stars-box span.on { color: #ffd65a; }
+#screen-profile .pf-stars-box span.off { color: rgba(255,255,255,.25); }
+#screen-profile .pf-avatar-wrap .pf-cam { bottom: auto; top: 50px; }
+#screen-profile .pf-stars-box { color: #ffd65a; }
+
+/* ===== صفحه ثبت آگهی (خرید/فروش) و زیرصفحه ===== */
+#screen-sell, #screen-post-sub { background: linear-gradient(180deg,#0b3326 0%,#06241b 60%,#031a13 100%) !important; }
+.post-page { padding: 18px 16px 30px; min-height: 100%; }
+.post-brand { text-align: center; padding: 10px 0 22px; }
+.post-brand img { width: 96px; height: auto; display: block; margin: 0 auto; }
+.post-brand b { display: block; font-size: 30px; color: #e8c15a; margin-top: 4px; }
+.post-brand small { display: block; font-size: 12px; color: #e8c15a; opacity: .9; margin-top: 4px; }
+.post-subhead { display: flex; align-items: center; gap: 10px; padding: 10px 0 18px; color: #f3e3a6; }
+.post-subhead b { font-size: 18px; color: #f3e3a6; }
+.post-back { width: 38px; height: 38px; border-radius: 50%; border: 1px solid #c9a24a; background: transparent; color: #e8c15a; font-size: 24px; line-height: 1; cursor: pointer; }
+.post-list { display: flex; flex-direction: column; gap: 14px; }
+.post-btn {
+  display: flex; align-items: center; gap: 12px; width: 100%; min-height: 70px; padding: 8px 10px 8px 18px;
+  border-radius: 999px; border: 1.5px solid #d4af37; cursor: pointer; font-family: inherit;
+  background: linear-gradient(180deg,#14563f,#0a3a2a); color: #fff; box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 6px 14px rgba(0,0,0,.3);
+}
+.post-btn .pb-ic {
+  order: 1; flex: 0 0 52px; width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 24px; background: radial-gradient(circle at 35% 30%,#1d6b52,#0b3c2d); border: 2px solid #d4af37; box-shadow: inset 0 0 0 3px rgba(212,175,55,.25);
+}
+.post-btn .pb-txt { order: 2; flex: 1; text-align: center; font-size: 19px; font-weight: 700; color: #fff; }
+.post-btn .pb-arr { order: 3; flex: 0 0 auto; font-size: 26px; color: #e8c15a; padding: 0 6px; }
+.post-btn.pb-sell { background: linear-gradient(180deg,#c8201c,#8e0f0c); border-color: #e0b44a; }
+.post-btn.pb-sell .pb-ic { background: radial-gradient(circle at 35% 30%,#a51a16,#6a0b09); }
+.post-btn.pb-offer { background: linear-gradient(180deg,#f2cc5a,#b8901f); color: #1b2a12; border-color: #fff0b0; }
+.post-btn.pb-offer .pb-txt, .post-btn.pb-offer .pb-arr { color: #1b2a12; }
+.post-btn.pb-offer .pb-ic { background: radial-gradient(circle at 35% 30%,#e8b93a,#9a7414); color: #fff8d8; font-weight: 800; }
+.post-btn.pb-serv { background: linear-gradient(180deg,#0f5a44,#083a2b); }
+.post-btn.pb-cat { min-height: 66px; }
