@@ -1504,3 +1504,14 @@ body, .screen { background: linear-gradient(180deg, #13402f 0%, #0b2a22 100%) !i
 #screen-home .offer-txt { font-size: 15px; font-weight: 900; color: #ffe9a0; text-shadow: 0 1px 2px rgba(0,0,0,.6); }
 #screen-home .offer-ic { width: 26px; height: 26px; display: inline-flex; flex: 0 0 26px; }
 #screen-home .offer-ic svg { width: 100%; height: 100%; filter: drop-shadow(0 1px 1px rgba(0,0,0,.4)); }
+
+/* ===== پروفایل: خوانایی متن روی تم سبز ===== */
+#screen-profile .pf-tile-lbl, #screen-profile .pf-row-t, #screen-profile .pf-rating-lbl { color: #f3f1e6 !important; }
+#screen-profile .pf-rating-val { color: #ffd65a !important; }
+#screen-profile .pf-stars { color: #ffd65a !important; }
+#screen-profile .pf-tile-ic, #screen-profile .pf-row-ic { background: rgba(255,214,90,.12) !important; color: #ffd65a !important; border: 1px solid rgba(239,184,46,.35); }
+#screen-profile .pf-name, #screen-profile .pf-status, #screen-profile .pf-role { color: #fff6d6 !important; }
+#screen-profile .pf-row { border-top-color: rgba(239,184,46,.2) !important; }
+#screen-profile .pf-list-h, #screen-profile .pf-list-h * { color: #ffd65a !important; }
+#screen-profile .pf-del-low { color: #cbd5c9 !important; }
+#screen-profile .pf-row:active, #screen-profile .pf-tile:active { background: rgba(255,214,90,.1) !important; }
