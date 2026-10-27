@@ -1208,3 +1208,5 @@ body {
 .pf-tile { border-color: #d7ebdf; }
 .pf-row-t { color: var(--forest); }
 .pf-row:active, .pf-tile:active { background: #f1f8f4; }
+.pf-list-title { flex: 1; text-align: right; }
+.pf-del-sm { border: none; border-radius: 12px; background: #fde8ea; color: #b91c28; font-size: 12px; font-weight: 800; padding: 7px 10px; cursor: pointer; margin-left: 8px; }
