@@ -92,9 +92,10 @@
       <div class="browse-search-big">
         <span class="ic">🔍</span>
         <input id="browse-search" placeholder="جستجو..." oninput="filterBrowse(this.value)">
+        <button type="button" onclick="toggleFilterPanel()" style="background:#eef8f3;color:var(--forest);border:2px solid var(--line);border-radius:14px;font-size:14px;font-weight:700;cursor:pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8v6l-4-2v-4z"/></svg>فیلتر پیشرفته</button>
         <span class="clear-x" onclick="clearBrowseSearch()" id="browse-clear" hidden>×</span>
       </div>
-      <button type="button" onclick="toggleFilterPanel()" style="width:100%;padding:12px;margin-top:10px;background:#eef8f3;color:var(--forest);border:2px solid var(--line);border-radius:14px;font-size:14px;font-weight:700;cursor:pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8v6l-4-2v-4z"/></svg>فیلتر پیشرفته</button>
+      
       <div class="chips-row" id="browse-chips"></div>
       <div class="filter-panel" id="browse-filter-panel" style="display:none">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
@@ -720,5 +721,29 @@
 </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="script.js"></script>
+<script>
+(function(){
+  function lum(c){var m=c.match(/[\d.]+/g);if(!m||m.length<3)return null;var a=m.length>3?+m[3]:1;if(a<0.5)return null;
+    var f=function(v){v/=255;return v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4)};
+    return 0.2126*f(+m[0])+0.7152*f(+m[1])+0.0722*f(+m[2]);}
+  function fix(){
+    var els=document.querySelectorAll('.screen *, body > *:not(.screen)');
+    for(var k=0;k<els.length;k++){var el=els[k];
+      if(el.closest && el.closest('.nav,.nav-center,#browse-chips .chip-wide,.modern-header,.home-banner')) continue;
+      var cs=getComputedStyle(el), L=lum(cs.backgroundColor);
+      if(L!==null && L>0.72 && el.tagName!=='IMG'){
+        el.style.setProperty('background-color','#163f32','important');
+        el.style.setProperty('border-color','rgba(224,176,74,.35)','important');
+        var c=lum(cs.color); if(c!==null && c<0.4) el.style.setProperty('color','#f3f1e6','important');
+      }
+    }
+  }
+  var pending=false;
+  function sched(){ if(pending) return; pending=true; requestAnimationFrame(function(){pending=false; fix();}); }
+  new MutationObserver(sched).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','hidden']});
+  sched();
+})();
+</script>
+
 </body>
 </html>
