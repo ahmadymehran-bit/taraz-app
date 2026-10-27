@@ -1249,3 +1249,45 @@ body {
 #screen-home #browse-chips .chip-wide .coin svg { width: 30px; height: 30px; display: block; filter: drop-shadow(0 1px 1px rgba(0,0,0,.25)); }
 #screen-home #browse-chips .chip-wide .wide-txt { text-shadow: 0 1px 0 rgba(255,255,255,.4); }
 #screen-home #browse-chips .chip-big.chip-wide.active { box-shadow: 0 0 0 3px #fff, 0 0 0 5px #9a6b00 !important; }
+
+/* ===== تم جنگلی سبز تیره با طلایی (الهام از طراحی سمت چپ) ===== */
+:root {
+  --fg-deep: #0b2a22;
+  --fg-mid: #13402f;
+  --fg-card: #163f32;
+  --fg-line: rgba(239,184,46,.22);
+  --fg-gold: #e7b93a;
+  --fg-gold-soft: #f6dc8a;
+  --fg-text: #f3f1e6;
+  --fg-muted: #a9c2b5;
+}
+body, .screen { background: linear-gradient(180deg, var(--fg-mid) 0%, var(--fg-deep) 100%) !important; color: var(--fg-text) !important; }
+.screen { background-attachment: fixed; }
+h1,h2,h3,h4,.title,.sec-title { color: var(--fg-text) !important; }
+p,span,small,label,.muted,.sub { color: var(--fg-muted); }
+.nav { background: rgba(11,42,34,.96) !important; border-top: 1px solid var(--fg-line) !important; }
+.nav .nav-item, .nav a, .nav button { color: var(--fg-muted) !important; }
+.nav .nav-center, .nav .nav-center span { color: var(--fg-gold) !important; }
+.nav-center { background: linear-gradient(135deg,#f6dc8a,#c8901a) !important; box-shadow: 0 4px 14px rgba(231,185,58,.45) !important; }
+.nav-center svg, .nav-center i { color: #2a1d00 !important; stroke: #2a1d00 !important; }
+/* کارت‌ها و کادرها */
+.card, .listing-card, .browse-card, .pf-body, .pf-tile, .tile, .box, .panel, .sell-bazaar-wrap, .bz-card, .modal, .sheet {
+  background: var(--fg-card) !important; color: var(--fg-text) !important; border: 1px solid var(--fg-line) !important;
+  box-shadow: 0 8px 22px rgba(0,0,0,.28) !important;
+}
+.pf-body { background: var(--fg-deep) !important; border: none !important; }
+.browse-card .body, .listing-card .body { color: var(--fg-text) !important; }
+.price, .browse-card .price, .lc-price { color: var(--fg-gold-soft) !important; }
+/* ورودی‌ها */
+input, select, textarea { background: rgba(255,255,255,.08) !important; color: var(--fg-text) !important; border: 1px solid var(--fg-line) !important; }
+input::placeholder, textarea::placeholder { color: var(--fg-muted) !important; }
+/* کلیدهای اصلی: طلایی */
+.btn-primary, .btn-main, button.primary, .cta, .btn-gold {
+  background: linear-gradient(135deg,#f6dc8a,#c8901a) !important; color: #2a1d00 !important; border: none !important;
+}
+/* کلیدهای دسته‌بندی بالای خانه: مربع سبز تیره با آیکون */
+#screen-home #browse-chips .chip-big:not(.chip-wide) { background: var(--fg-card) !important; border: 1px solid var(--fg-line) !important; color: var(--fg-text) !important; }
+#screen-home #browse-chips .chip-big:not(.chip-wide) .ic { background: #0f3a2c !important; border: 2px solid var(--fg-gold) !important; }
+#screen-home #browse-chips .chip-big.active:not(.chip-wide) { box-shadow: 0 0 0 2px var(--fg-gold) !important; }
+/* هدر و جستجو */
+.mk-topbar, .topbar, header { background: transparent !important; color: var(--fg-text) !important; }
