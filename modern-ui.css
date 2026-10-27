@@ -1515,3 +1515,6 @@ body, .screen { background: linear-gradient(180deg, #13402f 0%, #0b2a22 100%) !i
 #screen-profile .pf-list-h, #screen-profile .pf-list-h * { color: #ffd65a !important; }
 #screen-profile .pf-del-low { color: #cbd5c9 !important; }
 #screen-profile .pf-row:active, #screen-profile .pf-tile:active { background: rgba(255,214,90,.1) !important; }
+
+/* لوگوی اصلی اپ در صفحه ورود/ثبت‌نام */
+#screen-auth .auth-hero .auth-logo-img { display: block; width: 120px; height: 120px; object-fit: contain; margin: 0 auto 8px; filter: drop-shadow(0 4px 10px rgba(0,0,0,.35)); }
