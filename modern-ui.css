@@ -1305,3 +1305,23 @@ input::placeholder, textarea::placeholder { color: var(--fg-muted) !important; }
   color: #fff6d6 !important; height: 72px !important; text-shadow: 0 2px 6px rgba(0,0,0,.8);
 }
 #screen-home #browse-chips .chip-wide .wide-txt { color: #ffe9a0 !important; font-size: 26px !important; }
+
+/* ===== باکس بنری «خرید زیرقیمت» مطابق طرح سمت چپ ===== */
+#screen-home #browse-chips .chip-wide {
+  height: 96px !important; border-radius: 18px !important; padding: 0 !important; gap: 0 !important;
+  justify-content: flex-start !important; align-items: center !important; direction: rtl;
+  background: linear-gradient(90deg, rgba(11,42,34,.88) 0%, rgba(11,42,34,.35) 60%, rgba(11,42,34,.1) 100%), url('image/wheat-field.webp') center 55% / cover no-repeat !important;
+  border: 1px solid var(--fg-line) !important; box-shadow: 0 8px 22px rgba(0,0,0,.35) !important;
+  overflow: hidden;
+}
+#screen-home #browse-chips .chip-wide .wide-txt {
+  order: 1; margin-right: 16px; color: #fff3c4 !important; font-size: 16px !important; font-weight: 800 !important;
+  text-shadow: none !important; display: none;
+}
+#screen-home #browse-chips .chip-wide .coins { display: none !important; }
+#screen-home #browse-chips .chip-wide::before {
+  content: "خرید زیرقیمت"; order: 2; margin-right: auto; margin-left: 0; color: #2a1d00; font-weight: 900; font-size: 16px;
+  background: linear-gradient(135deg,#f6dc8a,#c8901a); border-radius: 999px; padding: 10px 22px; margin-right: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.35);
+}
+#screen-home #browse-chips .chip-wide.active { box-shadow: 0 0 0 2px var(--fg-gold) !important; }
