@@ -1394,3 +1394,17 @@ input::placeholder, textarea::placeholder { color: var(--fg-muted) !important; }
 }
 .nav button.nav-center .fab-plus { font-size: 44px !important; line-height: 1 !important; }
 .nav button.nav-center .fab-txt { font-size: 15px !important; font-weight: 800 !important; line-height: 1 !important; color: #2a1d00 !important; }
+
+/* ===== جستجو روی بنر: بنر پایین‌اش محو می‌شود و نوار جستجو روی آن می‌نشیند ===== */
+#screen-home .home-banner {
+  -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+          mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+  border: 0 !important; margin-bottom: 0 !important; position: relative; z-index: 0;
+}
+#screen-home .browse-header { position: relative; z-index: 1; }
+#screen-home .browse-header .browse-search-big {
+  margin-top: -64px !important;
+  background: rgba(11,42,34,.55) !important;
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  border-color: rgba(224,176,74,.6) !important;
+}
