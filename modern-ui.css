@@ -1196,3 +1196,15 @@ body {
 .pf-row-ic { font-size: 18px; }
 .pf-chev { color: var(--forest); font-size: 20px; font-weight: 900; }
 .pf-danger { width: 100%; min-height: 54px; border-radius: 16px; border: none; background: linear-gradient(135deg, #e63946, #b91c28); color: #fff; font-size: 15px; font-weight: 800; cursor: pointer; }
+
+/* ── آیکون‌های سبز صفحه پروفایل ── */
+.pf-tile-ic { color: var(--forest); background: linear-gradient(145deg, #e8f5ee, #d4ecdf); width: 54px; height: 54px; border-radius: 16px; }
+.pf-tile-ic svg { width: 26px; height: 26px; }
+.pf-row-ic { width: 34px; height: 34px; border-radius: 11px; background: #e8f5ee; color: var(--forest); display: flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+.pf-row-ic svg { width: 19px; height: 19px; }
+.pf-list-h span.pf-row-ic { width: 28px; height: 28px; background: transparent; }
+.pf-list-h span.pf-row-ic svg { width: 18px; height: 18px; }
+.pf-rating-val { font-size: 20px !important; }
+.pf-tile { border-color: #d7ebdf; }
+.pf-row-t { color: var(--forest); }
+.pf-row:active, .pf-tile:active { background: #f1f8f4; }
