@@ -642,13 +642,13 @@ var photoHTML='<div class="card-photo"><img src="'+esc(photo)+'">'+(l.photos&&l.
 }
 function renderBrowseChips(){
   const el=document.getElementById('browse-chips');if(!el)return;
-  const all=[{id:'livestock',short:'دامداری',icon:'🐄'},{id:'crops',short:'کشاورزی',icon:'🌾'},{id:'vet_drugs',short:'دامپزشکی',icon:'🩺'},{id:'services',short:'خدمات',icon:'🛠️'}];
-  el.innerHTML=all.map(c=>'<button type="button" class="chip-big'+(browseCategory===c.id?' active':'')+'" onclick="pickBrowseCat(\''+c.id+'\')"><span class="ic">'+c.icon+'</span>'+c.short+'</button>').join('');
+  const all=[{id:'livestock',short:'دامداری',icon:'🐄'},{id:'crops',short:'کشاورزی',icon:'🌾'},{id:'vet_drugs',short:'دامپزشکی',icon:'🩺'},{id:'services',short:'خدمات',icon:'🛠️'},{id:'bargain',short:'زیرقیمت',icon:'🏷️'}];
+  el.innerHTML=all.map(c=>'<button type="button" class="chip-big'+((c.id==='bargain'?browseBargain:browseCategory===c.id)?' active':'')+'" onclick="pickBrowseCat(\''+c.id+'\')"><span class="ic">'+c.icon+'</span>'+c.short+'</button>').join('');
 }
 var browseBargain=false;
 function toggleBargain(){browseBargain=!browseBargain;renderBrowse()}
 function isBargainListing(l){return !!((l.oldPrice&&l.price<l.oldPrice)||l.urgentReason==="expiry")}
-function pickBrowseCat(id){if(id==='services'){go('services');return}browseCategory=(browseCategory===id)?'all':id;renderBrowse()}
+function pickBrowseCat(id){if(id==='services'){go('services');return}if(id==='bargain'){toggleBargain();return}browseCategory=(browseCategory===id)?'all':id;renderBrowse()}
 function filterBrowse(v){browseSearch=v.toLowerCase();const c=document.getElementById('browse-clear');if(c)c.hidden=!v;renderBrowse()}
 var _browseFilters = { priceMin: 0, priceMax: 0, region: '' };
 function toggleFilterPanel(){
@@ -683,7 +683,6 @@ async function renderBrowse(){
   renderBrowseSkeleton(); renderBrowseChips();
 var ss=document.getElementById('browse-search'); if(ss&&ss.value!==browseSearch)ss.value=browseSearch;
 var bc=document.getElementById('browse-clear'); if(bc)bc.hidden=!browseSearch;
-var bb=document.getElementById('browse-bargain'); if(bb)bb.classList.toggle('active',browseBargain);
 var result = null; try { result = await api.getListings(); } catch(e) { console.warn(e.message); }
 var list = (result && result.listings) ? result.listings : DB.listings;
 list = list.map(function(l){ return { id: l.id, sellerPhone: l.seller_phone || l.sellerPhone, sellerName: l.seller_name || l.sellerName, categoryId: l.category_id || l.categoryId, title: l.title, qty: l.qty, qtyNum: l.qty_num || l.qtyNum, price: Number(l.price), oldPrice: l.old_price ? Number(l.old_price) : (l.oldPrice ? Number(l.oldPrice) : null), region: l.region, desc: l.description || l.desc, urgent: l.urgent, urgentReason: l.urgent_reason || l.urgentReason, productKey: l.product_key || l.productKey, photos: l.photos || [], location: (l.location_lat && l.location_lng) ? { lat: Number(l.location_lat), lng: Number(l.location_lng) } : (l.location || null), createdAt: Number(l.created_at || l.createdAt) }; });
