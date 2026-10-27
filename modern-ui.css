@@ -1131,3 +1131,23 @@ body {
 }
 #screen-home .browse-card .bc-price { font-size:22px !important; }
 #screen-home .browse-card .bc-price .unit { font-size:13px !important; }
+
+/* ===== HOME HEADER: مثل هدر بازار (آواتار گرد | لوگو وسط | زنگوله گرد) ===== */
+#screen-home .modern-header {
+  display:flex !important; justify-content:space-between !important; align-items:center !important;
+  background:transparent !important; box-shadow:none !important; padding:6px 0 12px !important; gap:8px;
+}
+#screen-home .modern-header .mh-profile {
+  background:#fff !important; border:1px solid var(--line,#e3ebe6) !important; box-shadow:none !important;
+  width:40px !important; height:40px !important; padding:0 !important; border-radius:50% !important;
+  justify-content:center !important; flex:0 0 40px !important;
+}
+#screen-home .modern-header .mh-info { display:none !important; }
+#screen-home .modern-header .mh-avatar { width:38px !important; height:38px !important; }
+#screen-home .modern-header .mh-brand { flex:1 !important; justify-content:center !important; }
+#screen-home .modern-header .mh-title { font-size:22px !important; color:var(--forest,#1e6b4a) !important; font-weight:800 !important; }
+#screen-home .modern-header .mh-bell {
+  width:40px !important; height:40px !important; border-radius:50% !important;
+  background:#fff !important; border:1px solid var(--line,#e3ebe6) !important; box-shadow:none !important;
+  display:flex !important; align-items:center !important; justify-content:center !important; flex:0 0 40px !important; font-size:18px;
+}
