@@ -1151,3 +1151,11 @@ body {
   background:#fff !important; border:1px solid var(--line,#e3ebe6) !important; box-shadow:none !important;
   display:flex !important; align-items:center !important; justify-content:center !important; flex:0 0 40px !important; font-size:18px;
 }
+
+/* ── هدر پروفایل بر اساس نقش ── */
+.pr-hero { background-size: cover !important; background-position: center 30% !important; min-height: 230px; overflow: hidden; }
+.pr-hero--photo { padding-top: 70px !important; }
+.pr-badge { position: absolute; top: 58px; right: 16px; display: none; flex-direction: column; align-items: flex-end; gap: 2px; padding: 8px 14px; border-radius: 16px; background: rgba(20,70,35,0.82); backdrop-filter: blur(4px); color: #fff; max-width: 60%; }
+.pr-hero--photo .pr-badge { display: flex; }
+.pr-badge b { font-size: 17px; font-weight: 900; }
+.pr-badge span { font-size: 11px; opacity: 0.9; }
