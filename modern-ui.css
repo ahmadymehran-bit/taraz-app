@@ -1081,3 +1081,14 @@ body {
 .bz-bh img{width:52px;height:52px;border-radius:14px;object-fit:cover;border:1px solid var(--line)}
 /* تصویر ثبت آگهی (عمودی): کامل نشان داده شود */
 .sell-bazaar-wrap .browse-ad-img img.sell-ad-img { object-fit: contain; max-height: 340px; background: #fff; }
+
+/* ===== HOME: آگهی‌ها زیر هم (یک ستونه) ===== */
+#screen-home .browse-grid {
+  display: flex !important;
+  flex-direction: column !important;
+  grid-template-columns: 1fr !important;
+  gap: 14px !important;
+}
+#screen-home .browse-grid > .browse-card {
+  width: 100% !important;
+}
