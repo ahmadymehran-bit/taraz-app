@@ -1333,3 +1333,26 @@ input::placeholder, textarea::placeholder { color: var(--fg-muted) !important; }
 #screen-home .home-ad { position: relative; margin-top: 14px; border-radius: 18px; overflow: hidden; border: 1px solid var(--fg-line, rgba(255,255,255,.15)); background: #0b2a22; }
 #screen-home .home-ad img { display: block; width: 100%; height: 160px; object-fit: cover; }
 #screen-home .home-ad .ad-label { position: absolute; top: 8px; left: 8px; z-index: 1; background: rgba(0,0,0,.55); color: #ffe9a0; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px; }
+
+/* ===== جستجو/فیلتر همرنگ صفحه، فیلتر کوچک ===== */
+#screen-home .browse-header .browse-search-big,
+#screen-home .browse-header .browse-search-big input { background: #0b2a22 !important; }
+#screen-home .browse-header .browse-search-big { border: 1.5px solid rgba(224,176,74,.45) !important; }
+#screen-home .browse-header .browse-search-big input { color: #fff6d6 !important; background: transparent !important; }
+#screen-home .browse-header .browse-search-big input::placeholder { color: rgba(255,246,214,.55) !important; }
+#screen-home .browse-header .browse-search-big .ic { color: #e0b04a !important; }
+#screen-home .browse-header button[onclick="toggleFilterPanel()"] {
+  background: #0b2a22 !important; color: #e0b04a !important; border: 1px solid rgba(224,176,74,.45) !important;
+  width: auto !important; min-height: 0 !important; height: 32px !important; padding: 0 12px !important;
+  font-size: 12px !important; border-radius: 999px !important; margin-top: 8px;
+}
+
+/* ===== دکمه ثبت آگهی: دایره طلایی با + ===== */
+.nav button.nav-center {
+  background: linear-gradient(135deg,#f6dc8a,#c8901a) !important;
+  border: 3px solid #0b2a22 !important;
+  box-shadow: 0 4px 14px rgba(231,185,58,.45) !important;
+  transform: translateY(-15px) !important;
+  display: flex !important; align-items: center !important; justify-content: center !important;
+}
+.nav button.nav-center .fab-plus { font-size: 40px !important; line-height: 1 !important; font-weight: 300 !important; color: #2a1d00 !important; margin: 0 !important; }
