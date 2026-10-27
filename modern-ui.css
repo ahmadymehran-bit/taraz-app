@@ -1223,7 +1223,7 @@ body {
 .pf-del-low { border: none; background: none; color: #9ca3af; font-size: 11px; cursor: pointer; text-decoration: underline; opacity: .8; }
 
 /* ۵ کلید یکسان با تصویر دایره‌ای */
-#screen-home #browse-chips.chips-row { grid-template-columns: repeat(5, 1fr) !important; gap: 4px !important; }
+#screen-home #browse-chips.chips-row { grid-template-columns: repeat(4, 1fr) !important; gap: 4px !important; }
 #screen-home #browse-chips .chip-big { font-size: 11px !important; color: #0f4d3a !important; }
 #screen-home #browse-chips .chip-big .ic {
   width: 58px !important; height: 58px !important; padding: 0 !important; font-size: 0 !important;
@@ -1234,3 +1234,13 @@ body {
 #screen-home #browse-chips .chip-big .ic img { width: 100% !important; height: 100% !important; object-fit: cover !important; display: block; }
 #screen-home #browse-chips .chip-big.active .ic { box-shadow: 0 0 0 3px #fff, 0 0 0 5px #0f4d3a !important; }
 #screen-home #browse-chips .chip-big.active { color: #0f4d3a !important; }
+
+/* زیرقیمت: مستطیل طلایی زیر چهار کلید */
+#screen-home #browse-chips .chip-big.chip-wide {
+  grid-column: 1 / -1 !important; flex-direction: row !important; justify-content: center !important;
+  gap: 10px !important; height: 46px !important; margin-top: 6px !important; border-radius: 12px !important;
+  background: linear-gradient(135deg, #f5d565, #d4a017) !important; color: #3b2a00 !important;
+  font-size: 15px !important; font-weight: 900 !important; box-shadow: 0 3px 10px rgba(212,160,23,.35) !important;
+}
+#screen-home #browse-chips .chip-big.chip-wide .ic { width: 32px !important; height: 32px !important; border: 2px solid #3b2a00 !important; background: #3b2a00 !important; }
+#screen-home #browse-chips .chip-big.chip-wide.active { box-shadow: 0 0 0 3px #fff, 0 0 0 5px #d4a017 !important; color: #3b2a00 !important; }
