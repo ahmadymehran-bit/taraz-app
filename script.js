@@ -2083,7 +2083,7 @@ function bzOrder(){bzClose();toast('نمایشی: ثبت سفارش هنوز ب�
 var PROFILE_ROLE_THEMES = {
   'دامدار':   { img: 'image/profile-dam-fixed2.webp',  label: 'توسعه دامداری' },
   'کشاورز':   { img: 'image/profile-kesh.jpg', label: 'زمین سبز، زندگی بهتر' },
-  'دامپزشک':  { img: 'image/profile-vet.jpg',  label: 'سلامت دام، سلامت جامعه' },
+  'دامپزشک':  { img: 'image/profile-vet-fixed.webp',  label: 'سلامت دام، سلامت جامعه' },
   'کارگر خدماتی': { img: 'image/profile-kar.jpg', label: 'با هم برای کشاورزی بهتر' },
   'کارگر کشاورزی': { img: 'image/profile-kar.jpg', label: 'با هم برای کشاورزی بهتر' }
 };
