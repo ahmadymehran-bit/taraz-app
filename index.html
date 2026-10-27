@@ -378,12 +378,12 @@
 
     <!-- میانبرها -->
     <div class="pf-grid">
-      <div class="pf-tile" onclick="openProfileSection('favorites')"><div class="pf-tile-ic">❤️</div><div class="pf-tile-lbl">علاقه‌مندی‌ها</div></div>
-      <div class="pf-tile" onclick="openProfileSection('bookings')"><div class="pf-tile-ic">📅</div><div class="pf-tile-lbl">رزروهای من</div></div>
-      <div class="pf-tile" onclick="openProfileSection('listings')"><div class="pf-tile-ic">📢</div><div class="pf-tile-lbl">آگهی‌های من</div></div>
-      <div class="pf-tile" onclick="go('missions-list')"><div class="pf-tile-ic">🎯</div><div class="pf-tile-lbl">مأموریت‌ها</div></div>
-      <div class="pf-tile" onclick="openProfileSection('reviews')"><div class="pf-tile-ic">⭐</div><div class="pf-tile-lbl">امتیازهای من</div></div>
-      <div class="pf-tile" onclick="go('ready')"><div class="pf-tile-ic">🟢</div><div class="pf-tile-lbl">اعلام آمادگی</div></div>
+      <div class="pf-tile" onclick="openProfileSection('favorites')"><div class="pf-tile-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-7.5-10.1A4.2 4.2 0 0 1 12 7.6a4.2 4.2 0 0 1 7.5 2.8c0 5.5-7.5 10.1-7.5 10.1z"/></svg></div><div class="pf-tile-lbl">علاقه‌مندی‌ها</div></div>
+      <div class="pf-tile" onclick="openProfileSection('bookings')"><div class="pf-tile-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="16" rx="2.5"/><path d="M3.5 9.5h17M8 2.8v3.4M16 2.8v3.4"/></svg></div><div class="pf-tile-lbl">رزروهای من</div></div>
+      <div class="pf-tile" onclick="openProfileSection('listings')"><div class="pf-tile-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 7.5 12 3.5l8.5 4v9L12 20.5l-8.5-4z"/><path d="M3.5 7.5 12 11.5l8.5-4M12 11.5v9"/></svg></div><div class="pf-tile-lbl">آگهی‌های من</div></div>
+      <div class="pf-tile" onclick="go('missions-list')"><div class="pf-tile-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg></div><div class="pf-tile-lbl">مأموریت‌ها</div></div>
+      <div class="pf-tile" onclick="openProfileSection('reviews')"><div class="pf-tile-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.8L12 16.8 6.7 19.6l1.1-5.8-4.3-4.1 5.9-.8z"/></svg></div><div class="pf-tile-lbl">امتیازهای من</div></div>
+      <div class="pf-tile" onclick="go('ready')"><div class="pf-tile-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M8.3 12.2l2.6 2.6 4.9-5.4"/></svg></div><div class="pf-tile-lbl">اعلام آمادگی</div></div>
     </div>
 
     <!-- شمارنده‌ها (برای نمایش داده) -->
@@ -394,11 +394,11 @@
 
     <!-- تنظیمات حساب -->
     <div class="pf-card pf-list">
-      <div class="pf-list-h">تنظیمات حساب <span>⚙️</span></div>
-      <div class="pf-row" onclick="enablePushNotifications()"><span class="pf-chev">‹</span><span class="pf-row-t">اعلان‌ها و پیام‌های جدید</span><span class="pf-row-ic">🔔</span></div>
-      <div class="pf-row" onclick="go('missions-list')"><span class="pf-chev">‹</span><span class="pf-row-t">مدیریت مأموریت‌ها</span><span class="pf-row-ic">🎯</span></div>
-      <div class="pf-row" onclick="openProfileSection('listings')"><span class="pf-chev">‹</span><span class="pf-row-t">ویرایش آگهی‌های من</span><span class="pf-row-ic">📝</span></div>
-      <div class="pf-row" onclick="logout()"><span class="pf-chev">‹</span><span class="pf-row-t">خروج از حساب</span><span class="pf-row-ic">🚪</span></div>
+      <div class="pf-list-h">تنظیمات حساب <span class="pf-row-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M4.9 4.9l1.7 1.7M17.4 17.4l1.7 1.7M2.8 12h2.4M18.8 12h2.4M4.9 19.1l1.7-1.7M17.4 6.6l1.7-1.7"/></svg></span></div>
+      <div class="pf-row" onclick="enablePushNotifications()"><span class="pf-chev">‹</span><span class="pf-row-t">اعلان‌ها و پیام‌های جدید</span><span class="pf-row-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg></span></div>
+      <div class="pf-row" onclick="go('missions-list')"><span class="pf-chev">‹</span><span class="pf-row-t">مدیریت مأموریت‌ها</span><span class="pf-row-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg></span></div>
+      <div class="pf-row" onclick="openProfileSection('listings')"><span class="pf-chev">‹</span><span class="pf-row-t">ویرایش آگهی‌های من</span><span class="pf-row-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4.5L19 9.5a2.1 2.1 0 0 0-3-3L5.5 17 4 20z"/><path d="M14 7l3 3"/></svg></span></div>
+      <div class="pf-row" onclick="logout()"><span class="pf-chev">‹</span><span class="pf-row-t">خروج از حساب</span><span class="pf-row-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5.5A1.5 1.5 0 0 1 4 19.5v-15A1.5 1.5 0 0 1 5.5 3H9"/><path d="M16 17l5-5-5-5M21 12H9"/></svg></span></div>
     </div>
 
     <button type="button" class="pf-danger" onclick="confirmDeleteAccount()">🗑️ حذف حساب کاربری</button>
