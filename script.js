@@ -2081,9 +2081,9 @@ function bzOrder(){bzClose();toast('نمایشی: ثبت سفارش هنوز ب�
 
 // ── تم پروفایل بر اساس نقش کاربر (تصویر و رنگ هدر) ──
 var PROFILE_ROLE_THEMES = {
-  'دامدار':   { img: 'image/profile-dam-fixed2.webp',  label: 'توسعه دامداری' },
-  'کشاورز':   { img: 'image/profile-kesh-fixed.webp', label: 'زمین سبز، زندگی بهتر' },
-  'دامپزشک':  { img: 'image/profile-vet-fixed.webp',  label: 'سلامت دام، سلامت جامعه' },
+  'دامدار':   { img: 'image/profile-dam-fixed2.webp', pos: 'center 72%', label: 'توسعه دامداری' },
+  'کشاورز':   { img: 'image/profile-kesh-fixed.webp', pos: 'center 45%', label: 'زمین سبز، زندگی بهتر' },
+  'دامپزشک':  { img: 'image/profile-vet-fixed.webp', pos: 'center 50%', label: 'سلامت دام، سلامت جامعه' },
   'کارگر خدماتی': { img: 'image/profile-kar.jpg', label: 'با هم برای کشاورزی بهتر' },
   'کارگر کشاورزی': { img: 'image/profile-kar.jpg', label: 'با هم برای کشاورزی بهتر' }
 };
@@ -2092,6 +2092,7 @@ function applyProfileRole(role){
   var t = PROFILE_ROLE_THEMES[role];
   if(!t){ t = PROFILE_ROLE_THEMES['دامدار']; }
   hero.style.backgroundImage = 'linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.55) 100%), url("' + t.img + '")';
+  hero.style.setProperty('background-position', t.pos || 'center 50%', 'important');
   hero.classList.add('pr-hero--photo');
   var badge = document.getElementById('profile-role-badge');
   if(badge){ badge.innerHTML = '<b>' + esc(role) + '</b><span>' + esc(t.label) + '</span>'; }
