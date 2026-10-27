@@ -642,8 +642,8 @@ var photoHTML='<div class="card-photo"><img src="'+esc(photo)+'">'+(l.photos&&l.
 }
 function renderBrowseChips(){
   const el=document.getElementById('browse-chips');if(!el)return;
-  const all=[{id:'livestock',short:'دامداری',icon:'🐄'},{id:'crops',short:'کشاورزی',icon:'🌾'},{id:'vet_drugs',short:'دامپزشکی',icon:'🩺'},{id:'services',short:'خدمات',icon:'🛠️'},{id:'bargain',short:'زیرقیمت',icon:'🏷️'}];
-  el.innerHTML=all.map(c=>'<button type="button" class="chip-big'+((c.id==='bargain'?browseBargain:browseCategory===c.id)?' active':'')+'" onclick="pickBrowseCat(\''+c.id+'\')"><span class="ic">'+c.icon+'</span>'+c.short+'</button>').join('');
+  const all=[{id:'livestock',short:'دامداری',img:'image/chip-livestock.webp'},{id:'crops',short:'کشاورزی',img:'image/chip-agri.webp'},{id:'vet_drugs',short:'دامپزشکی',img:'image/chip-vet.webp'},{id:'services',short:'خدمات',img:'image/chip-services.webp'},{id:'bargain',short:'زیرقیمت',img:'image/chip-bargain.webp'}];
+  el.innerHTML=all.map(c=>'<button type="button" class="chip-big'+((c.id==='bargain'?browseBargain:browseCategory===c.id)?' active':'')+'" onclick="pickBrowseCat(\''+c.id+'\')"><span class="ic"><img src="'+c.img+'" alt="" loading="lazy"></span>'+c.short+'</button>').join('');
 }
 var browseBargain=false;
 function toggleBargain(){browseBargain=!browseBargain;renderBrowse()}
