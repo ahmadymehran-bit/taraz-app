@@ -1389,8 +1389,8 @@ input::placeholder, textarea::placeholder { color: var(--fg-muted) !important; }
 #screen-home .modern-header .mh-bell { border: 1.5px solid rgba(224,176,74,.45) !important; background: transparent !important; }
 /* دکمه ثبت آگهی: دایره طلایی + متن زیر + */
 .nav button.nav-center {
-  width: 66px !important; height: 66px !important; border-radius: 50% !important; padding: 0 !important;
+  width: 80px !important; height: 80px !important; border-radius: 50% !important; padding: 0 !important;
   flex-direction: column !important; gap: 0 !important;
 }
-.nav button.nav-center .fab-plus { font-size: 34px !important; line-height: 1 !important; }
-.nav button.nav-center .fab-txt { font-size: 10px !important; font-weight: 800 !important; line-height: 1 !important; color: #2a1d00 !important; }
+.nav button.nav-center .fab-plus { font-size: 44px !important; line-height: 1 !important; }
+.nav button.nav-center .fab-txt { font-size: 15px !important; font-weight: 800 !important; line-height: 1 !important; color: #2a1d00 !important; }
