@@ -1446,3 +1446,40 @@ body, .screen { background: linear-gradient(180deg, #13402f 0%, #0b2a22 100%) !i
 }
 #screen-home #browse-chips .chip-wide::before { order: 1 !important; }
 #screen-home #browse-chips .chip-wide::after { order: 3 !important; }
+
+/* ===== Offer banner chip (image) + green gold theme for category chips ===== */
+#screen-home #browse-chips .chip-big.chip-wide {
+  grid-column: 1 / -1 !important;
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 895 / 291 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: url("image/chip-offer.webp") center / 100% 100% no-repeat !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  filter: drop-shadow(0 6px 10px rgba(0,0,0,.35));
+  overflow: visible !important;
+}
+#screen-home #browse-chips .chip-wide > * { display: none !important; }
+#screen-home #browse-chips .chip-wide::before,
+#screen-home #browse-chips .chip-wide::after { content: none !important; display: none !important; }
+#screen-home #browse-chips .chip-wide.active { box-shadow: none !important; filter: drop-shadow(0 0 10px rgba(224,176,74,.9)) !important; }
+
+#screen-home #browse-chips .chip-big:not(.chip-wide) {
+  background: linear-gradient(180deg, #1f8f4f 0%, #0f5a30 55%, #0a3f22 100%) !important;
+  border: 2px solid #e0b04a !important;
+  border-radius: 16px !important;
+  color: #ffe9a0 !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,.5);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 3px 6px rgba(0,0,0,.35) !important;
+}
+#screen-home #browse-chips .chip-big:not(.chip-wide) .ic {
+  background: radial-gradient(circle at 35% 30%, #1d6b40, #0a3420) !important;
+  border: 2px solid #e0b04a !important;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.3) !important;
+}
+#screen-home #browse-chips .chip-big.active:not(.chip-wide) {
+  box-shadow: 0 0 0 2px #fff3c4, 0 0 12px rgba(224,176,74,.8) !important;
+}
