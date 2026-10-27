@@ -1320,7 +1320,7 @@ input::placeholder, textarea::placeholder { color: var(--fg-muted) !important; }
 }
 #screen-home #browse-chips .chip-wide .coins { display: none !important; }
 #screen-home #browse-chips .chip-wide::before {
-  content: "خرید زیرقیمت"; order: 2; margin-right: auto; margin-left: 0; color: #2a1d00; font-weight: 900; font-size: 16px;
+  content: none; order: 2; margin-right: auto; margin-left: 0; color: #2a1d00; font-weight: 900; font-size: 16px;
   background: linear-gradient(135deg,#f6dc8a,#c8901a); border-radius: 999px; padding: 10px 22px; margin-right: 14px;
   box-shadow: 0 4px 12px rgba(0,0,0,.35);
 }
@@ -1450,7 +1450,9 @@ body, .screen { background: linear-gradient(180deg, #13402f 0%, #0b2a22 100%) !i
 /* ===== Offer banner chip (image) + green gold theme for category chips ===== */
 #screen-home #browse-chips .chip-big.chip-wide {
   grid-column: 1 / -1 !important;
-  width: 100% !important;
+  width: 74% !important;
+  justify-self: center !important;
+  margin: 2px auto !important;
   height: auto !important;
   aspect-ratio: 895 / 291 !important;
   padding: 0 !important;
@@ -1483,3 +1485,7 @@ body, .screen { background: linear-gradient(180deg, #13402f 0%, #0b2a22 100%) !i
 #screen-home #browse-chips .chip-big.active:not(.chip-wide) {
   box-shadow: 0 0 0 2px #fff3c4, 0 0 12px rgba(224,176,74,.8) !important;
 }
+
+/* hard-hide any leftover label text of the offer chip */
+#screen-home #browse-chips .chip-wide { font-size: 0 !important; color: transparent !important; }
+#screen-home #browse-chips .chip-wide * , #screen-home #browse-chips .chip-wide::before, #screen-home #browse-chips .chip-wide::after { display: none !important; content: none !important; }
