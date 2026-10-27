@@ -2082,7 +2082,7 @@ function bzOrder(){bzClose();toast('نمایشی: ثبت سفارش هنوز ب�
 // ── تم پروفایل بر اساس نقش کاربر (تصویر و رنگ هدر) ──
 var PROFILE_ROLE_THEMES = {
   'دامدار':   { img: 'image/profile-dam-fixed2.webp',  label: 'توسعه دامداری' },
-  'کشاورز':   { img: 'image/profile-kesh.jpg', label: 'زمین سبز، زندگی بهتر' },
+  'کشاورز':   { img: 'image/profile-kesh-fixed.webp', label: 'زمین سبز، زندگی بهتر' },
   'دامپزشک':  { img: 'image/profile-vet-fixed.webp',  label: 'سلامت دام، سلامت جامعه' },
   'کارگر خدماتی': { img: 'image/profile-kar.jpg', label: 'با هم برای کشاورزی بهتر' },
   'کارگر کشاورزی': { img: 'image/profile-kar.jpg', label: 'با هم برای کشاورزی بهتر' }
