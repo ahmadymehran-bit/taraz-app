@@ -344,95 +344,64 @@
 
  <!-- ============ PROFILE (Modern) ============ -->
 <section class="screen" id="screen-profile" style="padding-bottom: 110px;">
-  
-  <header class="modern-header" style="background: transparent; border: none; position: absolute; top: 0; left: 0; right: 0; z-index: 10;">
-    <div class="mh-brand" onclick="go('home')">
-      <span class="mh-title" style="font-size: 24px; color: #fff;">←</span>
-    </div>
-    <div style="flex:1"></div>
-    <button type="button" onclick="go('settings')" style="background:rgba(255,255,255,0.2); border:none; border-radius:50%; width:40px; height:40px; font-size:18px; color:#fff; backdrop-filter: blur(4px);">⚙️</button>
-  </header>
 
   <!-- هدر پروفایل -->
-  <div id="profile-hero" class="pr-hero" style="background: linear-gradient(180deg, var(--forest) 0%, var(--accent) 100%); padding: 60px 20px 30px; border-radius: 0 0 30px 30px; color: #fff; text-align: center; position: relative;">
-    <div id="profile-role-badge" class="pr-badge"></div>
-    
-    <div style="position: relative; display: inline-block; margin-bottom: 12px;">
-      <div class="profile-avatar" id="profile-avatar" style="width: 90px; height: 90px; border: 4px solid #fff; box-shadow: 0 8px 20px rgba(0,0,0,0.2); font-size: 32px; background: var(--pale); color: var(--forest);"></div>
-      <div onclick="pickAvatar()" style="position: absolute; bottom: 0; right: 0; background: #fff; color: var(--forest); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">✎</div>
+  <div id="profile-hero" class="pr-hero pf-hero">
+    <div class="pf-top">
+      <button type="button" class="pf-ic" onclick="go('settings')" aria-label="تنظیمات">⚙️</button>
+      <button type="button" class="pf-ic" onclick="go('notifs')" aria-label="اعلان‌ها">🔔</button>
     </div>
-    
-    <div id="profile-name" style="font-size: 22px; font-weight: 900; margin-bottom: 4px;">—</div>
-    <div id="profile-phone" style="font-size: 14px; opacity: 0.8; direction: ltr; margin-bottom: 8px;">—</div>
-    
-    <div id="profile-rating-line" style="display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 100px; font-size: 13px; font-weight: 800; backdrop-filter: blur(4px);">—</div>
+    <div class="pf-id">
+      <div class="pf-avatar-wrap">
+        <div class="profile-avatar" id="profile-avatar"></div>
+        <div class="pf-cam" onclick="pickAvatar()" aria-label="تغییر عکس">📷</div>
+      </div>
+      <div class="pf-name-wrap">
+        <div id="profile-name" class="pf-name">—</div>
+        <div id="profile-role-badge" class="pf-role"></div>
+      </div>
+    </div>
+    <div id="profile-phone" class="pf-status">—</div>
   </div>
 
-  <div style="padding: 20px 16px 40px;">
-    
-    <!-- آمار شما (شبیه به طرح دیجی‌کالا) -->
-    <div class="stats-box" id="profile-stats" style="margin: 0 0 24px 0; padding: 16px; background: #fff; border-radius: 20px; box-shadow: var(--shadow); border: 1px solid var(--line);">
-      <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr); gap: 12px;">
-        <div class="stat-item" style="border: none; padding: 0;">
-          <div class="stat-val" id="stat-listings" style="color: var(--forest); font-size: 20px;">۰</div>
-          <div class="stat-lbl" style="font-size: 11px;">📦 آگهی</div>
-        </div>
-        <div class="stat-item" style="border: none; padding: 0; border-right: 1px solid var(--line); border-left: 1px solid var(--line);">
-          <div class="stat-val" id="stat-favorites" style="color: var(--forest); font-size: 20px;">۰</div>
-          <div class="stat-lbl" style="font-size: 11px;">❤️ علاقه‌مندی</div>
-        </div>
-        <div class="stat-item" style="border: none; padding: 0;">
-          <div class="stat-val" id="stat-rating" style="color: var(--gold); font-size: 20px;">۰</div>
-          <div class="stat-lbl" style="font-size: 11px;">⭐ امتیاز</div>
-        </div>
+  <div class="pf-body">
+
+    <!-- امتیاز -->
+    <div class="pf-card pf-rating">
+      <img class="pf-logo" src="image/farm-logo-cow-chicken.webp" alt="تاراز">
+      <div class="pf-rating-txt">
+        <div class="pf-rating-lbl">امتیاز و نظرات</div>
+        <div id="profile-rating-line" class="pf-rating-val">—</div>
+        <div class="pf-stars">★★★★★</div>
       </div>
     </div>
 
-    <!-- منوی پروفایل -->
-    <div style="background: #fff; border-radius: 20px; border: 1px solid var(--line); overflow: hidden; box-shadow: var(--shadow); margin-bottom: 20px;">
-      
-      <div class="profile-menu-item" onclick="openProfileSection('listings')" style="margin: 0; border-radius: 0; border: none; border-bottom: 1px solid var(--line); box-shadow: none;">
-        <div class="ic" style="background: #eef8f3; color: var(--forest);">📦</div>
-        <div class="body"><b>آگهی‌های من</b><small id="cnt-listings">—</small></div><div class="arrow">‹</div>
-      </div>
-      
-      <div class="profile-menu-item" onclick="go('missions-list')" style="margin: 0; border-radius: 0; border: none; border-bottom: 1px solid var(--line); box-shadow: none;">
-        <div class="ic" style="background: #eef8f3; color: var(--forest);">🎯</div>
-        <div class="body"><b>مأموریت‌های من</b><small>مدیریت زنجیره‌ها</small></div><div class="arrow">‹</div>
-      </div>
-
-      <div class="profile-menu-item" onclick="openProfileSection('favorites')" style="margin: 0; border-radius: 0; border: none; border-bottom: 1px solid var(--line); box-shadow: none;">
-        <div class="ic" style="background: #eef8f3; color: var(--forest);">❤️</div>
-        <div class="body"><b>علاقه‌مندی‌ها</b><small id="cnt-favorites">—</small></div><div class="arrow">‹</div>
-      </div>
-
-      <div class="profile-menu-item" onclick="openProfileSection('bookings')" style="margin: 0; border-radius: 0; border: none; border-bottom: 1px solid var(--line); box-shadow: none;">
-        <div class="ic" style="background: #eef8f3; color: var(--forest);">📅</div>
-        <div class="body"><b>رزروهای من</b><small id="cnt-bookings">—</small></div><div class="arrow">‹</div>
-      </div>
-
-      <div class="profile-menu-item" onclick="openProfileSection('reviews')" style="margin: 0; border-radius: 0; border: none; box-shadow: none;">
-        <div class="ic" style="background: #eef8f3; color: var(--forest);">⭐</div>
-        <div class="body"><b>امتیازهای من</b><small id="cnt-reviews">—</small></div><div class="arrow">‹</div>
-      </div>
+    <!-- میانبرها -->
+    <div class="pf-grid">
+      <div class="pf-tile" onclick="openProfileSection('favorites')"><div class="pf-tile-ic">❤️</div><div class="pf-tile-lbl">علاقه‌مندی‌ها</div></div>
+      <div class="pf-tile" onclick="openProfileSection('bookings')"><div class="pf-tile-ic">📅</div><div class="pf-tile-lbl">رزروهای من</div></div>
+      <div class="pf-tile" onclick="openProfileSection('listings')"><div class="pf-tile-ic">📢</div><div class="pf-tile-lbl">آگهی‌های من</div></div>
+      <div class="pf-tile" onclick="go('missions-list')"><div class="pf-tile-ic">🎯</div><div class="pf-tile-lbl">مأموریت‌ها</div></div>
+      <div class="pf-tile" onclick="openProfileSection('reviews')"><div class="pf-tile-ic">⭐</div><div class="pf-tile-lbl">امتیازهای من</div></div>
+      <div class="pf-tile" onclick="go('ready')"><div class="pf-tile-ic">🟢</div><div class="pf-tile-lbl">اعلام آمادگی</div></div>
     </div>
 
-    <!-- دکمه‌های اقدام -->
-    <div style="background: #fff; border-radius: 20px; border: 1px solid var(--line); overflow: hidden; box-shadow: var(--shadow); margin-bottom: 20px;">
-      <div class="profile-menu-item" onclick="go('ready')" style="margin: 0; border-radius: 0; border: none; border-bottom: 1px solid var(--line); box-shadow: none; background: linear-gradient(90deg, #eef8f3, #fff);">
-        <div class="ic" style="background: var(--accent); color: #fff;">🟢</div>
-        <div class="body"><b style="color: var(--forest);">اعلام آمادگی</b><small style="color: var(--accent);">من آماده پذیرش مأموریت هستم</small></div><div class="arrow" style="color: var(--accent);">‹</div>
-      </div>
-      
-      <div class="profile-menu-item" onclick="enablePushNotifications()" style="margin: 0; border-radius: 0; border: none; box-shadow: none;">
-        <div class="ic" style="background: #eef8f3; color: var(--forest);">🔔</div>
-        <div class="body"><b>فعال‌سازی اعلان‌ها</b><small>دریافت پیام‌های جدید</small></div><div class="arrow">‹</div>
-      </div>
+    <!-- شمارنده‌ها (برای نمایش داده) -->
+    <div hidden>
+      <span id="stat-listings"></span><span id="stat-favorites"></span><span id="stat-rating"></span>
+      <span id="cnt-listings"></span><span id="cnt-favorites"></span><span id="cnt-bookings"></span><span id="cnt-reviews"></span>
     </div>
 
-    <button type="button" class="btn-outline" onclick="logout()" style="margin-top: 10px; min-height: 56px; font-size: 16px; border-radius: 16px;">🚪 خروج از حساب</button>
-    <button type="button" class="btn-red" onclick="confirmDeleteAccount()" style="margin-top: 10px; min-height: 56px; font-size: 16px; border-radius: 16px; background: linear-gradient(135deg, #e63946, #b91c28); color: #fff; border: none;">🗑️ حذف حساب کاربری</button>
+    <!-- تنظیمات حساب -->
+    <div class="pf-card pf-list">
+      <div class="pf-list-h">تنظیمات حساب <span>⚙️</span></div>
+      <div class="pf-row" onclick="enablePushNotifications()"><span class="pf-chev">‹</span><span class="pf-row-t">اعلان‌ها و پیام‌های جدید</span><span class="pf-row-ic">🔔</span></div>
+      <div class="pf-row" onclick="go('missions-list')"><span class="pf-chev">‹</span><span class="pf-row-t">مدیریت مأموریت‌ها</span><span class="pf-row-ic">🎯</span></div>
+      <div class="pf-row" onclick="openProfileSection('listings')"><span class="pf-chev">‹</span><span class="pf-row-t">ویرایش آگهی‌های من</span><span class="pf-row-ic">📝</span></div>
+      <div class="pf-row" onclick="logout()"><span class="pf-chev">‹</span><span class="pf-row-t">خروج از حساب</span><span class="pf-row-ic">🚪</span></div>
+    </div>
 
+    <button type="button" class="pf-danger" onclick="confirmDeleteAccount()">🗑️ حذف حساب کاربری</button>
   </div>
 </section>
 
