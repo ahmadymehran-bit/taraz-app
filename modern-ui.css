@@ -1291,3 +1291,17 @@ input::placeholder, textarea::placeholder { color: var(--fg-muted) !important; }
 #screen-home #browse-chips .chip-big.active:not(.chip-wide) { box-shadow: 0 0 0 2px var(--fg-gold) !important; }
 /* هدر و جستجو */
 .mk-topbar, .topbar, header { background: transparent !important; color: var(--fg-text) !important; }
+
+/* ===== عکس باکس بالا (جستجو/فیلتر/دسته‌ها) و باکس زیرقیمت ===== */
+#screen-home .browse-header {
+  background: linear-gradient(180deg, rgba(11,42,34,.35), rgba(11,42,34,.85)), url('image/home-top.webp') center 40% / cover no-repeat !important;
+  border-radius: 22px; padding: 14px 12px 16px; border: 1px solid var(--fg-line) !important;
+}
+#screen-home .browse-header .browse-search-big,
+#screen-home .browse-header button[onclick="toggleFilterPanel()"] { background: rgba(243,241,230,.94) !important; }
+#screen-home #browse-chips .chip-big:not(.chip-wide) { background: rgba(11,42,34,.82) !important; }
+#screen-home #browse-chips .chip-wide {
+  background: linear-gradient(90deg, rgba(11,42,34,.25), rgba(11,42,34,.25)), url('image/bargain-bg.webp') center 60% / cover no-repeat !important;
+  color: #fff6d6 !important; height: 72px !important; text-shadow: 0 2px 6px rgba(0,0,0,.8);
+}
+#screen-home #browse-chips .chip-wide .wide-txt { color: #ffe9a0 !important; font-size: 26px !important; }
