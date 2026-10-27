@@ -1210,4 +1210,5 @@ body {
 .pf-row:active, .pf-tile:active { background: #f1f8f4; }
 .pf-list-title { flex: 1; text-align: right; }
 .pf-del-sm { border: none; border-radius: 12px; background: #fde8ea; color: #b91c28; font-size: 12px; font-weight: 800; padding: 7px 10px; cursor: pointer; margin-left: 8px; }
-.pf-del-top { border: none; border-radius: 14px; background: rgba(220,38,38,0.92); color: #fff; font-size: 12px; font-weight: 800; padding: 8px 12px; cursor: pointer; }
+.pf-del-wrap { text-align: center; padding: 18px 0 6px; }
+.pf-del-low { border: none; background: none; color: #9ca3af; font-size: 11px; cursor: pointer; text-decoration: underline; opacity: .8; }
