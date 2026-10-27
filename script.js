@@ -643,7 +643,12 @@ var photoHTML='<div class="card-photo"><img src="'+esc(photo)+'">'+(l.photos&&l.
 function renderBrowseChips(){
   const el=document.getElementById('browse-chips');if(!el)return;
   const all=[{id:'livestock',short:'دامداری',img:'image/chip-livestock.webp'},{id:'crops',short:'کشاورزی',img:'image/chip-agri.webp'},{id:'vet_drugs',short:'دامپزشکی',img:'image/chip-vet.webp'},{id:'services',short:'خدمات',img:'image/chip-services.webp'},{id:'bargain',short:'زیرقیمت',img:'image/chip-bargain.webp'}];
-  el.innerHTML=all.map(c=>'<button type="button" class="chip-big'+(c.id==='bargain'?' chip-wide':'')+((c.id==='bargain'?browseBargain:browseCategory===c.id)?' active':'')+'" onclick="pickBrowseCat(\''+c.id+'\')"><span class="ic"><img src="'+c.img+'" alt="" loading="lazy"></span>'+c.short+'</button>').join('');
+  const coin='<span class="coin"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="#fff3b0" stroke="#9a6b00" stroke-width="2"/><circle cx="20" cy="20" r="12" fill="none" stroke="#b8860b" stroke-width="1.5"/><text x="20" y="26" text-anchor="middle" font-size="16" font-weight="900" fill="#7a5200">$</text></svg></span>';
+  el.innerHTML=all.map(c=>{
+    const act=(c.id==='bargain'?browseBargain:browseCategory===c.id)?' active':'';
+    if(c.id==='bargain') return '<button type="button" class="chip-big chip-wide'+act+'" onclick="pickBrowseCat(\'bargain\')"><span class="coins">'+coin+coin+'</span><span class="wide-txt">'+c.short+'</span><span class="coins">'+coin+coin+'</span></button>';
+    return '<button type="button" class="chip-big'+act+'" onclick="pickBrowseCat(\''+c.id+'\')"><span class="ic"><img src="'+c.img+'" alt="" loading="lazy"></span>'+c.short+'</button>';
+  }).join('');
 }
 var browseBargain=false;
 function toggleBargain(){browseBargain=!browseBargain;renderBrowse()}
