@@ -1162,6 +1162,14 @@ body {
 /* ── صفحه پروفایل (طرح جدید) ── */
 #screen-profile { background: #f6f8f4; }
 .pf-hero { position: relative; min-height: 280px; display: flex; flex-direction: column; padding: 52px 20px 0 !important; border-radius: 0 0 0 0 !important; text-align: right !important; color: #fff; background-size: cover !important; background-position: center 25% !important; }
+/* عکس هدر بدون کادر و محو شده در پس‌زمینه صفحه */
+#screen-profile .pf-hero{
+  min-height: 330px;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 62%, transparent 100%);
+          mask-image: linear-gradient(to bottom, #000 0%, #000 62%, transparent 100%);
+  background-color: transparent;
+  padding-bottom: 0 !important;
+}
 .pf-top { display: flex; justify-content: space-between; align-items: center; }
 .pf-ic { width: 40px; height: 40px; border-radius: 50%; border: none; background: rgba(255,255,255,0.22); color: #fff; font-size: 18px; backdrop-filter: blur(4px); cursor: pointer; }
 .pf-id { display: flex; align-items: center; gap: 14px; margin-top: 30px; flex-direction: row-reverse; }
