@@ -673,7 +673,7 @@ var favActive = isFavorite(l.id) ? 'active' : ''; var favIcon = isFavorite(l.id)
 return '<div class="browse-card" onclick="openDetail(\''+l.id+'\',\'browse\')">'+
 '<div class="thumb"><img src="'+esc(photo)+'">'+fire+'<span class="bc-region">📍 '+esc(l.region||'')+'</span><button type="button" class="fav-btn '+favActive+'" onclick="event.stopPropagation();toggleFavorite(\''+l.id+'\')">'+favIcon+'</button></div>'+
 '<div class="body"><div class="title">'+esc(l.title)+'</div><div class="bc-qty">'+esc(l.qty||'')+'</div><div class="bc-price">'+priceHTML+' <span class="unit">تومان</span></div>'+
-'<div class="bc-foot"><span class="bc-seller">★ '+esc(l.sellerName||'')+'</span><span class="bc-time">🕒 '+timeAgo(l.createdAt)+'</span></div>'+
+'<div class="bc-foot"><span class="bc-time">🕒 '+timeAgo(l.createdAt)+'</span></div>'+
 '<button type="button" class="bc-chat" onclick="event.stopPropagation();openChatWithSeller(\''+l.id+'\')">💬 چت با فروشنده</button></div></div>';
 }
 async function renderBrowse(){
