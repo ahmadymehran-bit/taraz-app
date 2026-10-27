@@ -832,10 +832,9 @@ body {
 
 /* پروفایل: هدر سبز با حاشیهٔ طلایی */
 #screen-profile > div:nth-of-type(1){
-  background:linear-gradient(180deg,#0f4d3a 0%,#1f6b50 100%) !important;
-  border-bottom:3px solid var(--t-gold,#e0b04a);
-  border-radius:0 0 32px 32px !important;
-  box-shadow:0 10px 26px rgba(15,77,58,.22);
+  background-color:#0f4d3a;
+  border-radius:0 !important;
+  box-shadow:none;
 }
 #screen-profile #profile-avatar{
   border-color:var(--t-gold,#e0b04a) !important;
