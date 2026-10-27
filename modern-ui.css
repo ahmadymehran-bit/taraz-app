@@ -1518,3 +1518,4 @@ body, .screen { background: linear-gradient(180deg, #13402f 0%, #0b2a22 100%) !i
 
 /* لوگوی اصلی اپ در صفحه ورود/ثبت‌نام */
 #screen-auth .auth-hero .auth-logo-img { display: block; width: 120px; height: 120px; object-fit: contain; margin: 0 auto 8px; filter: drop-shadow(0 4px 10px rgba(0,0,0,.35)); }
+#screen-auth .auth-hero .auth-logo-img { width: 104px; height: auto; border-radius: 0; }
