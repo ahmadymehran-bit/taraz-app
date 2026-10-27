@@ -1028,6 +1028,7 @@ document.querySelectorAll('#rating-stars .star-btn').forEach(btn=>{ btn.addEvent
 async function renderProfile(){
 var u = DB.user; if(!u) return;
 setAvatar(document.getElementById('profile-avatar'), u);
+applyProfileRole(u.role);
 var nameEl = document.getElementById('profile-name'); var phoneEl = document.getElementById('profile-phone');
 if(nameEl) nameEl.textContent = u.name; if(phoneEl) phoneEl.textContent = faDigits(u.phone);
 var r = await avgRating(u.phone); var ratingLine = document.getElementById('profile-rating-line');
@@ -2077,3 +2078,21 @@ function bzCalc(){var l=BZ.lot;if(!l)return;var ag=BZ.cat==='agri',p=+bzG('bz-pc
   bzG('bz-pv').textContent=bzFa(p)+'٪ ('+bzFa(n)+' '+BZ.cats[BZ.cat].u+')';
   bzG('bz-sum').innerHTML='<div><span>مبلغ کل</span><b>'+bzFa(tot)+' تومان</b></div><div><span>بیعانه (۲۰٪)</span><b>'+bzFa(Math.round(tot*.2))+' تومان</b></div><div><span>باقی‌مانده نقدی هنگام تحویل</span><b>'+bzFa(Math.round(tot*.8))+' تومان</b></div>'}
 function bzOrder(){bzClose();toast('نمایشی: ثبت سفارش هنوز به سرور وصل نیست')}
+
+// ── تم پروفایل بر اساس نقش کاربر (تصویر و رنگ هدر) ──
+var PROFILE_ROLE_THEMES = {
+  'دامدار':   { img: 'image/profile-dam.jpg',  label: 'توسعه دامداری' },
+  'کشاورز':   { img: 'image/profile-kesh.jpg', label: 'زمین سبز، زندگی بهتر' },
+  'دامپزشک':  { img: 'image/profile-vet.jpg',  label: 'سلامت دام، سلامت جامعه' },
+  'کارگر خدماتی': { img: 'image/profile-kar.jpg', label: 'با هم برای کشاورزی بهتر' },
+  'کارگر کشاورزی': { img: 'image/profile-kar.jpg', label: 'با هم برای کشاورزی بهتر' }
+};
+function applyProfileRole(role){
+  var hero = document.getElementById('profile-hero'); if(!hero) return;
+  var t = PROFILE_ROLE_THEMES[role];
+  if(!t){ hero.style.backgroundImage = ''; hero.classList.remove('pr-hero--photo'); return; }
+  hero.style.backgroundImage = 'linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.55) 100%), url("' + t.img + '")';
+  hero.classList.add('pr-hero--photo');
+  var badge = document.getElementById('profile-role-badge');
+  if(badge){ badge.innerHTML = '<b>' + esc(role) + '</b><span>' + esc(t.label) + '</span>'; }
+}
