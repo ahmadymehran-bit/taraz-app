@@ -1489,3 +1489,18 @@ body, .screen { background: linear-gradient(180deg, #13402f 0%, #0b2a22 100%) !i
 /* hard-hide any leftover label text of the offer chip */
 #screen-home #browse-chips .chip-wide { font-size: 0 !important; color: transparent !important; }
 #screen-home #browse-chips .chip-wide * , #screen-home #browse-chips .chip-wide::before, #screen-home #browse-chips .chip-wide::after { display: none !important; content: none !important; }
+
+/* ===== کلید «پیشنهاد ویژه» (ساخته‌شده، هم‌تم با کلیدهای دسته) ===== */
+#screen-home #browse-chips .chip-big.chip-wide,
+#screen-home #browse-chips .chip-wide * { display: none !important; }
+#screen-home .offer-btn {
+  display: flex !important; align-items: center; justify-content: center; gap: 8px;
+  width: 62% !important; margin: 8px auto 4px !important; padding: 7px 14px !important;
+  border: 2px solid #e0b04a !important; border-radius: 999px !important;
+  background: linear-gradient(180deg, #2fa35c 0%, #0f5a30 55%, #0a3f22 100%) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 4px 8px rgba(0,0,0,.4) !important;
+  color: #ffe9a0 !important; cursor: pointer;
+}
+#screen-home .offer-txt { font-size: 15px; font-weight: 900; color: #ffe9a0; text-shadow: 0 1px 2px rgba(0,0,0,.6); }
+#screen-home .offer-ic { width: 26px; height: 26px; display: inline-flex; flex: 0 0 26px; }
+#screen-home .offer-ic svg { width: 100%; height: 100%; filter: drop-shadow(0 1px 1px rgba(0,0,0,.4)); }
