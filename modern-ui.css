@@ -1222,18 +1222,15 @@ body {
 .pf-del-wrap { text-align: center; padding: 18px 0 6px; }
 .pf-del-low { border: none; background: none; color: #9ca3af; font-size: 11px; cursor: pointer; text-decoration: underline; opacity: .8; }
 
-/* ۵ کلید یکسان: دامداری، کشاورزی، دامپزشکی، خدمات، زیرقیمت (سبز توپر) */
+/* ۵ کلید یکسان با تصویر دایره‌ای */
 #screen-home #browse-chips.chips-row { grid-template-columns: repeat(5, 1fr) !important; gap: 4px !important; }
 #screen-home #browse-chips .chip-big { font-size: 11px !important; color: #0f4d3a !important; }
 #screen-home #browse-chips .chip-big .ic {
-  width: 54px !important; height: 54px !important; font-size: 24px !important;
-  background: linear-gradient(145deg, #1a7a5a, #0f4d3a) !important;
-  border: 2px solid #0f4d3a !important;
+  width: 58px !important; height: 58px !important; padding: 0 !important; font-size: 0 !important;
+  overflow: hidden !important; border-radius: 50% !important;
+  background: #0f4d3a !important; border: 2px solid #0f4d3a !important;
   box-shadow: 0 4px 10px rgba(15,77,58,.25) !important;
 }
-#screen-home #browse-chips .chip-big.active .ic {
-  background: linear-gradient(145deg, #0f4d3a, #083428) !important;
-  border-color: #0f4d3a !important;
-  box-shadow: 0 0 0 3px rgba(15,77,58,.25) !important;
-}
+#screen-home #browse-chips .chip-big .ic img { width: 100% !important; height: 100% !important; object-fit: cover !important; display: block; }
+#screen-home #browse-chips .chip-big.active .ic { box-shadow: 0 0 0 3px #fff, 0 0 0 5px #0f4d3a !important; }
 #screen-home #browse-chips .chip-big.active { color: #0f4d3a !important; }
