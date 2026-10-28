@@ -1804,3 +1804,16 @@ body, .screen { background: linear-gradient(180deg, #13402f 0%, #0b2a22 100%) !i
 
 /* کمی بالاتر بردن متن ثبت آگهی */
 .nav .nav-center .fab-txt { position: relative !important; top: -3px !important; }
+
+/* صفحه جزئیات آگهی: چیدمان بالا به پایین */
+#screen-detail .detail-card{
+  display:block !important; align-items:initial !important;
+  background:#fff !important; padding:20px !important; text-align:right; direction:rtl;
+}
+#screen-detail .detail-card > *{ max-width:100% !important; min-width:0 !important; }
+#screen-detail .detail-card .detail-title{ display:block !important; color:#0f4d3a !important; }
+#screen-detail .detail-card .detail-meta{ display:block !important; }
+#screen-detail .detail-card .detail-price-block{ display:block !important; width:auto !important; }
+#screen-detail .detail-card div[style*="border-top"]{ display:block !important; }
+#screen-detail .detail-card div[style*="border-top"] b{ color:#0f4d3a !important; }
+#screen-detail .detail-card div[style*="border-top"] div{ color:#3d4a42 !important; }
