@@ -1011,8 +1011,12 @@ var u = DB.user; if(!u || !currentConvId) return;
 var inp = document.getElementById('chat-input'); var text = inp.value.trim(); if(!text) return;
 var c = DB.conversations.find(function(x){ return x.id === currentConvId; }); if(!c) return;
 var msgData = { id: 'M' + Date.now(), convId: c.id, fromPhone: u.phone, text: text };
-var result = null; try { result = await api.createMessage(msgData); } catch(e) { }
-if(!result || !result.ok){ toast('⚠ پیام به سرور نرسید: ' + ((result && result.error) || 'ارتباط یا گفتگو نامعتبر')); console.error('createMessage failed', result); }
+var result = await api.createMessage(msgData);
+if(result && !result.ok && result.status === 404){ /* گفتگو روی سرور نیست (ساختنش قبلاً شکست خورده): یک بار بساز و دوباره بفرست */
+  var made = await api.createConversation({ id: c.id, listingId: c.listingId, listingTitle: c.listingTitle, buyerPhone: c.buyerPhone, buyerName: c.buyerName, sellerPhone: c.sellerPhone, sellerName: c.sellerName });
+  if(made && made.conversation) result = await api.createMessage(msgData);
+}
+if(!result || !result.ok){ toast('⚠ پیام ارسال نشد: ' + ((result && result.error) || 'خطای ناشناخته')); console.error('createMessage failed', result); return; }
 var msgs = DB.messages; msgs.push({ id: msgData.id, convId: c.id, fromPhone: u.phone, text: text, createdAt: Date.now(), read: false }); DB.messages = msgs;
 var convs = DB.conversations; var idx = convs.findIndex(function(x){ return x.id === c.id; }); if(idx >= 0){ convs[idx].lastMessageAt = Date.now(); DB.conversations = convs; }
 inp.value = '';
@@ -2028,7 +2032,18 @@ var api = {
   getBookings: async function(phone){ return this._fetch('/api/bookings/' + encodeURIComponent(phone)); },
   createConversation: async function(c){ return this._fetch('/api/conversations', { method: 'POST', body: JSON.stringify(c) }); },
   getConversations: async function(phone){ return this._fetch('/api/conversations/' + encodeURIComponent(phone)); },
-  createMessage: async function(m){ return this._fetch('/api/messages', { method: 'POST', body: JSON.stringify(m) }); },
+  createMessage: async function(m){ return this._sendRaw('/api/messages', { method: 'POST', body: JSON.stringify(m) }); },
+  /* مثل _fetch ولی خطای سرور (مثلاً 404/403) را با متن خطا برمی‌گرداند */
+  _sendRaw: async function(path, options){
+    var tok = null; try { tok = localStorage.getItem('taraz.token'); } catch (e) {}
+    var headers = { 'Content-Type': 'application/json' }; if (tok) headers['Authorization'] = 'Bearer ' + tok;
+    var res, data = null;
+    try { res = await fetch(API_BASE + path, Object.assign({}, options, { headers: headers })); }
+    catch (e) { return { ok: false, status: 0, error: 'اتصال به سرور برقرار نشد' }; }
+    try { data = await res.json(); } catch (e) {}
+    if (!res.ok) return { ok: false, status: res.status, error: (data && data.error) || ('خطای سرور ' + res.status) };
+    return Object.assign({ ok: true }, data || {});
+  },
   getMessages: async function(convId){ return this._fetch('/api/messages/' + encodeURIComponent(convId)); },
   createRating: async function(r){ return this._fetch('/api/ratings', { method: 'POST', body: JSON.stringify(r) }); },
   getRatings: async function(phone){ return this._fetch('/api/ratings/' + encodeURIComponent(phone)); },
