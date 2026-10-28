@@ -128,24 +128,12 @@
       </div>
     </header>
     <div class="home-banner"><img src="image/banner-shepherd.webp" alt="تاراز"></div>
-    <div class="bz-boxes">
-      <div class="bz-bx bz-loc">
-        <span class="bz-bt">📍 موقعیت من</span>
-        <b id="bz-locname">در حال تشخیص…</b>
-        <div class="bz-seg" id="bz-seg">
-          <button onclick="bzScope('mine')">محدوده من</button>
-          <button class="on" onclick="bzScope('city')">شهر</button>
-          <button onclick="bzScope('prov')">استان</button>
-        </div>
-        <select id="bz-place" onchange="bzPlace(this.value)"></select>
-        <button class="bz-auto" onclick="bzLocate()">🎯 تشخیص خودکار</button>
-      </div>
-      <div class="bz-bx bz-tick">
-        <span class="bz-bt">📈 قیمت زنده بازار</span>
-        <b id="bz-tk-n">—</b>
-        <div class="bz-tk-p"><span id="bz-tk-p">—</span> <small id="bz-tk-u"></small></div>
-        <small class="bz-demo" id="bz-tk-s">نمونه نمایشی</small>
-      </div>
+    <div class="bz-locword">موقعیت</div>
+    <div class="bz-tick-rect">
+      <span class="bz-tk-t">📈 قیمت زنده</span>
+      <b id="bz-tk-n">—</b>
+      <span class="bz-tk-pp"><span id="bz-tk-p">—</span> <small id="bz-tk-u"></small></span>
+      <small class="bz-demo" id="bz-tk-s">نمونه نمایشی</small>
     </div>
     <div class="bz-buy">
       <select class="bz-catsel" id="bz-cats" onchange="bzCat(this.value)"></select>

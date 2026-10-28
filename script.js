@@ -2076,8 +2076,6 @@ function renderBazaar(){
   try{var _a=document.getElementById('header-avatar'),_b=document.getElementById('bz-avatar');if(_a&&_b)_b.innerHTML=_a.innerHTML;_b.style.cssText=_a.style.cssText;_b.className=_a.className;var _c=document.getElementById('bell-badge'),_d=document.getElementById('bz-bell-badge');if(_c&&_d){_d.className=_c.className;_d.textContent=_c.textContent;}}catch(e){}
   if(!bzTimer){bzTick();bzTimer=setInterval(bzTick,5000)}
   if(!bzG('bz-cats'))return;var c=BZ.cats[BZ.cat],ag=BZ.cat==='agri',pl=BZ.places[BZ.scope];
-  document.querySelectorAll('#bz-seg button').forEach(function(b,i){b.classList.toggle('on',['mine','city','prov'][i]===BZ.scope)});
-  bzG('bz-place').innerHTML=pl.map(function(x){return '<option'+(x===BZ.place?' selected':'')+'>'+x+'</option>'}).join('');
   bzG('bz-cats').innerHTML=Object.keys(BZ.cats).map(function(k){var x=BZ.cats[k];return '<option value="'+k+'"'+(k===BZ.cat?' selected':'')+'>'+x.i+' '+x.t+'</option>'}).join('');
   var ln=bzG('bz-locname');if(ln)ln.textContent=BZ.place;
   bzG('bz-btitle').textContent='🛒 خرید '+c.t;bzG('bz-thumb').src=c.img;bzG('bz-cu').textContent=c.u;bzG('bz-wbox').style.display=ag?'none':'';
