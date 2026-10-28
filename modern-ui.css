@@ -1894,3 +1894,22 @@ html body #screen-detail #detail-body .detail-card, html body #screen-detail #de
   box-shadow: none !important;
   border-radius: 0 !important;
 }
+
+/* chips: icons only, no shapes; larger icons */
+#screen-home #browse-chips .chip-big,
+#screen-home #browse-chips .chip-big:not(.chip-wide),
+#screen-home #browse-chips .chip-big.active,
+#screen-home #browse-chips .chip-big.active:not(.chip-wide) {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 4px 2px !important;
+  border-radius: 0 !important;
+}
+#screen-home #browse-chips .chip-big .ic svg {
+  width: 40px !important;
+  height: 40px !important;
+}
+#screen-home #browse-chips .chip-big.active .ic svg {
+  filter: drop-shadow(0 0 6px rgba(240,200,100,.9));
+}
