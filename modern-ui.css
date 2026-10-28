@@ -1817,3 +1817,15 @@ body, .screen { background: linear-gradient(180deg, #13402f 0%, #0b2a22 100%) !i
 #screen-detail .detail-card div[style*="border-top"]{ display:block !important; }
 #screen-detail .detail-card div[style*="border-top"] b{ color:#0f4d3a !important; }
 #screen-detail .detail-card div[style*="border-top"] div{ color:#3d4a42 !important; }
+
+/* پررنگ‌کردن متن‌های صفحه جزئیات */
+#screen-detail .detail-card .detail-title{color:#0b3a2c !important;opacity:1 !important}
+#screen-detail .detail-card .detail-meta{color:#26332b !important;opacity:1 !important;font-weight:800 !important}
+#screen-detail .detail-card .detail-meta b{color:#0b3a2c !important}
+#screen-detail .detail-card .detail-price-block .lbl{color:#4a4a3e !important;opacity:1 !important}
+#screen-detail .detail-card .detail-price-block .val{color:#0b3a2c !important;opacity:1 !important}
+#screen-detail .detail-card .detail-price-block .old-price{color:#6b6657 !important}
+#screen-detail .detail-card .pill{color:#0b3a2c !important;background:#e3f3ea !important;opacity:1 !important}
+#screen-detail .detail-card div[style*="border-top"] b{color:#0b3a2c !important;font-size:16px !important}
+#screen-detail .detail-card div[style*="border-top"] div{color:#26332b !important;font-weight:600 !important;opacity:1 !important}
+#screen-detail .detail-card *{text-shadow:none !important}
