@@ -693,7 +693,7 @@ function renderBrowseChips(){
 var browseBargain=false;
 function toggleBargain(){browseBargain=!browseBargain;renderBrowse()}
 function isBargainListing(l){return !!((l.oldPrice&&l.price<l.oldPrice)||l.urgentReason==="expiry")}
-function pickBrowseCat(id){if(id==='services'){go('services');return}if(id==='bargain'){toggleBargain();return}browseCategory=(browseCategory===id)?'all':id;renderBrowse()}
+function pickBrowseCat(id){if(id==='bargain'){toggleBargain();return}browseCategory=(browseCategory===id)?'all':id;renderBrowse()}
 function filterBrowse(v){browseSearch=v.toLowerCase();const c=document.getElementById('browse-clear');if(c)c.hidden=!v;renderBrowse()}
 var _browseFilters = { priceMin: 0, priceMax: 0, region: '' };
 function toggleFilterPanel(){
@@ -724,6 +724,7 @@ return '<div class="browse-card" onclick="openDetail(\''+l.id+'\',\'browse\')">'
 
 '<button type="button" class="bc-chat" onclick="event.stopPropagation();openChatWithSeller(\''+l.id+'\')">💬 چت با فروشنده</button></div></div>';
 }
+var BROWSE_GROUPS={livestock:['livestock','poultry'],crops:['crops','feed','forage','agri_inputs'],vet_drugs:['vet_drugs','vet_equipment'],services:['service','offer']};
 async function renderBrowse(){
   renderBrowseSkeleton(); renderBrowseChips();
 var ss=document.getElementById('browse-search'); if(ss&&ss.value!==browseSearch)ss.value=browseSearch;
@@ -732,7 +733,7 @@ var result = null; try { result = await api.getListings(); } catch(e) { console.
 var list = (result && result.listings) ? result.listings : DB.listings;
 list = list.map(function(l){ return { id: l.id, sellerPhone: l.seller_phone || l.sellerPhone, sellerName: l.seller_name || l.sellerName, categoryId: l.category_id || l.categoryId, title: l.title, qty: l.qty, qtyNum: l.qty_num || l.qtyNum, price: Number(l.price), oldPrice: l.old_price ? Number(l.old_price) : (l.oldPrice ? Number(l.oldPrice) : null), region: l.region, desc: l.description || l.desc, urgent: l.urgent, urgentReason: l.urgent_reason || l.urgentReason, productKey: l.product_key || l.productKey, photos: l.photos || [], location: (l.location_lat && l.location_lng) ? { lat: Number(l.location_lat), lng: Number(l.location_lng) } : (l.location || null), createdAt: Number(l.created_at || l.createdAt) }; });
 list = list.filter(function(l){
-if(browseCategory==='urgent'){if(!l.urgent)return false} else if(browseCategory!=='all'&&l.categoryId!==browseCategory)return false;
+if(browseCategory==='urgent'){if(!l.urgent)return false} else if(browseCategory!=='all'&&(BROWSE_GROUPS[browseCategory]||[browseCategory]).indexOf(l.categoryId)<0)return false;
 if(browseSearch){ var hay=(l.title+' '+(l.desc||'')+' '+l.region+' '+l.sellerName).toLowerCase(); if(hay.indexOf(browseSearch)<0)return false; }
 if(browseBargain && !isBargainListing(l)) return false;
 if(_browseFilters.priceMin > 0 && l.price < _browseFilters.priceMin) return false;
@@ -742,7 +743,8 @@ return true;
 });
 list.sort(function(a,b){return b.createdAt-a.createdAt});
 var grid=document.getElementById('browse-grid');
-if(grid){ grid.innerHTML = list.length ? list.map(homeCard).join('') : '<div class="empty" style="grid-column:1/-1"><span class="emoji">🔍</span>آگهی‌ای پیدا نشد</div>'; }
+var _svcBtn=browseCategory==='services'?'<button type="button" class="btn-green" style="grid-column:1/-1" onclick="go(\'services\')">➕ ثبت یا رزرو خدمات</button>':'';
+if(grid){ grid.innerHTML = _svcBtn + (list.length ? list.map(homeCard).join('') : '<div class="empty" style="grid-column:1/-1"><span class="emoji">🔍</span>آگهی‌ای پیدا نشد</div>'); }
 }
 function goServicesStep1(){
   servicesStep=1; servicesCurrentService=null; servicesCurrentType=null;
@@ -1022,7 +1024,7 @@ var html = ''; var lastDay = '';
 thread.forEach(function(m){ var d = new Date(m.createdAt); var dayStr = faDigits(d.toLocaleDateString('fa-IR')); if(dayStr !== lastDay){ html += '<div class="chat-day">' + dayStr + '</div>'; lastDay = dayStr; } var mine = m.fromPhone === u.phone; var t = new Date(m.createdAt); var hh = faDigits(String(t.getHours()).padStart(2,'0')); var mm = faDigits(String(t.getMinutes()).padStart(2,'0')); html += '<div class="msg ' + (mine ? 'me' : 'them') + '">' + esc(m.text) + '<span class="msg-time">' + hh + ':' + mm + '</span></div>'; });
 body.innerHTML = html;
 }
-setTimeout(function(){ body.scrollTop = body.scrollHeight; }, 50); updateChatBadge();
+setTimeout(function(){ body.scrollTop = body.scrollHeight; }, 50); markConvSeen(c.id); updateChatBadge();
 chatChannelFor(c.id, u.phone);
 
 }
@@ -1063,12 +1065,24 @@ var u=DB.user;if(!u)return;
 var l=DB.listings.find(function(x){return x.id===listingId});if(!l)return;
 var reqs=DB.requests; reqs.push({ id:'R'+Date.now(), listingId:listingId, listingTitle:l.title, sellerPhone:l.sellerPhone, sellerName:l.sellerName, buyerPhone:u.phone, buyerName:u.name, price:l.price, region:l.region, status:'pending', createdAt:Date.now() }); DB.requests=reqs;
 }
+function _seenMap(){try{return JSON.parse(localStorage.getItem('taraz_seen')||'{}')}catch(e){return {}}}
+function markConvSeen(cid){var m=_seenMap();m[cid]=Date.now();try{localStorage.setItem('taraz_seen',JSON.stringify(m))}catch(e){}}
 function updateChatBadge(){
 var u=DB.user; var badge=document.getElementById('nav-chat-badge'); if(!badge)return;
 if(!u){badge.textContent='';badge.classList.remove('show');return}
-var unread=DB.messages.filter(function(m){ if(m.fromPhone===u.phone||m.read)return false; var c=DB.conversations.find(function(x){return x.id===m.convId}); if(!c)return false; return c.buyerPhone===u.phone||c.sellerPhone===u.phone; }).length;
+var seen=_seenMap();
+var unread=DB.messages.filter(function(m){ if(m.fromPhone===u.phone)return false; if(m.convId===currentConvId&&document.getElementById('screen-chat')&&document.getElementById('screen-chat').classList.contains('active'))return false; if(m.createdAt<=(seen[m.convId]||0))return false; var c=DB.conversations.find(function(x){return x.id===m.convId}); if(!c)return false; return c.buyerPhone===u.phone||c.sellerPhone===u.phone; }).length;
 badge.textContent=faDigits(unread); badge.classList.toggle('show',unread>0);
 }
+async function pollChatBadge(){
+var u=DB.user; if(!u||document.hidden)return;
+try{var r=await api.getConversations(u.phone); var convs=(r&&r.conversations)||[];
+for(var k=0;k<convs.length&&k<20;k++){var cv=convs[k]; var mr=await api.getMessages(cv.id); if(mr&&mr.messages){var msgs=DB.messages; mr.messages.forEach(function(m){var n={id:m.id,convId:m.conv_id||m.convId,fromPhone:m.from_phone||m.fromPhone,text:m.text,createdAt:Number(m.created_at||m.createdAt)}; var ix=msgs.findIndex(function(x){return x.id===n.id}); if(ix<0)msgs.push(n)}); DB.messages=msgs;}}
+var cc=DB.conversations; convs.forEach(function(c){var n={id:c.id,listingId:c.listing_id||c.listingId,listingTitle:c.listing_title||c.listingTitle,buyerPhone:c.buyer_phone||c.buyerPhone,sellerPhone:c.seller_phone||c.sellerPhone,buyerName:c.buyer_name||c.buyerName,sellerName:c.seller_name||c.sellerName,lastMessageAt:Number(c.last_message_at||c.lastMessageAt||0)}; if(!cc.some(function(x){return x.id===n.id}))cc.push(n)}); DB.conversations=cc;
+}catch(e){}
+updateChatBadge(); updateBellBadge();
+}
+setInterval(pollChatBadge,20000); setTimeout(pollChatBadge,3000);
 function openRating(toPhone,toName){
   ratingTarget={toPhone:toPhone,toName:toName}; ratingScore=0;
   document.getElementById('rating-title').textContent='تجربه‌ات با '+toName;
@@ -2251,7 +2265,13 @@ function submitPostForm(){
   d.f.forEach(function(x,i){var v=document.getElementById('pf-'+i).value.trim(); vals[x[0]]=v; if(!v && x[1]!=='date' && x[0].indexOf('اختیاری')<0) miss=true});
   if(miss){toast('همه فیلدها را پر کن');return}
   var all=DB.demands; all.push({id:'P'+Date.now(),buyerPhone:u.phone,buyerName:u.name,photos:(window._tempListingPhotos||[]).slice(),categoryId:(postMode==='offer'?'offer':'service'),offer:postMode==='offer',serviceGroup:postCurCat,title:postCurCat,fields:vals,note:document.getElementById('pf-note').value.trim(),qty:'',qtyNum:0,unit:'',price:0,region:'',status:'open',createdAt:Date.now()});
-  DB.demands=all; window._tempListingPhotos=[]; toast('ثبت شد ✓'); go('home');
+  DB.demands=all; var _p=all[all.length-1];
+  var _first=''; for(var k in vals){_first=vals[k];break}
+  var _desc=Object.keys(vals).map(function(k){return k+': '+vals[k]}).join(' | ')+(_p.note?' | '+_p.note:'');
+  var _item={id:'L'+Date.now(),sellerName:u.name,sellerPhone:u.phone,categoryId:_p.categoryId,title:(postCurCat+' - '+_first).slice(0,200),qty:'',qtyNum:0,price:0,region:vals['منطقه']||vals['شهر']||'',desc:_desc,photos:_p.photos||[],productKey:'',createdAt:Date.now()};
+  window._tempListingPhotos=[];
+  api.createListing(_item).then(function(){toast('ثبت شد ✓')}).catch(function(){toast('⚠ ثبت روی سرور انجام نشد')});
+  go('home');
 }
 
 // ===== زیر صفحه فروش: ثبت آگهی ساده دام =====
