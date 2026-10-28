@@ -1913,3 +1913,25 @@ html body #screen-detail #detail-body .detail-card, html body #screen-detail #de
 #screen-home #browse-chips .chip-big.active .ic svg {
   filter: drop-shadow(0 0 6px rgba(240,200,100,.9));
 }
+
+/* FINAL: no frame at all around browse chips (icons only) */
+html body #screen-home #browse-chips .chip-big,
+html body #screen-home #browse-chips .chip-big.active,
+html body #screen-home #browse-chips .chip-big:focus,
+html body #screen-home #browse-chips .chip-big:active {
+  background: none !important;
+  border: none !important;
+  border-width: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent;
+}
+html body #screen-home #browse-chips .chip-big::before,
+html body #screen-home #browse-chips .chip-big::after,
+html body #screen-home #browse-chips .chip-big .ic::before,
+html body #screen-home #browse-chips .chip-big .ic::after {
+  content: none !important; display: none !important;
+}
+html body #screen-home #browse-chips .chip-big .ic {
+  background: none !important; border: none !important; box-shadow: none !important;
+}
