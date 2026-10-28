@@ -1,40 +1,27 @@
 {
-"name": "تاراز",
-"short_name": "تاراز",
-"start_url": "./",
-"display": "standalone",
-"orientation": "portrait",
-"background_color": "#F5F1E8",
-"theme_color": "#2E7D32",
-"lang": "fa",
-"dir": "rtl",
-"icons": [
-{
-"src": "https://i.ibb.co/TMNM2gDf/web-app-manifest-192x192.png",
-"sizes": "192x192",
-"type": "image/png",
-"purpose": "any"
-},
-{
-"src": "https://i.ibb.co/TMNM2gDf/web-app-manifest-192x192.png",
-"sizes": "192x192",
-"type": "image/png",
-"purpose": "maskable"
-},
-{
-"src": "https://i.ibb.co/chyWbLZM/web-app-manifest-512x512.png",
-"sizes": "512x512",
-"type": "image/png",
-"purpose": "any"
-},
-{
-"src": "https://i.ibb.co/chyWbLZM/web-app-manifest-512x512.png",
-"sizes": "512x512",
-"type": "image/png",
-"purpose": "maskable"
+  "id": "/?source=pwa",
+  "name": "تاراز - بازار کشاورزی و دامپروری",
+  "short_name": "تاراز",
+  "description": "خرید و فروش دام، محصولات کشاورزی، ماشین‌آلات و خدمات تخصصی دامداری و کشاورزی",
+  "start_url": "./?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "background_color": "#084B3B",
+  "theme_color": "#084B3B",
+  "lang": "fa",
+  "dir": "rtl",
+  "categories": ["shopping", "business", "lifestyle"],
+  "prefer_related_applications": false,
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "ثبت آگهی", "short_name": "آگهی", "url": "./?go=sell", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "بازار قیمت", "short_name": "بازار", "url": "./?go=browse", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
+  ]
 }
-]
-}
-
-
-

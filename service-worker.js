@@ -1,8 +1,8 @@
 /* تاراز - Service Worker (نسخه ۲)
    استراتژی: شبکه اول (همیشه آخرین نسخه)، اگر آفلاین بود از کش استفاده می‌شود.
    /api/ و دامنه‌های خارجی کش نمی‌شوند. */
-var CACHE_NAME = 'taraz-v24';
-var PRECACHE = ['./', './index.html', './manifest.json'];
+var CACHE_NAME = 'taraz-v25';
+var PRECACHE = ['./', './index.html', './manifest.json', './offline.html', './icons/icon-192.png'];
 
 self.addEventListener('install', function(event){
 event.waitUntil(
@@ -42,7 +42,7 @@ return res;
 }).catch(function(){
 return caches.match(req).then(function(cached){
 if(cached) return cached;
-if(req.mode === 'navigate') return caches.match('./index.html');
+if(req.mode === 'navigate') return caches.match('./index.html').then(function(r){ return r || caches.match('./offline.html'); });
 return new Response('', { status: 503, statusText: 'Offline' });
 });
 })
@@ -51,7 +51,7 @@ return new Response('', { status: 503, statusText: 'Offline' });
 
 /* ============ PUSH NOTIFICATIONS ============ */
 self.addEventListener('push', function(event){
-var data = { title: 'تاراز', body: 'پیام جدید', icon: '/web-app-manifest-192x192.png' };
+var data = { title: 'تاراز', body: 'پیام جدید', icon: '/icons/icon-192.png' };
 
 if(event.data){
 try {
@@ -68,7 +68,7 @@ data.body = event.data.text();
 var options = {
 body: data.body,
 icon: data.icon,
-badge: '/web-app-manifest-192x192.png',
+badge: '/icons/icon-192.png',
 dir: 'rtl',
 lang: 'fa',
 vibrate: [200, 100, 200],

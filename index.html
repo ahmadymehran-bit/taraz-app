@@ -8,10 +8,11 @@
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="modern-ui.css"> <!-- فایل جدید CSS -->
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#2E7D32">
+<link rel="icon" type="image/png" sizes="48x48" href="icons/favicon-48.png">
+<meta name="theme-color" content="#084B3B">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="تاراز">
-<link rel="apple-touch-icon" href="https://i.ibb.co/TMNM2gDf/web-app-manifest-192x192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>  
 </head>
@@ -463,6 +464,9 @@
       <div class="settings-item" onclick="importBackup()"><div class="ic">📥</div><div class="body"><b>بازیابی از فایل</b><small>بارگذاری JSON</small></div><div class="arrow">‹</div></div>
       <div class="settings-item" onclick="confirmDeleteAccount()"><div class="ic">❌</div><div class="body"><b style="color:var(--fire)">حذف حساب کاربری</b><small>حذف دائمی حساب و آگهی‌های شما</small></div><div class="arrow">‹</div></div>
       <div class="settings-item" onclick="clearAllData()"><div class="ic">🗑️</div><div class="body"><b style="color:var(--fire)">پاک کردن همه داده‌ها</b><small>حذف کامل اطلاعات این گوشی</small></div><div class="arrow">‹</div></div>
+      <div class="settings-item" onclick="window.open('privacy.html','_blank')"><div class="ic">🔏</div><div class="body"><b>حریم خصوصی</b><small>چه اطلاعاتی نگهداری می‌شود</small></div><div class="arrow">‹</div></div>
+      <div class="settings-item" onclick="window.open('terms.html','_blank')"><div class="ic">📜</div><div class="body"><b>قوانین و شرایط استفاده</b><small>قوانین آگهی و مسئولیت‌ها</small></div><div class="arrow">‹</div></div>
+      <div class="settings-item" onclick="window.open('contact.html','_blank')"><div class="ic">📞</div><div class="body"><b>تماس با پشتیبانی</b><small>گزارش مشکل و حذف حساب</small></div><div class="arrow">‹</div></div>
       <p style="text-align:center;font-size:13px;color:var(--muted);margin-top:28px">تاراز نسخه ۳.۰</p>
     </div>
   </section>

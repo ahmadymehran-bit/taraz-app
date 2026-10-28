@@ -1,4 +1,25 @@
 const FA_DIGITS='۰۱۲۳۴۵۶۷۸۹';
+/* آدرس تنها بک‌اند؛ برای تغییر سرور فقط همین‌جا (یا window.TARAZ_API_BASE قبل از script.js) */
+var API_BASE = window.TARAZ_API_BASE || 'https://taraz-backend-prog.vercel.app';
+/* هر درخواست به بک‌اند خودمان (حتی fetch مستقیم) توکن ورود را می‌فرستد */
+(function () {
+  var _f = window.fetch.bind(window);
+  window.fetch = function (input, init) {
+    try {
+      var url = typeof input === 'string' ? input : (input && input.url) || '';
+      if (url.indexOf(API_BASE) === 0) {
+        var tok = localStorage.getItem('taraz.token');
+        if (tok) {
+          init = init || {};
+          var h = new Headers(init.headers || (typeof input !== 'string' && input.headers) || {});
+          if (!h.has('Authorization')) h.set('Authorization', 'Bearer ' + tok);
+          init.headers = h;
+        }
+      }
+    } catch (e) {}
+    return _f(input, init);
+  };
+})();
 /* ============ Supabase Setup ============ */
 const SUPABASE_URL = 'https://ybtjatkxsagsgathvjoe.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_X8F1n-nhXl3YhDNZ7SeRTg_U280aKuX';
@@ -283,10 +304,10 @@ try {
 var permission = await Notification.requestPermission();
 if(permission !== 'granted'){ toast('اجازه اعلان داده نشد'); return; }
 var registration = await navigator.serviceWorker.ready;
-var keyResult = null; try { keyResult = await fetch('https://taraz-backend-prog.vercel.app/api/push/public-key').then(r => r.json()); } catch(e){}
+var keyResult = null; try { keyResult = await fetch(API_BASE + '/api/push/public-key').then(r => r.json()); } catch(e){}
 if(!keyResult || !keyResult.publicKey){ toast('خطا در دریافت کلید'); return; }
 var subscription = await registration.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: urlBase64ToUint8Array(keyResult.publicKey) });
-var result = await fetch('https://taraz-backend-prog.vercel.app/api/push/subscribe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userPhone: u.phone, subscription: subscription }) }).then(r => r.json());
+var result = await fetch(API_BASE + '/api/push/subscribe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userPhone: u.phone, subscription: subscription }) }).then(r => r.json());
 if(result && result.ok){ toast('✓ اعلان‌ها فعال شد'); } else { toast('خطا در ثبت'); }
 } catch(e) { toast('خطا در فعال‌سازی'); }
 }
@@ -742,7 +763,7 @@ async function renderServicesStep3(el){
   // 👇 این بخش جدید: دریافت خدمات‌دهنده‌های آنلاین 👇
   var onlineProviders = [];
   try {
-    var readyRes = await fetch('https://taraz-backend-prog.vercel.app/api/ready/' + servicesCurrentService);
+    var readyRes = await fetch(API_BASE + '/api/ready/' + servicesCurrentService);
     var readyData = await readyRes.json();
     if (readyData && readyData.profiles) {
       onlineProviders = readyData.profiles;
@@ -869,7 +890,7 @@ var all=DB.listings;all.push(item);DB.listings=all;
 if(result && result.ok){ toast('✓ آگهی منتشر شد'); } else { toast('⚠ آگهی محلی ذخیره شد'); }
   
 try {
-  await fetch('https://taraz-backend-prog.vercel.app/api/match-alert', {
+  await fetch(API_BASE + '/api/match-alert', {
     method: 'POST',
     headers: authHeaders(),
     body: JSON.stringify({
@@ -995,7 +1016,7 @@ if(!result || !result.ok){ toast('⚠ پیام به سرور نرسید: ' + ((r
 var msgs = DB.messages; msgs.push({ id: msgData.id, convId: c.id, fromPhone: u.phone, text: text, createdAt: Date.now(), read: false }); DB.messages = msgs;
 var convs = DB.conversations; var idx = convs.findIndex(function(x){ return x.id === c.id; }); if(idx >= 0){ convs[idx].lastMessageAt = Date.now(); DB.conversations = convs; }
 inp.value = '';
-  try { var otherPhone = (u.phone === c.sellerPhone) ? c.buyerPhone : c.sellerPhone; fetch('https://taraz-backend-prog.vercel.app/api/push/send', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ toPhone: otherPhone, title: 'پیام جدید از ' + u.name, body: text, data: { convId: c.id } }) }); } catch(e){}
+  try { var otherPhone = (u.phone === c.sellerPhone) ? c.buyerPhone : c.sellerPhone; fetch(API_BASE + '/api/push/send', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ toPhone: otherPhone, title: 'پیام جدید از ' + u.name, body: text, data: { convId: c.id } }) }); } catch(e){}
 supabaseClient.channel('chat_' + c.id).send({
   type: 'broadcast',
   event: 'new_message',
@@ -1338,7 +1359,7 @@ document.addEventListener('click', function(e) {
 async function renderAdminPanel() {
   try {
     // گرفتن آمار کلی از بک‌اند
-    var statsRes = await fetch('https://taraz-backend-prog.vercel.app/api/admin/stats').then(r => r.json());
+    var statsRes = await fetch(API_BASE + '/api/admin/stats').then(r => r.json());
     
     if (statsRes) {
       document.getElementById('admin-stat-users').textContent = faDigits(statsRes.users || 0);
@@ -1385,7 +1406,7 @@ async function askAdminAI() {
   input.value = '';
 
   try {
-    var res = await fetch('https://taraz-backend-prog.vercel.app/api/ai', {
+    var res = await fetch(API_BASE + '/api/ai', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ prompt: prompt })
@@ -1529,7 +1550,7 @@ async function saveReadyProfile() {
   DB._set('ready_profile_' + u.phone, profile);
 
   try {
-    var res = await fetch('https://taraz-backend-prog.vercel.app/api/ready', {
+    var res = await fetch(API_BASE + '/api/ready', {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify(profile)
@@ -1567,7 +1588,7 @@ async function addWatchCondition() {
   };
 
   try {
-    var res = await fetch('https://taraz-backend-prog.vercel.app/api/watches', {
+    var res = await fetch(API_BASE + '/api/watches', {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify(watchData)
@@ -1741,7 +1762,7 @@ async function addServiceToChain(serviceId) {
 
   // 👇 ارسال به بک‌اند برای ذخیره دائمی 👇
   try {
-    await fetch('https://taraz-backend-prog.vercel.app/api/missions/' + m.id, {
+    await fetch(API_BASE + '/api/missions/' + m.id, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ steps: m.steps, total: m.total })
@@ -1759,7 +1780,7 @@ async function finalizeMission() {
   m.status = 'completed';
 
   try {
-    await fetch('https://taraz-backend-prog.vercel.app/api/missions/' + m.id, {
+    await fetch(API_BASE + '/api/missions/' + m.id, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ steps: m.steps, total: m.total, status: 'completed' })
@@ -1835,7 +1856,7 @@ async function submitEscrow() {
   };
   
   try {
-    var res = await fetch('https://taraz-backend-prog.vercel.app/api/escrow', {
+    var res = await fetch(API_BASE + '/api/escrow', {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify(escrowData)
@@ -1958,7 +1979,6 @@ async function submitRatingForMission(toPhone) {
 /* ============================================================
    API LAYER 
    ============================================================ */
-var API_BASE = 'https://taraz-backend-prog.vercel.app';
 var api = {
   _fetch: async function(path, options, retries = 2) {
   try {
@@ -2028,11 +2048,19 @@ window.apiHealthCheck = async function() {
 };
 console.log('✓ API layer v1 loaded');
 
+/* میانبرهای manifest: ?go=sell | ?go=bazaar (فقط صفحات مجاز، بعد از ورود) */
+window.addEventListener('load', function () {
+  try {
+    var g = new URLSearchParams(location.search).get('go');
+    if (g && ['sell','browse','profile'].indexOf(g) >= 0 && localStorage.getItem('taraz.token')) setTimeout(function () { try { go(g); } catch (e) {} }, 600);
+  } catch (e) {}
+});
+
 /* Service Worker: ثبت برای کش آفلاین و اعلان‌ها (خطا برنامه را متوقف نمی‌کند) */
 (function () {
   if (!('serviceWorker' in navigator)) return;
   window.addEventListener('load', function () {
-    navigator.serviceWorker.register('/service-worker.js').catch(function (e) {
+    navigator.serviceWorker.register('service-worker.js').catch(function (e) {
       console.warn('SW register failed:', e);
     });
   });
