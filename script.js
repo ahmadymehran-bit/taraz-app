@@ -552,7 +552,7 @@ async function pickListingPhotos(){
 
         if(uploadResult.error) {
           console.error(uploadResult.error);
-          toast('خطا در آپلود عکس');
+          currentPhotos.push(base64Data); // فال‌بک: ذخیره به‌صورت base64
           continue;
         }
 
@@ -582,10 +582,10 @@ async function pickListingPhotos(){
 }
 
 function renderSellPhotoPreviews(){
-var wrap=document.getElementById('sell-photos-preview'); if(!wrap)return;
 var photos=window._tempListingPhotos||[];
-if(!photos.length){wrap.innerHTML='';return}
-wrap.innerHTML=photos.map(function(p,i){ return '<div class="photo-preview-item"><img src="'+esc(p)+'"><button type="button" class="photo-remove" onclick="removeSellPhoto('+i+')">×</button></div>'; }).join('');
+document.querySelectorAll('[data-photo-prev]').forEach(function(wrap){
+  wrap.innerHTML=photos.map(function(p,i){ return '<div class="photo-preview-item"><img src="'+esc(p)+'"><button type="button" class="photo-remove" onclick="removeSellPhoto('+i+')">×</button></div>'; }).join('');
+});
 }
 function removeSellPhoto(index){
 var photos=window._tempListingPhotos||[]; photos.splice(index,1); window._tempListingPhotos=photos; renderSellPhotoPreviews();
@@ -2150,7 +2150,8 @@ function postCat(c){
   var d=(postMode==='offer')?OFFER_FORMS[c]:POST_FORMS[c]; if(!d){toast('به‌زودی');return}
   postCurCat=c;
   document.getElementById('post-form-title').textContent=d.icon+(postMode==='offer'?' تخفیف ویژه ‹ ':' ثبت ')+c;
-  var h=d.f.map(function(x,i){
+  window._tempListingPhotos=[];
+  var h=photoBlockHTML()+d.f.map(function(x,i){
     var id='pf-'+i, inp;
     if(x[1]==='sel') inp='<select id="'+id+'">'+x[2].map(function(o){return '<option>'+o+'</option>'}).join('')+'</select>';
     else if(x[1]==='date') inp='<input id="'+id+'" type="date">';
@@ -2168,8 +2169,8 @@ function submitPostForm(){
   var vals={}, miss=false;
   d.f.forEach(function(x,i){var v=document.getElementById('pf-'+i).value.trim(); vals[x[0]]=v; if(!v && x[1]!=='date' && x[0].indexOf('اختیاری')<0) miss=true});
   if(miss){toast('همه فیلدها را پر کن');return}
-  var all=DB.demands; all.push({id:'P'+Date.now(),buyerPhone:u.phone,buyerName:u.name,categoryId:(postMode==='offer'?'offer':'service'),offer:postMode==='offer',serviceGroup:postCurCat,title:postCurCat,fields:vals,note:document.getElementById('pf-note').value.trim(),qty:'',qtyNum:0,unit:'',price:0,region:'',status:'open',createdAt:Date.now()});
-  DB.demands=all; toast('ثبت شد ✓'); go('home');
+  var all=DB.demands; all.push({id:'P'+Date.now(),buyerPhone:u.phone,buyerName:u.name,photos:(window._tempListingPhotos||[]).slice(),categoryId:(postMode==='offer'?'offer':'service'),offer:postMode==='offer',serviceGroup:postCurCat,title:postCurCat,fields:vals,note:document.getElementById('pf-note').value.trim(),qty:'',qtyNum:0,unit:'',price:0,region:'',status:'open',createdAt:Date.now()});
+  DB.demands=all; window._tempListingPhotos=[]; toast('ثبت شد ✓'); go('home');
 }
 
 // ===== زیر صفحه فروش: ثبت آگهی ساده دام =====
@@ -2184,30 +2185,61 @@ var SELL_SUB_FIELDS=[
  ['گواهی سلامت / واکسن','sel',['دارم','ندارم']],
  ['منطقه / شهر','txt','مثلاً: اصفهان']
 ];
+var ssStep=1;
+var SS_TITLES=['عکس و نوع دام','مشخصات دام','قیمت و محل'];
+function photoBlockHTML(){
+  return '<div class="field"><label style="'+SELL_SUB_LBL+'">📷 عکس آگهی (حداکثر ۳ عکس)</label>'+
+  '<button type="button" class="btn-green" onclick="pickListingPhotos()" style="min-height:48px;font-size:15px;background:#2b4a33">➕ افزودن عکس</button>'+
+  '<div data-photo-prev style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"></div></div>';
+}
 function renderSellSub(){
-  var h=SELL_SUB_FIELDS.map(function(x,i){
-    var id='ss-'+i, inp;
+  window._tempListingPhotos=[];
+  ssStep=1;
+  var fld=function(i){
+    var x=SELL_SUB_FIELDS[i], id='ss-'+i, inp;
     if(x[1]==='sel') inp='<select id="'+id+'">'+x[2].map(function(o){return '<option>'+o+'</option>'}).join('')+'</select>';
     else if(x[1]==='tel') inp='<input id="'+id+'" type="tel" inputmode="numeric" placeholder="'+x[2]+'" style="direction:ltr;text-align:left">';
     else inp='<input id="'+id+'" placeholder="'+x[2]+'">';
     return '<div class="field"><label style="'+SELL_SUB_LBL+'">'+x[0]+'</label>'+inp+'</div>';
-  }).join('');
-  h+='<div class="field"><label style="'+SELL_SUB_LBL+'">توضیحات (اختیاری)</label><input id="ss-note" placeholder="مثلاً: تازه واکسن خورده، شیرده"></div>';
-  h+='<button type="button" class="btn-green" onclick="submitSellSub()" style="min-height:60px;font-size:17px">📤 منتشر کن</button>';
+  };
+  var note='<div class="field"><label style="'+SELL_SUB_LBL+'">توضیحات (اختیاری)</label><input id="ss-note" placeholder="مثلاً: تازه واکسن خورده، شیرده"></div>';
+  var steps=[
+    photoBlockHTML()+fld(0)+fld(1),
+    fld(2)+fld(3)+fld(4)+fld(6),
+    fld(5)+fld(7)+note
+  ];
+  var h='<div id="ss-bar" style="margin-bottom:14px"></div>';
+  steps.forEach(function(s,k){ h+='<div class="ss-step" id="ss-step-'+(k+1)+'">'+s+'</div>'; });
+  h+='<div style="display:flex;gap:10px;margin-top:6px"><button type="button" id="ss-prev" onclick="ssMove(-1)" style="flex:1;min-height:56px;border-radius:14px;border:1px solid #e0b04a;background:transparent;color:#f3f1e6;font-weight:700">‹ قبلی</button><button type="button" id="ss-next" class="btn-green" onclick="ssMove(1)" style="flex:1;min-height:56px;font-size:16px"></button></div>';
   document.getElementById('sell-sub-body').innerHTML=h;
+  ssShow();
+}
+function ssShow(){
+  for(var k=1;k<=3;k++){ var el=document.getElementById('ss-step-'+k); if(el) el.style.display=(k===ssStep?'block':'none'); }
+  var bar=document.getElementById('ss-bar');
+  if(bar) bar.innerHTML='<div style="color:#e0b04a;font-weight:700;font-size:14px;margin-bottom:6px">مرحله '+faDigits(ssStep)+' از '+faDigits(3)+' · '+SS_TITLES[ssStep-1]+'</div>'+
+    '<div style="height:6px;background:#2b4a33;border-radius:4px;overflow:hidden"><div style="height:100%;width:'+(ssStep/3*100)+'%;background:#e0b04a"></div></div>';
+  var p=document.getElementById('ss-prev'); if(p) p.style.visibility=(ssStep>1?'visible':'hidden');
+  var n=document.getElementById('ss-next'); if(n) n.textContent=(ssStep<3?'مرحله بعد ›':'📤 منتشر کن');
+}
+function ssMove(d){
+  if(d>0 && ssStep===3){ submitSellSub(); return; }
+  if(d>0 && ssStep===2 && !document.getElementById('ss-2').value.trim()){ toast('تعداد را وارد کن'); return; }
+  ssStep=Math.max(1,Math.min(3,ssStep+d)); ssShow();
 }
 async function submitSellSub(){
   var u=DB.user; if(!u){go('auth');return}
   var v=SELL_SUB_FIELDS.map(function(x,i){return document.getElementById('ss-'+i).value.trim()});
   var num=function(t){return Number(String(t).replace(/[^\d]/g,''))};
-  if(!v[2]){toast('تعداد را وارد کن');return}
-  if(!num(v[5])){toast('قیمت را وارد کن');return}
-  if(!v[7]){toast('منطقه را وارد کن');return}
+  if(!v[2]){ssStep=2;ssShow();toast('تعداد را وارد کن');return}
+  if(!num(v[5])){ssStep=3;ssShow();toast('قیمت را وارد کن');return}
+  if(!v[7]){ssStep=3;ssShow();toast('منطقه را وارد کن');return}
   var title=v[0]+(v[1]?' '+v[1]:'');
   var item={ id:'L'+Date.now(), sellerName:u.name, sellerPhone:u.phone, categoryId:'livestock', title:title,
     qty:v[2]+' رأس', qtyNum:num(v[2]), price:num(v[5]), region:v[7], desc:document.getElementById('ss-note').value.trim(),
-    breed:v[1], weight:num(v[3])||null, age:num(v[4])||null, vaccine:v[6], photos:[], location:null, productKey:productKey(title), createdAt:Date.now() };
+    breed:v[1], weight:num(v[3])||null, age:num(v[4])||null, vaccine:v[6], photos:(window._tempListingPhotos||[]).slice(), location:null, productKey:productKey(title), createdAt:Date.now() };
   var all=DB.listings; all.push(item); DB.listings=all;
+  window._tempListingPhotos=[];
   try { await api.createListing(item); toast('✓ آگهی منتشر شد'); } catch(e){ toast('⚠ آگهی محلی ذخیره شد'); }
   go('home');
 }
