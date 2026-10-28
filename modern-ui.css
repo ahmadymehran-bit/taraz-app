@@ -1608,3 +1608,7 @@ body, .screen { background: linear-gradient(180deg, #13402f 0%, #0b2a22 100%) !i
 .bz-tick-rect .bz-tk-pp{font-size:15px;font-weight:800;color:#fff}
 .bz-tick-rect .bz-tk-pp small{font-size:10px;font-weight:400}
 .bz-tick-rect .bz-demo{display:none}
+
+/* بازار: عنوان تاراز قابل‌دیدن روی پس‌زمینه تیره */
+#screen-browse .modern-header .mh-title { color:#e0b04a !important; }
+#screen-browse .modern-header .mh-brand { z-index:1; }
