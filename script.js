@@ -780,7 +780,7 @@ async function renderServicesStep3(el){
     onlineHtml = '<div style="padding: 0 16px 16px;"><h3 style="font-size:16px;color:#16a34a;margin-bottom:8px;">🟢 آنلاین و آماده</h3>';
     onlineHtml += onlineProviders.map(function(p) {
       return '<div class="card" style="border-color:#cfe5da;background:#eef8f3;">' +
-             '<b style="color:var(--forest);">' + p.name + '</b>' +
+             '<b style="color:var(--forest);">' + esc(p.name) + '</b>' +
              '<small style="display:block;margin-top:4px;">📍 ' + p.region + (p.notes ? ' · ' + p.notes : '') + '</small>' +
              '</div>';
     }).join('');
@@ -800,7 +800,7 @@ var s=serviceOf(c.serviceType); var t=serviceTypeOf(c.serviceType,c.typeId);
 var free=Number(c.capacityTotal||0) - Number(c.capacityUsed||0);
 var route=(c.routeFrom&&c.routeTo) ? (c.routeFrom+' ← '+c.routeTo) : c.region;
 var full=free<=0;
-return '<div class="capacity-big-card" onclick="openCapacity(\''+c.id+'\',\'services\')"><div class="head"><div class="avatar-big">'+t.icon+'</div><div class="info"><div class="name">'+esc(c.ownerName)+'</div><div class="route">📍 '+esc(route)+'</div></div></div><div class="avail-line '+(full?'full':'')+'">'+(full?'ظرفیت تکمیل':'✅ '+faDigits(free)+' '+c.unit+' آزاد')+'</div><div class="price-line"><span class="lbl">قیمت هر '+c.unit+'</span><span class="val">'+faPrice(c.price)+'</span></div><button type="button" class="reserve-btn" '+(full?'disabled':'')+' onclick="event.stopPropagation();openCapacity(\''+c.id+'\',\'services\')">'+(full?'تکمیل':'رزرو کن 📅')+'</button></div>';
+return '<div class="capacity-big-card" onclick="openCapacity(\''+c.id+'\',\'services\')"><div class="head"><div class="avatar-big">'+t.icon+'</div><div class="info"><div class="name">'+esc(c.ownerName)+'</div><div class="route">📍 '+esc(route)+'</div></div></div><div class="avail-line '+(full?'full':'')+'">'+(full?'ظرفیت تکمیل':'✅ '+faDigits(free)+' '+esc(c.unit)+' آزاد')+'</div><div class="price-line"><span class="lbl">قیمت هر '+c.unit+'</span><span class="val">'+faPrice(c.price)+'</span></div><button type="button" class="reserve-btn" '+(full?'disabled':'')+' onclick="event.stopPropagation();openCapacity(\''+c.id+'\',\'services\')">'+(full?'تکمیل':'رزرو کن 📅')+'</button></div>';
 }
 function openCapacity(id,returnTo){ capacityReturnTo=returnTo||currentScreen||'services'; currentCapacityId=id; go('capacity'); }
 function renderCapacityDetail(){
@@ -816,7 +816,7 @@ function renderCapacityDetail(){
     if(bks.length){ actionBlock+='<div style="margin-top:20px"><h2 style="font-size:20px;margin:0 0 12px 16px">📨 رزروها</h2>'; actionBlock+=bks.map(b=>'<div class="booking-card"><div class="head"><b>'+b.customerName+'</b><span class="status '+b.status+'">'+(b.status==='pending'?'در انتظار':b.status==='confirmed'?'تأیید':'تکمیل')+'</span></div><small>'+faDigits(b.qty)+' '+c.unit+' · '+faPrice(b.total)+' تومان<br>'+timeAgo(b.createdAt)+'</small>'+(b.status==='pending'?'<button type="button" class="btn-green" style="margin-top:12px;padding:14px" onclick="acceptBooking(\''+b.id+'\')">تأیید</button>':'')+(b.status==='confirmed'?'<button type="button" class="btn-blue" style="margin-top:12px;padding:14px" onclick="completeBooking(\''+b.id+'\')">تکمیل شد</button>':'')+'</div>').join(''); actionBlock+='</div>'; }
   } else if(free>0){ actionBlock='<div class="field"><label>چقدر می‌خواهی؟</label><input id="book-qty" type="tel" inputmode="numeric" placeholder="مثلاً: ۵" style="direction:ltr;text-align:left"></div><button type="button" class="btn-green" onclick="submitBooking(\''+c.id+'\')" style="min-height:64px;font-size:18px">📅 رزرو کن</button>'; } else { actionBlock='<div class="card" style="background:#ffe0e3;border-color:#f5c8cc;text-align:center"><b style="color:var(--fire);font-size:17px">ظرفیت تکمیل است</b></div>'; }
   const body=document.getElementById('capacity-detail-body');
-  body.innerHTML='<div class="capacity-big-card" style="cursor:default;margin:0 16px 0"><div class="head"><div class="avatar-big">'+t.icon+'</div><div class="info"><div class="name">'+esc(c.ownerName)+'</div><div class="route">📍 '+esc(route)+'</div></div></div><div class="avail-line '+(free<=0?'full':'')+'">'+(free>0?'✅ '+faDigits(free)+' '+c.unit+' آزاد':'ظرفیت تکمیل')+'</div><div class="price-line"><span class="lbl">قیمت هر '+c.unit+'</span><span class="val">'+faPrice(c.price)+'</span></div></div><div style="padding:0 16px 16px">'+actionBlock+'</div>';
+  body.innerHTML='<div class="capacity-big-card" style="cursor:default;margin:0 16px 0"><div class="head"><div class="avatar-big">'+t.icon+'</div><div class="info"><div class="name">'+esc(c.ownerName)+'</div><div class="route">📍 '+esc(route)+'</div></div></div><div class="avail-line '+(free<=0?'full':'')+'">'+(free>0?'✅ '+faDigits(free)+' '+esc(c.unit)+' آزاد':'ظرفیت تکمیل')+'</div><div class="price-line"><span class="lbl">قیمت هر '+c.unit+'</span><span class="val">'+faPrice(c.price)+'</span></div></div><div style="padding:0 16px 16px">'+actionBlock+'</div>';
 }
 function submitBooking(capacityId){
   const u=DB.user;if(!u){go('auth');return}
