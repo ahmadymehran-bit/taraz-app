@@ -515,7 +515,7 @@ async function executeDeleteAccount() {
 }
 
 function authHeaders(){var h={'Content-Type':'application/json'};try{var t=localStorage.getItem('taraz.token');if(t)h['Authorization']='Bearer '+t;}catch(e){}return h;}
-function logout(){try{localStorage.removeItem('taraz.token')}catch(e){}DB.user=null;currentConvId=null;currentCapacityId=null;go('auth')}
+function logout(){try{localStorage.removeItem('taraz.token')}catch(e){}DB.user=null;currentConvId=null;try{closeChatChannel()}catch(e){}currentCapacityId=null;go('auth')}
 var _mapPicker = null; var _mapMarker = null; var _tempListingLocation = null;
 function toggleMapPicker(){
 var wrap=document.getElementById('map-picker'); var help=document.getElementById('map-help'); var btn=document.getElementById('map-toggle-btn');
@@ -997,15 +997,23 @@ thread.forEach(function(m){ var d = new Date(m.createdAt); var dayStr = faDigits
 body.innerHTML = html;
 }
 setTimeout(function(){ body.scrollTop = body.scrollHeight; }, 50); updateChatBadge();
-supabaseClient.channel('chat_' + c.id)
-  .on('broadcast', { event: 'new_message' }, (payload) => {
-    if (payload.payload.fromPhone !== u.phone) {
-      renderChat();
-    }
-  })
-  .subscribe();
+chatChannelFor(c.id, u.phone);
 
 }
+/* یک کانال واحد برای هر گفتگو؛ فقط «سیگنال» می‌فرستد (بدون متن پیام) و محتوا از سرور خوانده می‌شود */
+var _chatCh = null, _chatChId = null;
+function chatChannelFor(convId, myPhone){
+  if(_chatCh && _chatChId === convId) return _chatCh;
+  if(_chatCh){ try { supabaseClient.removeChannel(_chatCh); } catch(e){} _chatCh = null; }
+  _chatChId = convId;
+  _chatCh = supabaseClient.channel('chat_' + convId)
+    .on('broadcast', { event: 'new_message' }, function(p){
+      if(p && p.payload && p.payload.from !== myPhone && currentConvId === convId) renderChat();
+    })
+    .subscribe();
+  return _chatCh;
+}
+function closeChatChannel(){ if(_chatCh){ try { supabaseClient.removeChannel(_chatCh); } catch(e){} _chatCh = null; _chatChId = null; } }
 async function sendMessage(){
 var u = DB.user; if(!u || !currentConvId) return;
 var inp = document.getElementById('chat-input'); var text = inp.value.trim(); if(!text) return;
@@ -1021,11 +1029,7 @@ var msgs = DB.messages; msgs.push({ id: msgData.id, convId: c.id, fromPhone: u.p
 var convs = DB.conversations; var idx = convs.findIndex(function(x){ return x.id === c.id; }); if(idx >= 0){ convs[idx].lastMessageAt = Date.now(); DB.conversations = convs; }
 inp.value = '';
   try { var otherPhone = (u.phone === c.sellerPhone) ? c.buyerPhone : c.sellerPhone; fetch(API_BASE + '/api/push/send', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ toPhone: otherPhone, title: 'پیام جدید از ' + u.name, body: text, data: { convId: c.id } }) }); } catch(e){}
-supabaseClient.channel('chat_' + c.id).send({
-  type: 'broadcast',
-  event: 'new_message',
-  payload: { text: text, fromPhone: u.phone }
-});
+try { var _ch = chatChannelFor(c.id, u.phone); if(_ch) _ch.send({ type: 'broadcast', event: 'new_message', payload: { from: u.phone } }); } catch(e){}
   renderChat();
 }
 function createBuyRequest(listingId){
