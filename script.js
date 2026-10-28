@@ -360,7 +360,7 @@ list=list.map(function(n){ return { id:n.id, type:n.type, icon:n.icon||'🔔', t
 list.sort(function(a,b){return b.createdAt-a.createdAt});
 var wrap=document.getElementById('notif-list'); if(!wrap)return;
 if(!list.length){ wrap.innerHTML='<div class="empty"><span class="emoji">🔔</span>اعلانی نیست</div>'; return; }
-wrap.innerHTML=list.map(function(n){ return '<div class="notif-card '+(n.read?'':'unread')+'"><div class="notif-ic">'+(n.icon||'🔔')+'</div><div class="notif-main"><b>'+esc(n.title)+'</b><small>'+esc(n.body)+'</small><span class="time">'+timeAgo(n.createdAt)+'</span></div></div>'; }).join('');
+wrap.innerHTML=list.map(function(n){ var cid=''; if(n.type==='message'&&typeof n.id==='string'&&n.id.indexOf('NM-')===0){ cid=n.id.slice(3); var k=cid.lastIndexOf('-'); if(k>0)cid=cid.slice(0,k); } var oc=cid?' onclick="openChat(this.dataset.cid)" data-cid="'+esc(cid)+'" style="cursor:pointer"':''; return '<div class="notif-card '+(n.read?'':'unread')+'"'+oc+'><div class="notif-ic">'+(n.icon||'🔔')+'</div><div class="notif-main"><b>'+esc(n.title)+'</b><small>'+esc(n.body)+'</small><span class="time">'+timeAgo(n.createdAt)+'</span></div></div>'; }).join('');
 var all=DB.notifications; all.forEach(function(n){n.read=true}); DB.notifications=all; updateBellBadge();
 }
 
