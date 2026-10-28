@@ -1857,3 +1857,7 @@ html body #screen-detail #detail-body .detail-card .detail-meta,
 html body #screen-detail #detail-body .detail-card .detail-meta *{color:#9a6b00 !important;opacity:1 !important}
 html body #screen-detail #detail-body .detail-card div[style*="white-space:pre-line"]{color:#9a6b00 !important;opacity:1 !important}
 html body #screen-detail #detail-body .detail-card div[style*="border-top"] *{color:#9a6b00 !important}
+
+/* همه نوشته‌های کارت جزئیات آگهی: طلایی (دکمه‌ها جدا) */
+html body #screen-detail #detail-body .detail-card, html body #screen-detail #detail-body .detail-card *:not(.pill):not(.discount){color:#9a6b00 !important;opacity:1 !important;-webkit-text-fill-color:#9a6b00 !important}
+html body #screen-detail #detail-body .detail-card .detail-price-block .discount{color:#fff !important;-webkit-text-fill-color:#fff !important}
