@@ -2077,8 +2077,6 @@ function renderBazaar(){
   if(!bzG('bz-cats'))return;var c=BZ.cats[BZ.cat],ag=BZ.cat==='agri',pl=BZ.places[BZ.scope];
   document.querySelectorAll('#bz-seg button').forEach(function(b,i){b.classList.toggle('on',['mine','city','prov'][i]===BZ.scope)});
   bzG('bz-place').innerHTML=pl.map(function(x){return '<option'+(x===BZ.place?' selected':'')+'>'+x+'</option>'}).join('');
-  bzG('bz-rname').textContent=c.t+(ag?'':' زنده');bzG('bz-rprice').textContent=bzFa(c.p);bzG('bz-runit').textContent='تومان / کیلو';
-  bzG('bz-range').textContent=bzFa(c.lo)+' — '+bzFa(c.hi);
   bzG('bz-cats').innerHTML=Object.keys(BZ.cats).map(function(k){var x=BZ.cats[k];return '<option value="'+k+'"'+(k===BZ.cat?' selected':'')+'>'+x.i+' '+x.t+'</option>'}).join('');
   var ln=bzG('bz-locname');if(ln)ln.textContent=BZ.place;
   bzG('bz-btitle').textContent='🛒 خرید '+c.t;bzG('bz-thumb').src=c.img;bzG('bz-cu').textContent=c.u;bzG('bz-wbox').style.display=ag?'none':'';
