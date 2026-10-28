@@ -305,7 +305,7 @@
         <button type="button" class="post-btn pb-offer" onclick="postPick('offer')">
           <span class="pb-ic">%</span><span class="pb-txt">تخفیف ویژه</span><span class="pb-arr">‹</span>
         </button>
-        <button type="button" class="post-btn pb-serv" onclick="servicesFromSell()">
+        <button type="button" class="post-btn pb-serv" onclick="postPick('services')">
           <span class="pb-ic">👨‍🌾</span><span class="pb-txt">خدمات و مشاغل</span><span class="pb-arr">‹</span>
         </button>
       </div>
@@ -336,6 +336,17 @@
         <button type="button" class="post-btn pb-cat offer-only" style="display:none" onclick="postCat('نهاده و کشاورزی')"><span class="pb-ic">🌾</span><span class="pb-txt">نهاده و کشاورزی</span><span class="pb-arr">‹</span></button>
         <button type="button" class="post-btn pb-cat" onclick="postCat('نیروی کار و خدمات')"><span class="pb-ic">🧑‍🌾</span><span class="pb-txt">نیروی کار و خدمات</span><span class="pb-arr">‹</span></button>
       </div>
+    </div>
+  </section>
+
+  <!-- ============ زیر صفحه فروش (ثبت آگهی ساده دام) ============ -->
+  <section class="screen" id="screen-sell-sub">
+    <div class="post-page">
+      <div class="post-subhead">
+        <button type="button" class="post-back" onclick="go('sell')" aria-label="بازگشت">›</button>
+        <b>ثبت آگهی</b>
+      </div>
+      <div id="sell-sub-body" style="padding:8px 4px 40px"></div>
     </div>
   </section>
 

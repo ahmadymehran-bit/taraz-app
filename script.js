@@ -725,8 +725,7 @@ function servicesBack(){
   if(servicesStep===3)goServicesStep2(servicesCurrentService); else if(servicesStep===2)goServicesStep1(); else { const r=servicesReturnTo||'browse'; servicesReturnTo=null; go(r); }
 }
 var servicesReturnTo=null;
-function servicesFromSell(){ servicesReturnTo='sell'; go('services'); 
-}
+function servicesFromSell(){ postPick('services'); }
 function renderServicesForm(el){
   el.innerHTML='<div style="padding:0 16px 40px"><h3 style="margin:0 0 4px">➕ ثبت شغل من</h3><div class="sub">اگر راننده، کمباین‌دار، دامپزشک یا قصاب هستی اینجا ثبت کن</div><div class="field"><label>چه کاری؟</label><select id="cap-service" onchange="updateCapTypes()">'+SERVICES.map(s=>'<option value="'+s.id+'">'+s.icon+' '+s.title+'</option>').join('')+'</select></div><div class="field"><label>دقیقاً چه؟</label><select id="cap-type"></select></div><div class="field"><label>اسم شغل / وسیله</label><input id="cap-title" placeholder="مثلاً: کامیون یخچال‌دار"></div><div class="field"><label>کجایی؟</label><input id="cap-region" placeholder="مثلاً: اصفهان"></div><div class="field"><label>مسیر (اختیاری)</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><input id="cap-from" placeholder="از"><input id="cap-to" placeholder="به"></div></div><div class="field"><label>چقدر ظرفیت داری؟</label><input id="cap-total" type="tel" inputmode="numeric" placeholder="مثلاً: ۱۵" style="direction:ltr;text-align:left"></div><div class="field"><label>قیمت هر واحد (تومان)</label><input id="cap-price" type="tel" inputmode="numeric" placeholder="مثلاً: ۳۵۰۰۰۰" style="direction:ltr;text-align:left"></div><div class="field"><label>از چه تاریخی آزادی؟</label><input id="cap-from-date" type="date"></div><button type="button" class="btn-green" onclick="submitCreateCapacity()" style="min-height:60px;font-size:17px">✅ ثبت کن</button></div></div>'; updateCapTypes();
 }
@@ -2112,7 +2111,9 @@ function applyProfileRole(role){
 
 /* ===== صفحه ثبت آگهی: انتخاب خرید/فروش و زیرصفحه دسته‌بندی ===== */
 var postMode='buy';
-function postPick(m){postMode=m;var t=document.getElementById('post-sub-title');if(t)t.textContent=(m==='offer'?'تخفیف ویژه':'ثبت آگهی');document.querySelectorAll('#screen-post-sub .offer-only').forEach(function(b){b.style.display=(m==='offer'?'':'none')});go('post-sub')}
+function postPick(m){
+  if(m==='sell'){ renderSellSub(); go('sell-sub'); return; }
+  postMode=m;var t=document.getElementById('post-sub-title');if(t)t.textContent=(m==='offer'?'تخفیف ویژه':(m==='services'?'خدمات و مشاغل':'ثبت آگهی'));document.querySelectorAll('#screen-post-sub .offer-only').forEach(function(b){b.style.display=(m==='offer'?'':'none')});go('post-sub')}
 var POST_FORMS={
 'حمل و نقل':{icon:'🚚',f:[['نوع ماشین','sel',['کامیون','کامیونت','وانت','تریلی','یخچال‌دار','دام‌بر']],['تناژ / ظرفیت (تن)','tel','مثلاً: ۱۰'],['نرخ کرایه (تومان)','tel','مثلاً: ۳۵۰۰۰۰'],['مبدأ','txt','مثلاً: اصفهان'],['مقصد','txt','مثلاً: تهران'],['تاریخ آمادگی','date'],['شماره پلاک / هوشمند (اختیاری)','txt','']]},
 'کشتار و بسته‌بندی':{icon:'🔪',f:[['نوع خدمت','sel',['کشتار دام سبک','کشتار دام سنگین','کشتار طیور','برش و بسته‌بندی','حمل گوشت']],['شماره مجوز بهداشتی','txt',''],['ظرفیت روزانه (رأس)','tel','مثلاً: ۵۰'],['هزینه هر رأس (تومان)','tel',''],['آدرس کشتارگاه / کارگاه','txt',''],['شهر','txt','']]},
@@ -2161,4 +2162,44 @@ function submitPostForm(){
   if(miss){toast('همه فیلدها را پر کن');return}
   var all=DB.demands; all.push({id:'P'+Date.now(),buyerPhone:u.phone,buyerName:u.name,categoryId:(postMode==='offer'?'offer':'service'),offer:postMode==='offer',serviceGroup:postCurCat,title:postCurCat,fields:vals,note:document.getElementById('pf-note').value.trim(),qty:'',qtyNum:0,unit:'',price:0,region:'',status:'open',createdAt:Date.now()});
   DB.demands=all; toast('ثبت شد ✓'); go('home');
+}
+
+// ===== زیر صفحه فروش: ثبت آگهی ساده دام =====
+var SELL_SUB_LBL='color:#f3f1e6;font-weight:700;display:block;margin-bottom:6px;opacity:1';
+var SELL_SUB_FIELDS=[
+ ['نوع دام','sel',['بز','بزغاله','گوسفند','میش / قوچ','بره','گوساله','گاو','سایر']],
+ ['نژاد','txt','مثلاً: زل، لری، سانن'],
+ ['تعداد (رأس)','tel','مثلاً: ۱۰'],
+ ['وزن تقریبی (کیلو)','tel','مثلاً: ۴۵'],
+ ['سن (ماه)','tel','مثلاً: ۱۲'],
+ ['قیمت هر رأس (تومان)','tel','مثلاً: ۸۰۰۰۰۰۰'],
+ ['گواهی سلامت / واکسن','sel',['دارم','ندارم']],
+ ['منطقه / شهر','txt','مثلاً: اصفهان']
+];
+function renderSellSub(){
+  var h=SELL_SUB_FIELDS.map(function(x,i){
+    var id='ss-'+i, inp;
+    if(x[1]==='sel') inp='<select id="'+id+'">'+x[2].map(function(o){return '<option>'+o+'</option>'}).join('')+'</select>';
+    else if(x[1]==='tel') inp='<input id="'+id+'" type="tel" inputmode="numeric" placeholder="'+x[2]+'" style="direction:ltr;text-align:left">';
+    else inp='<input id="'+id+'" placeholder="'+x[2]+'">';
+    return '<div class="field"><label style="'+SELL_SUB_LBL+'">'+x[0]+'</label>'+inp+'</div>';
+  }).join('');
+  h+='<div class="field"><label style="'+SELL_SUB_LBL+'">توضیحات (اختیاری)</label><input id="ss-note" placeholder="مثلاً: تازه واکسن خورده، شیرده"></div>';
+  h+='<button type="button" class="btn-green" onclick="submitSellSub()" style="min-height:60px;font-size:17px">📤 منتشر کن</button>';
+  document.getElementById('sell-sub-body').innerHTML=h;
+}
+async function submitSellSub(){
+  var u=DB.user; if(!u){go('auth');return}
+  var v=SELL_SUB_FIELDS.map(function(x,i){return document.getElementById('ss-'+i).value.trim()});
+  var num=function(t){return Number(String(t).replace(/[^\d]/g,''))};
+  if(!v[2]){toast('تعداد را وارد کن');return}
+  if(!num(v[5])){toast('قیمت را وارد کن');return}
+  if(!v[7]){toast('منطقه را وارد کن');return}
+  var title=v[0]+(v[1]?' '+v[1]:'');
+  var item={ id:'L'+Date.now(), sellerName:u.name, sellerPhone:u.phone, categoryId:'livestock', title:title,
+    qty:v[2]+' رأس', qtyNum:num(v[2]), price:num(v[5]), region:v[7], desc:document.getElementById('ss-note').value.trim(),
+    breed:v[1], weight:num(v[3])||null, age:num(v[4])||null, vaccine:v[6], photos:[], location:null, productKey:productKey(title), createdAt:Date.now() };
+  var all=DB.listings; all.push(item); DB.listings=all;
+  try { await api.createListing(item); toast('✓ آگهی منتشر شد'); } catch(e){ toast('⚠ آگهی محلی ذخیره شد'); }
+  go('home');
 }
