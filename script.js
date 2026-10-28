@@ -682,18 +682,19 @@ var photoHTML='<div class="card-photo"><img src="'+esc(photo)+'">'+(l.photos&&l.
 }
 function renderBrowseChips(){
   const el=document.getElementById('browse-chips');if(!el)return;
-  const all=[{id:'livestock',short:'دامداری',img:'image/chip-livestock.webp'},{id:'crops',short:'کشاورزی',img:'image/chip-agri.webp'},{id:'vet_drugs',short:'دامپزشکی',img:'image/chip-vet.webp'},{id:'services',short:'خدمات',img:'image/chip-services.webp'},{id:'bargain',short:'زیرقیمت',img:'image/chip-bargain.webp'}];
+  const all=[{id:'all',short:'همه',img:''},{id:'livestock',short:'دامداری',img:'image/chip-livestock.webp'},{id:'crops',short:'کشاورزی',img:'image/chip-agri.webp'},{id:'services',short:'خدمات',img:'image/chip-services.webp'},{id:'bargain',short:'زیرقیمت',img:'image/chip-bargain.webp'}];
   const coin='<span class="coin"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="#fff3b0" stroke="#9a6b00" stroke-width="2"/><circle cx="20" cy="20" r="12" fill="none" stroke="#b8860b" stroke-width="1.5"/><text x="20" y="26" text-anchor="middle" font-size="16" font-weight="900" fill="#7a5200">$</text></svg></span>';
   el.innerHTML=all.map(c=>{
     const act=(c.id==='bargain'?browseBargain:browseCategory===c.id)?' active':'';
     if(c.id==='bargain') return '<button type="button" class="chip-big chip-wide'+act+'" onclick="pickBrowseCat(\'bargain\')"><span class="coins">'+coin+coin+'</span><span class="wide-txt">'+c.short+'</span><span class="coins">'+coin+coin+'</span></button>';
+    if(c.id==='all') return '<button type="button" class="chip-big'+(browseCategory==='all'&&!browseBargain?' active':'')+'" onclick="pickBrowseCat(\'all\')"><span class="ic" style="font-size:22px;display:flex;align-items:center;justify-content:center">🏠</span>'+c.short+'</button>';
     return '<button type="button" class="chip-big'+act+'" onclick="pickBrowseCat(\''+c.id+'\')"><span class="ic"><img src="'+c.img+'" alt="" loading="lazy"></span>'+c.short+'</button>';
   }).join('');
 }
 var browseBargain=false;
 function toggleBargain(){browseBargain=!browseBargain;renderBrowse()}
 function isBargainListing(l){return !!((l.oldPrice&&l.price<l.oldPrice)||l.urgentReason==="expiry")}
-function pickBrowseCat(id){if(id==='bargain'){toggleBargain();return}browseCategory=(browseCategory===id)?'all':id;renderBrowse()}
+function pickBrowseCat(id){if(id==='all'){browseCategory='all';browseBargain=false;renderBrowse();return}if(id==='bargain'){toggleBargain();return}browseCategory=(browseCategory===id)?'all':id;renderBrowse()}
 function filterBrowse(v){browseSearch=v.toLowerCase();const c=document.getElementById('browse-clear');if(c)c.hidden=!v;renderBrowse()}
 var _browseFilters = { priceMin: 0, priceMax: 0, region: '' };
 function toggleFilterPanel(){
