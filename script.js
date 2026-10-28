@@ -2073,6 +2073,7 @@ function bzSum(){var c=BZ.cats[BZ.cat],ag=BZ.cat==='agri',tw=ag?BZ.count*1000:BZ
   bzG('bz-tw').textContent=bzFa(tw)+' کیلو';bzG('bz-tp').textContent=bzFa(Math.round(tw*c.p))+' تومان'}
 function bzFind(){var e=bzG('bz-sellers-h');if(e)e.scrollIntoView({behavior:'smooth',block:'start'})}
 function renderBazaar(){
+  try{var _a=document.getElementById('header-avatar'),_b=document.getElementById('bz-avatar');if(_a&&_b)_b.innerHTML=_a.innerHTML;_b.style.cssText=_a.style.cssText;_b.className=_a.className;var _c=document.getElementById('bell-badge'),_d=document.getElementById('bz-bell-badge');if(_c&&_d){_d.className=_c.className;_d.textContent=_c.textContent;}}catch(e){}
   if(!bzTimer){bzTick();bzTimer=setInterval(bzTick,5000)}
   if(!bzG('bz-cats'))return;var c=BZ.cats[BZ.cat],ag=BZ.cat==='agri',pl=BZ.places[BZ.scope];
   document.querySelectorAll('#bz-seg button').forEach(function(b,i){b.classList.toggle('on',['mine','city','prov'][i]===BZ.scope)});
