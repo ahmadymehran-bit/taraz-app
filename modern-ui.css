@@ -1762,3 +1762,35 @@ body, .screen { background: linear-gradient(180deg, #13402f 0%, #0b2a22 100%) !i
 #screen-home .browse-card .bc-price { font-size: 15px !important; margin-bottom: 6px !important; }
 #screen-home .browse-card .bc-price .unit { font-size: 10px !important; }
 #screen-home .browse-card .bc-chat { font-size: 11px !important; padding: 6px 4px !important; min-height: 0 !important; }
+
+/* ===== صفحه آگهی‌ها: چیدمان ردیفی مثل صفحه مورد علاقه ===== */
+#screen-browse .browse-grid {
+  display: flex !important; flex-direction: column !important; gap: 10px !important;
+  grid-template-columns: none !important;
+}
+#screen-browse .browse-card {
+  display: flex !important; flex-direction: row !important; align-items: stretch !important;
+  background: #fff !important; border-radius: 14px !important; overflow: hidden !important;
+  border: 1px solid #d9e4d6 !important; box-shadow: none !important; padding: 0 !important; width: 100% !important;
+}
+#screen-browse .browse-card .thumb {
+  position: relative !important; flex: 0 0 96px !important; width: 96px !important;
+  height: 96px !important; min-height: 96px !important; max-height: 96px !important;
+  aspect-ratio: auto !important; background: #f3f5f2 !important; border-radius: 0 !important;
+  display: flex !important; align-items: center !important; justify-content: center !important;
+}
+#screen-browse .browse-card .thumb img {
+  width: 100% !important; height: 100% !important; object-fit: contain !important;
+  padding: 4px !important; box-sizing: border-box !important;
+}
+#screen-browse .browse-card .bc-region,
+#screen-browse .browse-card .bc-time { display: none !important; }
+#screen-browse .browse-card .body {
+  flex: 1 !important; min-width: 0 !important; padding: 8px 10px !important;
+  display: flex !important; flex-direction: column !important; justify-content: center !important;
+}
+#screen-browse .browse-card .title { font-size: 14px !important; font-weight: 800 !important; color: #1f3a2b !important; margin: 0 0 2px !important; }
+#screen-browse .browse-card .bc-qty { font-size: 11px !important; color: #6b7a70 !important; margin-bottom: 4px !important; }
+#screen-browse .browse-card .bc-price { font-size: 15px !important; font-weight: 900 !important; color: #b7791f !important; margin-bottom: 6px !important; }
+#screen-browse .browse-card .bc-price .unit { font-size: 10px !important; font-weight: 600 !important; }
+#screen-browse .browse-card .bc-chat { font-size: 11px !important; padding: 5px 8px !important; min-height: 0 !important; align-self: flex-start !important; }
