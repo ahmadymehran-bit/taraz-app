@@ -124,13 +124,24 @@
       <div class="bz-logo"><b>تاراز 🍃</b><small>بازار تخصصی دام و کشاورزی</small></div>
       <button class="bz-ic" onclick="go('notifs')" aria-label="اعلان‌ها">🔔</button>
     </div>
-    <div class="bz-scope">
-      <div class="bz-seg" id="bz-seg">
-        <button onclick="bzScope('mine')">محدوده من</button>
-        <button class="on" onclick="bzScope('city')">شهر</button>
-        <button onclick="bzScope('prov')">استان</button>
+    <div class="bz-boxes">
+      <div class="bz-bx bz-loc">
+        <span class="bz-bt">📍 موقعیت من</span>
+        <b id="bz-locname">در حال تشخیص…</b>
+        <div class="bz-seg" id="bz-seg">
+          <button onclick="bzScope('mine')">محدوده من</button>
+          <button class="on" onclick="bzScope('city')">شهر</button>
+          <button onclick="bzScope('prov')">استان</button>
+        </div>
+        <select id="bz-place" onchange="bzPlace(this.value)"></select>
+        <button class="bz-auto" onclick="bzLocate()">🎯 تشخیص خودکار</button>
       </div>
-      <select id="bz-place" onchange="bzPlace(this.value)"></select>
+      <div class="bz-bx bz-tick">
+        <span class="bz-bt">📈 قیمت زنده بازار</span>
+        <b id="bz-tk-n">—</b>
+        <div class="bz-tk-p"><span id="bz-tk-p">—</span> <small id="bz-tk-u"></small></div>
+        <small class="bz-demo" id="bz-tk-s">نمونه نمایشی</small>
+      </div>
     </div>
     <div class="bz-hero">
       <h2>بازار دام زنده</h2>
@@ -144,8 +155,8 @@
         <div class="bz-range" id="bz-range"></div>
         <div class="bz-src"><span>منابع معتبر <i>🛡</i></span><span>به‌روزرسانی امروز <i>🕒</i></span></div></div>
     </div>
-    <div class="bz-cats" id="bz-cats"></div>
     <div class="bz-buy">
+      <select class="bz-catsel" id="bz-cats" onchange="bzCat(this.value)"></select>
       <div class="bz-bh"><img id="bz-thumb" src="image/bz-calf-v2.webp" alt=""><h3 id="bz-btitle">خرید</h3></div>
       <div class="bz-two">
         <div class="bz-box"><label>تعداد</label><div class="bz-step"><button onclick="bzStep('count',1)">+</button><b><span id="bz-count">5</span> <small id="bz-cu">رأس</small></b><button onclick="bzStep('count',-1)">−</button></div></div>

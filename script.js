@@ -2053,6 +2053,15 @@ lamb:{t:'بره',i:'🐏',img:'image/bz-lamb-v2.webp',p:360000,lo:350000,hi:3700
 bird:{t:'طیور',i:'🐓',img:'image/bz-bird.webp',p:95000,lo:90000,hi:100000,c:200,cs:50,w:2.5,ws:.5,u:'قطعه'},
 agri:{t:'محصولات کشاورزی',i:'🌱',img:'image/wheat-stalks.webp',p:14000,lo:13000,hi:15000,c:10,cs:1,w:1000,ws:0,u:'تن'}},
 places:{city:['قم','تهران','اصفهان','مشهد','شیراز','تبریز'],prov:['قم','تهران','اصفهان','خراسان رضوی','فارس','آذربایجان شرقی'],mine:['قم']}};
+var BZ_TICK=[['گوساله پرواری (زنده)',320000,'تومان/کیلو'],['جوجه یک‌روزه',28000,'تومان/قطعه'],['ذرت دانه‌ای',16500,'تومان/کیلو'],['گندم',14000,'تومان/کیلو']],bzTi=0,bzTimer=null;
+function bzTick(){var t=BZ_TICK[bzTi%BZ_TICK.length];bzTi++;var n=bzG('bz-tk-n');if(!n)return;n.textContent=t[0];bzG('bz-tk-p').textContent=bzFa(t[1]);bzG('bz-tk-u').textContent=t[2];bzG('bz-tk-s').textContent='نمونه نمایشی · منبع: itpnews.ir'}
+function bzLocate(){var n=bzG('bz-locname');if(!navigator.geolocation){toast('مرورگر موقعیت‌یاب ندارد');return}
+  n.textContent='در حال تشخیص…';
+  navigator.geolocation.getCurrentPosition(function(p){
+    fetch('https://nominatim.openstreetmap.org/reverse?format=json&accept-language=fa&zoom=10&lat='+p.coords.latitude+'&lon='+p.coords.longitude).then(function(r){return r.json()}).then(function(j){
+      var a=j.address||{},c=a.city||a.town||a.county||a.state||'';if(!c)throw 0;
+      if(BZ.places.city.indexOf(c)<0)BZ.places.city.unshift(c);BZ.scope='city';BZ.place=c;renderBazaar()}).catch(function(){n.textContent=BZ.place;toast('شهر تشخیص داده نشد؛ دستی انتخاب کنید')})
+  },function(){n.textContent=BZ.place;toast('اجازه موقعیت داده نشد؛ دستی انتخاب کنید')},{timeout:8000})}
 function bzFa(n){return Number(n).toLocaleString('fa-IR')}
 function bzG(i){return document.getElementById(i)}
 function bzCat(k){BZ.cat=k;var c=BZ.cats[k];BZ.count=c.c;BZ.w=c.w;renderBazaar()}
@@ -2064,12 +2073,14 @@ function bzSum(){var c=BZ.cats[BZ.cat],ag=BZ.cat==='agri',tw=ag?BZ.count*1000:BZ
   bzG('bz-tw').textContent=bzFa(tw)+' کیلو';bzG('bz-tp').textContent=bzFa(Math.round(tw*c.p))+' تومان'}
 function bzFind(){var e=bzG('bz-sellers-h');if(e)e.scrollIntoView({behavior:'smooth',block:'start'})}
 function renderBazaar(){
+  if(!bzTimer){bzTick();bzTimer=setInterval(bzTick,5000)}
   if(!bzG('bz-cats'))return;var c=BZ.cats[BZ.cat],ag=BZ.cat==='agri',pl=BZ.places[BZ.scope];
   document.querySelectorAll('#bz-seg button').forEach(function(b,i){b.classList.toggle('on',['mine','city','prov'][i]===BZ.scope)});
   bzG('bz-place').innerHTML=pl.map(function(x){return '<option'+(x===BZ.place?' selected':'')+'>'+x+'</option>'}).join('');
   bzG('bz-rname').textContent=c.t+(ag?'':' زنده');bzG('bz-rprice').textContent=bzFa(c.p);bzG('bz-runit').textContent='تومان / کیلو';
   bzG('bz-range').textContent=bzFa(c.lo)+' — '+bzFa(c.hi);
-  bzG('bz-cats').innerHTML=Object.keys(BZ.cats).map(function(k){var x=BZ.cats[k];return '<button class="'+(k===BZ.cat?'on':'')+'" onclick="bzCat(\''+k+'\')"><img src="'+x.img+'" alt=""><span>'+x.t+'</span></button>'}).join('');
+  bzG('bz-cats').innerHTML=Object.keys(BZ.cats).map(function(k){var x=BZ.cats[k];return '<option value="'+k+'"'+(k===BZ.cat?' selected':'')+'>'+x.i+' '+x.t+'</option>'}).join('');
+  var ln=bzG('bz-locname');if(ln)ln.textContent=BZ.place;
   bzG('bz-btitle').textContent='🛒 خرید '+c.t;bzG('bz-thumb').src=c.img;bzG('bz-cu').textContent=c.u;bzG('bz-wbox').style.display=ag?'none':'';
   bzG('bz-near').textContent='📍 فروشندگان نزدیک '+BZ.place;bzSum();
   var asks='',bids='';

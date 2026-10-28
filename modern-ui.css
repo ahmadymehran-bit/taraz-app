@@ -1560,3 +1560,21 @@ body, .screen { background: linear-gradient(180deg, #13402f 0%, #0b2a22 100%) !i
 .post-btn.pb-offer .pb-ic { background: radial-gradient(circle at 35% 30%,#e8b93a,#9a7414); color: #fff8d8; font-weight: 800; }
 .post-btn.pb-serv { background: linear-gradient(180deg,#0f5a44,#083a2b); }
 .post-btn.pb-cat { min-height: 66px; }
+
+/* فرم ثبت آگهی زیرصفحه: خوانایی */
+#screen-post-form .field label{color:#f3f1e6!important;font-weight:700;opacity:1!important;display:block;margin-bottom:6px}
+#screen-post-form .field input,#screen-post-form .field select{background:#fff!important;color:#17301f!important;border:1px solid #cfd8c8!important}
+#screen-post-form .field input::placeholder{color:#7b8a7e!important}
+#screen-post-form .field{margin-bottom:14px}
+
+/* bazaar header boxes */
+.bz-boxes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.bz-bx{background:linear-gradient(160deg,#0f3d2a,#1b5e3f);color:#f6ecc9;border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.bz-bx .bz-bt{font-size:12px;opacity:.85}
+.bz-bx b{font-size:16px;color:#ffd978}
+.bz-bx select{width:100%;padding:6px;border-radius:8px;font-size:12px}
+.bz-bx .bz-seg{display:flex;gap:4px}.bz-bx .bz-seg button{flex:1;font-size:11px;padding:4px 2px}
+.bz-auto{background:rgba(255,255,255,.15);color:#f6ecc9;border:0;border-radius:8px;padding:5px;font-size:12px}
+.bz-tk-p{font-size:20px;font-weight:800;color:#fff}.bz-tk-p small{font-size:11px;font-weight:400}
+.bz-bx .bz-demo{font-size:10px;opacity:.75}
+.bz-catsel{width:100%;padding:10px;border-radius:12px;font-size:15px;margin-bottom:8px}
