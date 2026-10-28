@@ -1885,3 +1885,12 @@ html body #screen-detail #detail-body .detail-card, html body #screen-detail #de
 /* vector chip icons */
 #screen-home #browse-chips .chip-big .ic { display:flex !important; align-items:center; justify-content:center; }
 #screen-home #browse-chips .chip-big .ic svg { width:60%; height:60%; display:block; }
+
+/* remove square frame around chip icons */
+#screen-home #browse-chips .chip-big:not(.chip-wide) .ic,
+#screen-home #browse-chips .chip-big .ic {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
