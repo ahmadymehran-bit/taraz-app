@@ -17,7 +17,21 @@ var API_BASE = window.TARAZ_API_BASE || 'https://taraz-backend-prog.vercel.app';
         }
       }
     } catch (e) {}
-    return _f(input, init);
+    var p = _f(input, init);
+    try {
+      var u2 = typeof input === 'string' ? input : (input && input.url) || '';
+      if (u2.indexOf(API_BASE) === 0 && u2.indexOf('/api/auth/login') < 0 && u2.indexOf('/api/auth/register') < 0) {
+        p.then(function (r) {
+          if (r && r.status === 401 && !window._sessionExpiring) {
+            window._sessionExpiring = true;
+            setTimeout(function () { window._sessionExpiring = false; }, 5000);
+            try { localStorage.removeItem('taraz.token'); } catch (e) {}
+            try { if (typeof toast === 'function') toast('نشست شما تمام شده؛ دوباره وارد شو'); if (typeof logout === 'function') logout(); } catch (e) {}
+          }
+        }).catch(function () {});
+      }
+    } catch (e) {}
+    return p;
   };
 })();
 /* ============ Supabase Setup ============ */
@@ -2298,3 +2312,12 @@ async function submitSellSub(){
   try { await api.createListing(item); toast('✓ آگهی منتشر شد'); } catch(e){ toast('⚠ آگهی محلی ذخیره شد'); }
   go('home');
 }
+
+/* کاربری که قبلاً بدون توکن وارد شده (نسخه‌های قدیمی) باید یک‌بار دوباره وارد شود (برای حالت strict) */
+window.addEventListener('load', function () {
+  setTimeout(function () {
+    try {
+      if (DB.user && !localStorage.getItem('taraz.token')) { toast('برای امنیت بیشتر دوباره وارد شو'); logout(); }
+    } catch (e) {}
+  }, 800);
+});
