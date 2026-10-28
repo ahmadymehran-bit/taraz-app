@@ -2147,9 +2147,9 @@ function postCat(c){
     else if(x[1]==='date') inp='<input id="'+id+'" type="date">';
     else if(x[1]==='tel') inp='<input id="'+id+'" type="tel" inputmode="numeric" placeholder="'+(x[2]||'')+'" style="direction:ltr;text-align:left">';
     else inp='<input id="'+id+'" placeholder="'+(x[2]||'')+'">';
-    return '<div class="field"><label>'+x[0]+'</label>'+inp+'</div>';
+    return '<div class="field"><label style="color:#f3f1e6;font-weight:700;display:block;margin-bottom:6px;opacity:1">'+x[0]+'</label>'+inp+'</div>';
   }).join('');
-  h+='<div class="field"><label>توضیحات (اختیاری)</label><input id="pf-note"></div><button type="button" class="btn-green" onclick="submitPostForm()" style="min-height:60px;font-size:17px">✅ ثبت آگهی</button>';
+  h+='<div class="field"><label style="color:#f3f1e6;font-weight:700;display:block;margin-bottom:6px;opacity:1">توضیحات (اختیاری)</label><input id="pf-note" style="background:#fff;color:#17301f"></div><button type="button" class="btn-green" onclick="submitPostForm()" style="min-height:60px;font-size:17px">✅ ثبت آگهی</button>';
   document.getElementById('post-form-body').innerHTML=h;
   go('post-form');
 }
