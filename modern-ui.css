@@ -1745,3 +1745,20 @@ body, .screen { background: linear-gradient(180deg, #13402f 0%, #0b2a22 100%) !i
 #screen-browse .browse-card .bc-chat { font-size: 11px !important; padding: 6px 4px !important; min-height: 0 !important; }
 #screen-browse .browse-card .badge-fire { font-size: 11px !important; padding: 3px 6px !important; }
 #screen-browse .browse-card .fav-btn { width: 30px !important; height: 30px !important; font-size: 14px !important; }
+
+/* ===== صفحه اول: کارت آگهی کوچک‌تر و عکس کامل در کادر ===== */
+#screen-home .browse-card .thumb {
+  height: 118px !important; min-height: 118px !important; max-height: 118px !important;
+  background: #f3f5f2 !important; display: flex !important;
+  align-items: center !important; justify-content: center !important;
+}
+#screen-home .browse-card .thumb img {
+  width: 100% !important; height: 100% !important;
+  object-fit: contain !important; padding: 6px !important; box-sizing: border-box !important;
+}
+#screen-home .browse-card .body { padding: 8px 10px 10px !important; }
+#screen-home .browse-card .title { font-size: 14px !important; margin-bottom: 2px !important; }
+#screen-home .browse-card .bc-qty { font-size: 11px !important; margin-bottom: 4px !important; }
+#screen-home .browse-card .bc-price { font-size: 15px !important; margin-bottom: 6px !important; }
+#screen-home .browse-card .bc-price .unit { font-size: 10px !important; }
+#screen-home .browse-card .bc-chat { font-size: 11px !important; padding: 6px 4px !important; min-height: 0 !important; }
