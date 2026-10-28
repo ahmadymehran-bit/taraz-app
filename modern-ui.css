@@ -1881,3 +1881,7 @@ html body #screen-detail #detail-body .detail-card, html body #screen-detail #de
 #screen-chat .chat-body { min-height: 0; }
 #screen-chat .chat-head-name { color: var(--forest) !important; }
 #screen-chat .chat-head-sub { color: #6b7a74 !important; }
+
+/* vector chip icons */
+#screen-home #browse-chips .chip-big .ic { display:flex !important; align-items:center; justify-content:center; }
+#screen-home #browse-chips .chip-big .ic svg { width:60%; height:60%; display:block; }
