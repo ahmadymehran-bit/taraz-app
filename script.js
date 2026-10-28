@@ -2112,7 +2112,7 @@ function applyProfileRole(role){
 
 /* ===== صفحه ثبت آگهی: انتخاب خرید/فروش و زیرصفحه دسته‌بندی ===== */
 var postMode='buy';
-function postPick(m){postMode=m;var t=document.getElementById('post-sub-title');if(t)t.textContent='ثبت آگهی';go('post-sub')}
+function postPick(m){postMode=m;var t=document.getElementById('post-sub-title');if(t)t.textContent=(m==='offer'?'تخفیف ویژه':'ثبت آگهی');document.querySelectorAll('#screen-post-sub .offer-only').forEach(function(b){b.style.display=(m==='offer'?'':'none')});go('post-sub')}
 var POST_FORMS={
 'حمل و نقل':{icon:'🚚',f:[['نوع ماشین','sel',['کامیون','کامیونت','وانت','تریلی','یخچال‌دار','دام‌بر']],['تناژ / ظرفیت (تن)','tel','مثلاً: ۱۰'],['نرخ کرایه (تومان)','tel','مثلاً: ۳۵۰۰۰۰'],['مبدأ','txt','مثلاً: اصفهان'],['مقصد','txt','مثلاً: تهران'],['تاریخ آمادگی','date'],['شماره پلاک / هوشمند (اختیاری)','txt','']]},
 'کشتار و بسته‌بندی':{icon:'🔪',f:[['نوع خدمت','sel',['کشتار دام سبک','کشتار دام سنگین','کشتار طیور','برش و بسته‌بندی','حمل گوشت']],['شماره مجوز بهداشتی','txt',''],['ظرفیت روزانه (رأس)','tel','مثلاً: ۵۰'],['هزینه هر رأس (تومان)','tel',''],['آدرس کشتارگاه / کارگاه','txt',''],['شهر','txt','']]},
@@ -2122,11 +2122,25 @@ var POST_FORMS={
 'دامپزشکی و مشاوره':{icon:'🩺',f:[['نوع فعالیت','sel',['دامپزشک','داروخانه دامپزشکی','کلینیک','مشاور تغذیه','آزمایشگاه']],['شماره نظام دامپزشکی','txt',''],['سابقه کار (سال)','tel',''],['تخصص','txt','مثلاً: گاو شیری'],['آدرس کلینیک / داروخانه','txt',''],['شهر','txt',''],['هزینه ویزیت (تومان)','tel','']]},
 'نیروی کار و خدمات':{icon:'🧑‍🌾',f:[['نوع کار','sel',['چوپان','کارگر دامداری','کارگر کشاورزی','شیردوش','سرکارگر','راننده تراکتور']],['سابقه کار (سال)','tel',''],['دستمزد درخواستی (تومان)','tel',''],['نوع دستمزد','sel',['روزانه','ماهانه','پروژه‌ای']],['شهر','txt',''],['آمادگی از تاریخ','date']]}
 };
+
+function mkOffer(icon,key,extra,reasons,reasonHint){
+  return {icon:icon,f:[['نام محصول / خدمت','txt','']].concat(extra,[['قیمت عادی (تومان)','tel',''],['قیمت ویژه (تومان)','tel',''],['دلیل تخفیف (نکته کلیدی)','sel',reasons],['توضیح دلیل تخفیف','txt',reasonHint],['تخفیف تا تاریخ','date'],['شهر / منطقه','txt','']])};
+}
+var OFFER_FORMS={
+'حمل و نقل':mkOffer('🚚','',[['نوع ماشین','sel',['کامیون','کامیونت','وانت','تریلی','یخچال‌دار','دام‌بر']],['ظرفیت خالی (تن)','tel',''],['مبدأ','txt',''],['مقصد','txt',''],['تاریخ حرکت','date']],['مسیر برگشت خالی است','در مسیر دیگری هستم','ظرفیت خالی مانده','حمل گروهی'],'مثلاً: چون در مسیر اصفهان به تهران هستم زیر نرخ بار می‌برم'),
+'کشتار و بسته‌بندی':mkOffer('🔪','',[['نوع خدمت','sel',['کشتار دام سبک','کشتار دام سنگین','کشتار طیور','برش و بسته‌بندی']],['ظرفیت خالی (رأس)','tel','']],['ظرفیت خالی دارم','روزهای کم‌کار','خرید عمده'],'مثلاً: این هفته ظرفیت خالی دارم'),
+'طیور و ماکیان':mkOffer('🐔','',[['نوع طیور','sel',['مرغ گوشتی','مرغ تخمگذار','بوقلمون','جوجه یکروزه','تخم نطفه‌دار']],['تعداد','tel','']],['مازاد جوجه','افزایش سن / وزن','تعطیلی سالن','تخم نزدیک به انقضا'],'مثلاً: جوجه‌ها مازاد جوجه‌ریزی هستند'),
+'ماشین‌آلات کشاورزی':mkOffer('🚜','',[['نوع ماشین','sel',['تراکتور','کمباین','بیل مکانیکی','لودر','بسته‌بند علوفه','سمپاش','سایر']],['نوع خدمت','sel',['اجاره با راننده','اجاره بدون راننده','فروش']]],['ماشین بیکار است','خارج از فصل کار','تسویه و نیاز به نقدینگی'],'مثلاً: تا پایان برداشت ماشین بیکار است'),
+'تعمیرات و تجهیزات':mkOffer('🔧','',[['نوع کالا / خدمت','sel',['قطعه یدکی','تجهیزات شیردوشی','پمپ و برق','لوازم آبیاری','خدمات تعمیر']],['تعداد','tel','']],['موجودی مازاد','حراج پایان فصل','مدل قدیمی شده','کارکرده ولی سالم'],'مثلاً: مدل جدید آمده و موجودی قدیمی مانده'),
+'دامپزشکی و مشاوره':mkOffer('🩺','',[['نوع محصول / خدمت','sel',['دارو','واکسن','مکمل','تجهیزات دامپزشکی','ویزیت / خدمت']],['نام دارو / برند','txt',''],['تعداد','tel',''],['تاریخ انقضا','date']],['تاریخ انقضا کمتر از یک ماه','موجودی مازاد','تصفیه موجودی داروخانه','نزدیک به تعطیلی'],'مثلاً: تاریخ انقضای این داروها زیر یک ماه است'),
+'نیروی کار و خدمات':mkOffer('🧑‍🌾','',[['نوع کار','sel',['چوپان','کارگر دامداری','کارگر کشاورزی','شیردوش','راننده تراکتور']],['سابقه کار (سال)','tel','']],['آماده به کار فوری','فعلاً بیکار هستم','کار گروهی'],'مثلاً: از هفته آینده آماده شروع هستم'),
+'نهاده و کشاورزی':mkOffer('🌾','',[['نوع محصول','sel',['کود','سم و آفت‌کش','بذر','نهاده دامی','علوفه','محصول باغی']],['مقدار / تعداد','txt','مثلاً: ۵۰ کیسه'],['تاریخ انقضا / برداشت','date']],['تاریخ مصرف نزدیک است','موجودی مازاد','فساد‌پذیر و باید زود فروخته شود','تسویه و نیاز به نقدینگی'],'مثلاً: تاریخ مصرف کودها نزدیک است')
+};
 var postCurCat=null;
 function postCat(c){
-  var d=POST_FORMS[c]; if(!d){toast('به‌زودی');return}
+  var d=(postMode==='offer')?OFFER_FORMS[c]:POST_FORMS[c]; if(!d){toast('به‌زودی');return}
   postCurCat=c;
-  document.getElementById('post-form-title').textContent=d.icon+' ثبت '+c;
+  document.getElementById('post-form-title').textContent=d.icon+(postMode==='offer'?' تخفیف ویژه ‹ ':' ثبت ')+c;
   var h=d.f.map(function(x,i){
     var id='pf-'+i, inp;
     if(x[1]==='sel') inp='<select id="'+id+'">'+x[2].map(function(o){return '<option>'+o+'</option>'}).join('')+'</select>';
@@ -2141,10 +2155,10 @@ function postCat(c){
 }
 function submitPostForm(){
   var u=DB.user; if(!u){go('auth');return}
-  var d=POST_FORMS[postCurCat]; if(!d)return;
+  var d=(postMode==='offer')?OFFER_FORMS[postCurCat]:POST_FORMS[postCurCat]; if(!d)return;
   var vals={}, miss=false;
   d.f.forEach(function(x,i){var v=document.getElementById('pf-'+i).value.trim(); vals[x[0]]=v; if(!v && x[1]!=='date' && x[0].indexOf('اختیاری')<0) miss=true});
   if(miss){toast('همه فیلدها را پر کن');return}
-  var all=DB.demands; all.push({id:'P'+Date.now(),buyerPhone:u.phone,buyerName:u.name,categoryId:'service',serviceGroup:postCurCat,title:postCurCat,fields:vals,note:document.getElementById('pf-note').value.trim(),qty:'',qtyNum:0,unit:'',price:0,region:'',status:'open',createdAt:Date.now()});
+  var all=DB.demands; all.push({id:'P'+Date.now(),buyerPhone:u.phone,buyerName:u.name,categoryId:(postMode==='offer'?'offer':'service'),offer:postMode==='offer',serviceGroup:postCurCat,title:postCurCat,fields:vals,note:document.getElementById('pf-note').value.trim(),qty:'',qtyNum:0,unit:'',price:0,region:'',status:'open',createdAt:Date.now()});
   DB.demands=all; toast('ثبت شد ✓'); go('home');
 }
