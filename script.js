@@ -373,6 +373,12 @@ function go(s){
   document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
   const target=document.getElementById('screen-'+s); if(target)target.classList.add('active');
   currentScreen=s;
+  try{
+    if(!window._navPop){
+      if(!history.state||!history.state.s){history.replaceState({s:s},'')}
+      else if(history.state.s!==s){history.pushState({s:s},'')}
+    }
+  }catch(e){}
   document.body.classList.toggle('no-nav',s==='auth'||s==='chat');
   document.querySelectorAll('#nav button').forEach(b=>b.classList.remove('active'));
   const map={home:'home',browse:'browse',services:'services',favorites:'favorites',profile:'profile',chatlist:'chatlist',buy:'home',sell:'home',settings:'profile',notifs:'home',capacity:'services',detail:'browse'};
@@ -394,6 +400,12 @@ if(s==='mission-chain') renderMissionChainView();
   renderHeaderAvatars(); updateChatBadge(); updateBellBadge();
 }
 function backFromCapacity(){go(capacityReturnTo||'services')}
+window.addEventListener('popstate',function(e){
+  var s=e.state&&e.state.s; if(!s)return;
+  if(s==='auth'&&DB.user)s='home';
+  window._navPop=true; try{go(s)}finally{window._navPop=false}
+  if(s==='home'&&!(e.state&&e.state.s==='home')){try{history.replaceState({s:'home'},'')}catch(x){}}
+});
 function goUrgentSell(){go('sell');setTimeout(()=>enableUrgentSellMode(),50)}
 function enableUrgentSellMode(){
   const u=document.getElementById('sell-urgent-block');if(u)u.style.display='block';
