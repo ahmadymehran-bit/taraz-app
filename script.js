@@ -695,7 +695,7 @@ return true;
 });
 list.sort(function(a,b){return b.createdAt-a.createdAt});
 var grid=document.getElementById('browse-grid');
-if(grid){ grid.innerHTML = list.length ? list.map(browseCard).join('') : '<div class="empty" style="grid-column:1/-1"><span class="emoji">🔍</span>آگهی‌ای پیدا نشد</div>'; }
+if(grid){ grid.innerHTML = list.length ? list.map(homeCard).join('') : '<div class="empty" style="grid-column:1/-1"><span class="emoji">🔍</span>آگهی‌ای پیدا نشد</div>'; }
 }
 function goServicesStep1(){
   servicesStep=1; servicesCurrentService=null; servicesCurrentType=null;
