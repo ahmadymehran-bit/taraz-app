@@ -1841,3 +1841,13 @@ html body #screen-detail #detail-body .detail-card .detail-meta *{color:#26332b 
 html body #screen-detail #detail-body .detail-card .detail-title{color:#0b3a2c !important}
 html body #screen-detail #detail-body .detail-card div[style*="border-top"] *{color:#26332b !important;opacity:1 !important}
 html body #screen-detail #detail-body .detail-card div[style*="border-top"] b{color:#0b3a2c !important}
+
+/* عنوان و قیمت آگهی‌ها: طلایی (کارت‌های تیره) */
+#screen-home .card b, #screen-browse .card b, .browse-grid .card b{color:#f5c542 !important}
+#screen-home .card div[style*="font-weight:900"][style*="color"], #screen-browse .card div[style*="font-weight:900"], .browse-grid .card div[style*="font-weight:900"]{color:#f5c542 !important}
+#screen-home .card small, #screen-browse .card small, .browse-grid .card small{color:#e8e2c8 !important}
+
+/* جزئیات آگهی (کارت روشن): طلایی تیره برای خوانایی */
+html body #screen-detail #detail-body .detail-card .detail-title,
+html body #screen-detail #detail-body .detail-card .detail-price-block .val,
+html body #screen-detail #detail-body .detail-card div[style*="border-top"] b{color:#9a6b00 !important}
