@@ -1080,6 +1080,7 @@ try{var r=await api.getConversations(u.phone); var convs=(r&&r.conversations)||[
 for(var k=0;k<convs.length&&k<20;k++){var cv=convs[k]; var mr=await api.getMessages(cv.id); if(mr&&mr.messages){var msgs=DB.messages; mr.messages.forEach(function(m){var n={id:m.id,convId:m.conv_id||m.convId,fromPhone:m.from_phone||m.fromPhone,text:m.text,createdAt:Number(m.created_at||m.createdAt)}; var ix=msgs.findIndex(function(x){return x.id===n.id}); if(ix<0)msgs.push(n)}); DB.messages=msgs;}}
 var cc=DB.conversations; convs.forEach(function(c){var n={id:c.id,listingId:c.listing_id||c.listingId,listingTitle:c.listing_title||c.listingTitle,buyerPhone:c.buyer_phone||c.buyerPhone,sellerPhone:c.seller_phone||c.sellerPhone,buyerName:c.buyer_name||c.buyerName,sellerName:c.seller_name||c.sellerName,lastMessageAt:Number(c.last_message_at||c.lastMessageAt||0)}; if(!cc.some(function(x){return x.id===n.id}))cc.push(n)}); DB.conversations=cc;
 }catch(e){}
+try{ if(!localStorage.getItem('taraz_seen_init2')){ DB.conversations.forEach(function(c){markConvSeen(c.id)}); localStorage.setItem('taraz_seen_init2','1'); } }catch(e){}
 updateChatBadge(); updateBellBadge();
 }
 setInterval(pollChatBadge,20000); setTimeout(pollChatBadge,3000);
