@@ -1864,3 +1864,20 @@ html body #screen-detail #detail-body .detail-card .detail-price-block .discount
 
 /* طلایی روشن‌تر در کارت جزئیات آگهی */
 html body #screen-detail #detail-body .detail-card, html body #screen-detail #detail-body .detail-card *:not(.pill):not(.discount){color:#e0a526 !important;-webkit-text-fill-color:#e0a526 !important;text-shadow:0 0 1px rgba(90,60,0,.35) !important}
+
+/* ===== صفحه گفتگو: دکمه بازگشت، هدر ثابت و چیدمان ===== */
+#screen-chat.active { position: fixed; inset: 0; z-index: 200; height: 100dvh; overflow: hidden; }
+#screen-chat .chat-header {
+  position: relative; z-index: 5; padding: 10px 14px !important;
+  background: rgba(255,253,248,.97) !important; border-bottom: 1px solid var(--line) !important;
+}
+#screen-chat .chat-header .back-btn {
+  width: 62px; height: 62px; min-width: 62px; border-radius: 18px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  background: linear-gradient(135deg,#1f7f5c,#0f4d3a); border: 0; color: #f6dc8a;
+  font-size: 0; padding: 0; box-shadow: 0 6px 14px rgba(15,77,58,.25); flex-shrink: 0; cursor: pointer;
+}
+#screen-chat .chat-header .back-btn .ic-svg { width: 22px; height: 22px; }
+#screen-chat .chat-body { min-height: 0; }
+#screen-chat .chat-head-name { color: var(--forest) !important; }
+#screen-chat .chat-head-sub { color: #6b7a74 !important; }
