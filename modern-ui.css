@@ -1612,3 +1612,60 @@ body, .screen { background: linear-gradient(180deg, #13402f 0%, #0b2a22 100%) !i
 /* بازار: عنوان تاراز قابل‌دیدن روی پس‌زمینه تیره */
 #screen-browse .modern-header .mh-title { color:#e0b04a !important; }
 #screen-browse .modern-header .mh-brand { z-index:1; }
+
+/* ===== دکمه‌های بازگشت و ارسال: بزرگ‌تر و شیک‌تر ===== */
+.sub-header .back-btn,
+#screen-detail .sub-header .back-btn {
+  width: 50px !important; height: 50px !important; min-width: 50px;
+  border-radius: 16px !important; padding: 0 !important;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg,#0f4d3a,#1f6b50) !important;
+  color: #f6dc8a !important; border: 1px solid rgba(246,220,138,.35) !important;
+  font-size: 26px !important; font-weight: 900 !important; line-height: 1;
+  box-shadow: 0 6px 16px rgba(15,77,58,.28) !important;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.sub-header .back-btn:active,
+#screen-detail .sub-header .back-btn:active { transform: scale(.92); }
+
+.btn-primary, .btn-green, .btn-gold, .btn-red, .btn-blue, .btn-outline, .btn-purple {
+  min-height: 60px !important;
+  font-size: 17px !important;
+  font-weight: 900 !important;
+  letter-spacing: .2px;
+  border-radius: 18px !important;
+  padding: 16px 20px !important;
+  transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+}
+.btn-green, .btn-primary {
+  background: linear-gradient(135deg,#1f7f5c,#0f4d3a) !important;
+  color: #fff !important;
+  border: 1px solid rgba(246,220,138,.35) !important;
+  box-shadow: 0 10px 22px rgba(15,77,58,.30) !important;
+}
+.btn-gold {
+  background: linear-gradient(135deg,#f6dc8a,#c8901a) !important;
+  color: #2a1d00 !important;
+  box-shadow: 0 10px 22px rgba(200,144,26,.30) !important;
+}
+.btn-red {
+  background: linear-gradient(135deg,#e5534b,#b8322b) !important;
+  color: #fff !important; box-shadow: 0 10px 22px rgba(184,50,43,.28) !important;
+}
+.btn-blue {
+  background: linear-gradient(135deg,#3b82c4,#22598f) !important;
+  color: #fff !important; box-shadow: 0 10px 22px rgba(34,89,143,.28) !important;
+}
+.btn-outline {
+  background: #fff !important; color: #0f4d3a !important;
+  border: 2px solid #0f4d3a !important; box-shadow: none !important;
+}
+.btn-primary:active, .btn-green:active, .btn-gold:active, .btn-red:active,
+.btn-blue:active, .btn-outline:active, .btn-purple:active {
+  transform: scale(.98); filter: brightness(.96);
+}
+.chat-send {
+  width: 60px !important; height: 60px !important; border-radius: 18px !important;
+  background: linear-gradient(135deg,#1f7f5c,#0f4d3a) !important;
+  box-shadow: 0 8px 18px rgba(15,77,58,.3) !important; font-size: 26px !important;
+}
