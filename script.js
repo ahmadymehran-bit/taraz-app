@@ -927,6 +927,7 @@ if(!listing){ listing = DB.listings.find(function(x){ return x.id === listingId;
 var isSeller = listing ? (listing.seller_phone === u.phone || listing.sellerPhone === u.phone) : false;
 var convData = { id: 'C' + Date.now(), listingId: listingId, listingTitle: listing ? listing.title : 'گفتگو', buyerPhone: isSeller ? otherPhone : u.phone, buyerName: isSeller ? otherName : u.name, sellerPhone: isSeller ? u.phone : otherPhone, sellerName: isSeller ? u.name : otherName };
 var result = null; try { result = await api.createConversation(convData); } catch(e) { }
+if(!result || !result.conversation){ toast('⚠ گفتگو روی سرور ساخته نشد'); console.error('createConversation failed', result); }
 var c = null;
 if(result && result.conversation){ c = { id: result.conversation.id, listingId: result.conversation.listing_id || result.conversation.listingId, listingTitle: result.conversation.listing_title || result.conversation.listingTitle, buyerPhone: result.conversation.buyer_phone || result.conversation.buyerPhone, buyerName: result.conversation.buyer_name || result.conversation.buyerName, sellerPhone: result.conversation.seller_phone || result.conversation.sellerPhone, sellerName: result.conversation.seller_name || result.conversation.sellerName, createdAt: Number(result.conversation.created_at || result.conversation.createdAt) || Date.now(), lastMessageAt: Number(result.conversation.last_message_at || result.conversation.lastMessageAt) || Date.now() }; }
 else { c = { id: convData.id, listingId: listingId, listingTitle: convData.listingTitle, buyerPhone: convData.buyerPhone, buyerName: convData.buyerName, sellerPhone: convData.sellerPhone, sellerName: convData.sellerName, createdAt: Date.now(), lastMessageAt: Date.now() }; }
@@ -990,6 +991,7 @@ var inp = document.getElementById('chat-input'); var text = inp.value.trim(); if
 var c = DB.conversations.find(function(x){ return x.id === currentConvId; }); if(!c) return;
 var msgData = { id: 'M' + Date.now(), convId: c.id, fromPhone: u.phone, text: text };
 var result = null; try { result = await api.createMessage(msgData); } catch(e) { }
+if(!result || !result.ok){ toast('⚠ پیام به سرور نرسید: ' + ((result && result.error) || 'ارتباط یا گفتگو نامعتبر')); console.error('createMessage failed', result); }
 var msgs = DB.messages; msgs.push({ id: msgData.id, convId: c.id, fromPhone: u.phone, text: text, createdAt: Date.now(), read: false }); DB.messages = msgs;
 var convs = DB.conversations; var idx = convs.findIndex(function(x){ return x.id === c.id; }); if(idx >= 0){ convs[idx].lastMessageAt = Date.now(); DB.conversations = convs; }
 inp.value = '';
