@@ -340,14 +340,14 @@ function go(s){
   currentScreen=s;
   document.body.classList.toggle('no-nav',s==='auth'||s==='chat');
   document.querySelectorAll('#nav button').forEach(b=>b.classList.remove('active'));
-  const map={home:'home',browse:'browse',services:'services',mission:'mission',profile:'profile',chatlist:'chatlist',buy:'home',sell:'home',settings:'profile',notifs:'home',capacity:'services',detail:'browse'};
+  const map={home:'home',browse:'browse',services:'services',favorites:'favorites',profile:'profile',chatlist:'chatlist',buy:'home',sell:'home',settings:'profile',notifs:'home',capacity:'services',detail:'browse'};
   if(map[s]){const b=document.querySelector('#nav button[data-nav="'+map[s]+'"]');if(b)b.classList.add('active')}
 // به دلیل جابجایی صفحه‌ها، renderBrowse برای صفحه Home و renderHome برای صفحه Browse اجرا میشه
 if(s==='home') { loadFavorites().then(renderBrowse); }
 if(s==='browse'){ renderBazaar(); loadFavorites().then(renderHome); updateHomeReadyButton(); }
   if(s==='capacity')renderCapacityDetail();
   if(s==='services')renderServices();
-  if(s==='mission')renderMission();
+  if(s==='favorites')renderFavorites();
   if(s==='profile')renderProfile();
   if(s==='sell')resetSellForm();
   if(s==='chatlist')renderChatList();
@@ -356,13 +356,6 @@ if(s==='browse'){ renderBazaar(); loadFavorites().then(renderHome); updateHomeRe
   if(s==='notifs')renderNotifs();
   if(s==='missions-list')renderMyMissions();
 if(s==='mission-chain') renderMissionChainView();
-if (s === 'mission') {
-  var roleEl = document.getElementById('mission-user-role');
-  if (roleEl && DB.user) {
-    roleEl.textContent = DB.user.role || 'کاربر';
-  }
-  renderMission();
-}
   renderHeaderAvatars(); updateChatBadge(); updateBellBadge();
 }
 function backFromCapacity(){go(capacityReturnTo||'services')}
@@ -1224,6 +1217,19 @@ async function confirmMission(){
   setTimeout(function() { go('missions-list'); }, 1500);
 }
 
+async function renderFavorites(){
+var u=DB.user; var wrap=document.getElementById('fav-list'); if(!wrap)return;
+if(!u){ wrap.innerHTML='<div class="empty"><span class="emoji">❤️</span>اول وارد شو</div>'; return; }
+wrap.innerHTML='<div class="empty"><span class="emoji">⏳</span>در حال بارگذاری...</div>';
+var favResult=null; try{favResult=await api.getFavorites(u.phone)}catch(e){}
+var favIds=(favResult&&favResult.favorites)?favResult.favorites.map(function(f){return f.listing_id||f.listingId}):[];
+var listingsResult=null; try{listingsResult=await api.getListings()}catch(e){}
+var allListings=(listingsResult&&listingsResult.listings)?listingsResult.listings:[];
+var favList=allListings.filter(function(l){return favIds.indexOf(l.id)>=0});
+favList.sort(function(a,b){return Number(b.created_at||b.createdAt)-Number(a.created_at||a.createdAt)});
+if(!favList.length){ wrap.innerHTML='<div class="empty"><span class="emoji">❤️</span>هنوز آگهی‌ای را به علاقه‌مندی‌ها اضافه نکرده‌ای</div>'; return; }
+wrap.innerHTML=favList.map(function(l){ return homeCard({ id:l.id, sellerPhone:l.seller_phone||l.sellerPhone, sellerName:l.seller_name||l.sellerName, categoryId:l.category_id||l.categoryId, title:l.title, qty:l.qty, qtyNum:l.qty_num||l.qtyNum, price:Number(l.price), oldPrice:l.old_price?Number(l.old_price):null, region:l.region, desc:l.description||l.desc, urgent:l.urgent, urgentReason:l.urgent_reason||l.urgentReason, productKey:l.product_key||l.productKey, photos:l.photos||[], location:(l.location_lat&&l.location_lng)?{lat:Number(l.location_lat),lng:Number(l.location_lng)}:null, createdAt:Number(l.created_at||l.createdAt) }); }).join('');
+}
 async function renderMission(){
 var u=DB.user;if(!u)return;
 var result=null; try{result=await api.getMissions(u.phone)}catch(e){}

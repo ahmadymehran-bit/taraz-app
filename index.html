@@ -157,7 +157,7 @@
         <div class="bz-col"><h4>سفارش‌های فروش</h4><div class="bz-row bz-hd"><span>قیمت</span><span>تعداد</span></div><div id="bz-asks"></div></div>
         <div class="bz-col"><h4>سفارش‌های خرید</h4><div class="bz-row bz-hd"><span>قیمت</span><span>تعداد</span></div><div id="bz-bids"></div></div>
       </div></details>
-    <div class="bz-mission" onclick="go('mission')"><span>‹</span><div><b>ادامه در مأموریت</b><small>تأیید خریدار و فروشنده ← هماهنگی دامپزشک و باربری</small></div><i>🤝</i></div>
+    <div class="bz-mission" onclick="go('missions-list')"><span>‹</span><div><b>ادامه در مأموریت</b><small>تأیید خریدار و فروشنده ← هماهنگی دامپزشک و باربری</small></div><i>🤝</i></div>
     <div class="bz-sheet" id="bz-sheet" hidden>
       <div class="bz-card">
         <button class="bz-x" onclick="bzClose()">✕</button>
@@ -201,62 +201,11 @@
   </section>
 
 <!-- ============ MISSION (Snap & Digikala Style) ============ -->
-<section class="screen" id="screen-mission" style="padding-bottom:110px;">
+<section class="screen" id="screen-favorites" style="padding-bottom:110px;">
   <header class="modern-header">
-    <div class="mh-brand" onclick="go('home')">
-      <span class="leaf">🎯</span>
-      <span class="mh-title">مأموریت جدید</span>
-    </div>
-    <div style="flex:1"></div>
-    <button type="button" onclick="go('home')" style="background:none;border:none;font-size:24px;color:var(--muted);padding:8px;">✕</button>
+    <div class="mh-brand"><span class="leaf">❤️</span><span class="mh-title">مورد علاقه</span></div>
   </header>
-
-  <div style="padding: 20px 16px;">
-    <!-- کارت شغل کاربر (به سبک دیجی‌کالا) -->
-    <div class="modern-mission-card">
-      <div class="mmc-icon">👨‍🌾</div>
-      <div>
-        <div class="mmc-lbl">شغل شما در تاراز</div>
-        <div id="mission-user-role" class="mmc-val">در حال بارگذاری...</div>
-      </div>
-    </div>
-
-    <!-- کادر درخواست (به سبک اسنپ) -->
-    <h3 class="modern-section-title">چه کاری برایتان انجام دهیم؟</h3>
-    <div style="position: relative; margin-bottom: 24px;">
-      <textarea id="mission-input" class="modern-textarea" placeholder="مثلاً: ۵۰ رأس گوسفند از اصفهان به اهواز..." onfocus="showSuggestions()" onblur="setTimeout(hideSuggestions, 200)"></textarea>
-      
-      <!-- منوی پیشنهادات (به سبک دیوار) -->
-      <div id="mission-suggestions" class="modern-suggestions">
-        <div onclick="fillMissionInput('خرید گوسفند زنده')" class="ms-item">🐑 خرید گوسفند زنده</div>
-        <div onclick="fillMissionInput('نیاز به دامپزشک')" class="ms-item">🩺 نیاز به دامپزشک</div>
-        <div onclick="fillMissionInput('حمل بار به شهر دیگر')" class="ms-item">🚛 حمل بار به شهر دیگر</div>
-        <div onclick="fillMissionInput('خرید نهاده و کنسانتره')" class="ms-item">🌰 خرید نهاده و کنسانتره</div>
-      </div>
-    </div>
-
-    <!-- منطقه -->
-    <h3 class="modern-section-title">در کدام منطقه؟</h3>
-    <div style="position: relative; margin-bottom: 24px;">
-      <input id="mission-region" class="modern-input" placeholder="مثلاً: اصفهان، یا شهرستان...">
-    </div>
-
-    <!-- آپشن‌ها (به سبک فیلترهای دیوار) -->
-    <h3 class="modern-section-title">آپشن‌های بیشتر:</h3>
-    <div class="modern-chips">
-      <button type="button" class="modern-chip" onclick="toggleMissionOption(this, 'اشتراکی')">🤝 اشتراکی</button>
-      <button type="button" class="modern-chip" onclick="toggleMissionOption(this, 'فوری')">⚡ فوری</button>
-      <button type="button" class="modern-chip" onclick="toggleMissionOption(this, 'فقط نزدیک من')">📍 فقط نزدیک من</button>
-      <button type="button" class="modern-chip" onclick="toggleMissionOption(this, 'بالای ۱۰هزار')">📦 بالای ۱۰هزار</button>
-    </div>
-
-    <button type="button" class="modern-btn mb-buy" onclick="startMission()" style="width:100%; margin-top:16px; flex-direction:row; padding:16px; border-radius:16px;">
-      <span class="mb-icon" style="font-size:24px;">🚀</span>
-      <span class="mb-label">شروع جستجو</span>
-    </button>
-  </div>
-  
-  <div id="mission-result" style="padding: 0 16px 20px;"></div>
+  <div id="fav-list" style="padding:12px 0 20px"></div>
 </section>
 
 
@@ -428,9 +377,6 @@
     <div class="title">🎯 مأموریت‌های من</div>
   </div>
   <div style="padding:16px 0 40px">
-    <div style="padding: 0 16px 16px">
-      <button type="button" class="btn-green" onclick="go('mission')" style="min-height: 56px; font-size: 16px;">➕ ایجاد مأموریت جدید</button>
-    </div>
     <div id="my-missions-container"></div>
   </div>
 </section>
@@ -604,7 +550,7 @@
     <div style="background: #fff; border: 2px solid var(--accent); border-radius: 20px; padding: 16px; box-shadow: 0 4px 12px rgba(25, 131, 99, 0.1);">
       <label style="display:block; font-size: 13px; font-weight: 900; color: var(--forest); margin-bottom: 8px;">چه درخواستی دارید؟</label>
       <textarea id="map-mission-input" placeholder="مثلاً: خرید ۵۰ رأس گوسفند از اصفهان..." style="width: 100%; min-height: 80px; border: none; background: #f7f7f2; border-radius: 12px; padding: 12px; font-family: inherit; font-size: 14px; outline: none; resize: none;"></textarea>
-      <button type="button" class="modern-btn mb-buy" onclick="go('mission')" style="width: 100%; margin-top: 12px; flex-direction: row; padding: 12px; border-radius: 12px;">
+      <button type="button" class="modern-btn mb-buy" onclick="go('missions-list')" style="width: 100%; margin-top: 12px; flex-direction: row; padding: 12px; border-radius: 12px;">
         <span class="mb-icon" style="font-size: 20px;">🚀</span>
         <span class="mb-label" style="font-size: 15px;">ثبت درخواست هوشمند</span>
       </button>
@@ -689,9 +635,9 @@
 <!-- 👆 تا اینجا 👆 -->
 
 
-  <button type="button" data-nav="mission" onclick="go('mission')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-    ماموریت
+  <button type="button" data-nav="favorites" onclick="go('favorites')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 000-7.8z"/></svg>
+    مورد علاقه
   </button>
   <button type="button" data-nav="chatlist" onclick="go('chatlist')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
