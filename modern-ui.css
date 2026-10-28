@@ -1798,6 +1798,6 @@ body, .screen { background: linear-gradient(180deg, #13402f 0%, #0b2a22 100%) !i
 /* ===== فونت دکمه ثبت آگهی ===== */
 .nav .nav-center .fab-txt,
 .nav button.nav-center .fab-txt {
-  font-family: 'Lalezar', Tahoma, sans-serif !important;
-  font-weight: 400 !important; font-size: 17px !important; letter-spacing: 0 !important;
+  font-family: 'Vazirmatn', Vazir, Tahoma, sans-serif !important;
+  font-weight: 800 !important; font-size: 16px !important; letter-spacing: 0 !important;
 }
