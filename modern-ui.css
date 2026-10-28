@@ -1717,3 +1717,10 @@ body, .screen { background: linear-gradient(180deg, #13402f 0%, #0b2a22 100%) !i
   line-height: 1 !important; white-space: nowrap; color: #2a1d00 !important;
   margin: 0 !important; letter-spacing: .2px;
 }
+
+/* پس‌زمینه آیکون + همرنگ کلید ثبت آگهی باشد */
+.nav .nav-center .fab-ic {
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #2a1d00 !important;
+}
