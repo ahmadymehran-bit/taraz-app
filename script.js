@@ -2112,5 +2112,39 @@ function applyProfileRole(role){
 
 /* ===== صفحه ثبت آگهی: انتخاب خرید/فروش و زیرصفحه دسته‌بندی ===== */
 var postMode='buy';
-function postPick(m){postMode=m;var t=document.getElementById('post-sub-title');if(t)t.textContent=(m==='buy'?'ثبت آگهی خرید':'ثبت آگهی فروش');go('post-sub')}
-function postCat(c){go(postMode)}
+function postPick(m){postMode=m;var t=document.getElementById('post-sub-title');if(t)t.textContent='ثبت آگهی';go('post-sub')}
+var POST_FORMS={
+'حمل و نقل':{icon:'🚚',f:[['نوع ماشین','sel',['کامیون','کامیونت','وانت','تریلی','یخچال‌دار','دام‌بر']],['تناژ / ظرفیت (تن)','tel','مثلاً: ۱۰'],['نرخ کرایه (تومان)','tel','مثلاً: ۳۵۰۰۰۰'],['مبدأ','txt','مثلاً: اصفهان'],['مقصد','txt','مثلاً: تهران'],['تاریخ آمادگی','date'],['شماره پلاک / هوشمند (اختیاری)','txt','']]},
+'کشتار و بسته‌بندی':{icon:'🔪',f:[['نوع خدمت','sel',['کشتار دام سبک','کشتار دام سنگین','کشتار طیور','برش و بسته‌بندی','حمل گوشت']],['شماره مجوز بهداشتی','txt',''],['ظرفیت روزانه (رأس)','tel','مثلاً: ۵۰'],['هزینه هر رأس (تومان)','tel',''],['آدرس کشتارگاه / کارگاه','txt',''],['شهر','txt','']]},
+'طیور و ماکیان':{icon:'🐔',f:[['نوع طیور','sel',['مرغ گوشتی','مرغ تخمگذار','بوقلمون','اردک و غاز','جوجه یکروزه','تخم نطفه‌دار']],['تعداد','tel','مثلاً: ۵۰۰۰'],['سن / وزن تقریبی','txt',''],['قیمت هر واحد (تومان)','tel',''],['مجوز بهداشتی / واکسیناسیون','txt',''],['شهر','txt','']]},
+'ماشین‌آلات کشاورزی':{icon:'🚜',f:[['نوع ماشین','sel',['تراکتور','کمباین','بیل مکانیکی','پیکاپ / لودر','بسته‌بند علوفه','سمپاش','سایر']],['مدل / سال ساخت','txt',''],['نوع خدمت','sel',['اجاره با راننده','اجاره بدون راننده','فروش']],['نرخ (تومان، ساعتی یا روزانه)','tel',''],['محل استقرار','txt',''],['تاریخ آمادگی','date']]},
+'تعمیرات و تجهیزات':{icon:'🔧',f:[['نوع تخصص','sel',['تعمیر ماشین‌آلات','برق و پمپ','شیردوش و تجهیزات','آبیاری','جوشکاری','سایر']],['سابقه کار (سال)','tel',''],['هزینه (تومان)','tel',''],['آدرس کارگاه','txt',''],['شهر / محدوده سرویس‌دهی','txt',''],['آیا سیار هستید؟','sel',['بله','خیر']]]},
+'دامپزشکی و مشاوره':{icon:'🩺',f:[['نوع فعالیت','sel',['دامپزشک','داروخانه دامپزشکی','کلینیک','مشاور تغذیه','آزمایشگاه']],['شماره نظام دامپزشکی','txt',''],['سابقه کار (سال)','tel',''],['تخصص','txt','مثلاً: گاو شیری'],['آدرس کلینیک / داروخانه','txt',''],['شهر','txt',''],['هزینه ویزیت (تومان)','tel','']]},
+'نیروی کار و خدمات':{icon:'🧑‍🌾',f:[['نوع کار','sel',['چوپان','کارگر دامداری','کارگر کشاورزی','شیردوش','سرکارگر','راننده تراکتور']],['سابقه کار (سال)','tel',''],['دستمزد درخواستی (تومان)','tel',''],['نوع دستمزد','sel',['روزانه','ماهانه','پروژه‌ای']],['شهر','txt',''],['آمادگی از تاریخ','date']]}
+};
+var postCurCat=null;
+function postCat(c){
+  var d=POST_FORMS[c]; if(!d){toast('به‌زودی');return}
+  postCurCat=c;
+  document.getElementById('post-form-title').textContent=d.icon+' ثبت '+c;
+  var h=d.f.map(function(x,i){
+    var id='pf-'+i, inp;
+    if(x[1]==='sel') inp='<select id="'+id+'">'+x[2].map(function(o){return '<option>'+o+'</option>'}).join('')+'</select>';
+    else if(x[1]==='date') inp='<input id="'+id+'" type="date">';
+    else if(x[1]==='tel') inp='<input id="'+id+'" type="tel" inputmode="numeric" placeholder="'+(x[2]||'')+'" style="direction:ltr;text-align:left">';
+    else inp='<input id="'+id+'" placeholder="'+(x[2]||'')+'">';
+    return '<div class="field"><label>'+x[0]+'</label>'+inp+'</div>';
+  }).join('');
+  h+='<div class="field"><label>توضیحات (اختیاری)</label><input id="pf-note"></div><button type="button" class="btn-green" onclick="submitPostForm()" style="min-height:60px;font-size:17px">✅ ثبت آگهی</button>';
+  document.getElementById('post-form-body').innerHTML=h;
+  go('post-form');
+}
+function submitPostForm(){
+  var u=DB.user; if(!u){go('auth');return}
+  var d=POST_FORMS[postCurCat]; if(!d)return;
+  var vals={}, miss=false;
+  d.f.forEach(function(x,i){var v=document.getElementById('pf-'+i).value.trim(); vals[x[0]]=v; if(!v && x[1]!=='date' && x[0].indexOf('اختیاری')<0) miss=true});
+  if(miss){toast('همه فیلدها را پر کن');return}
+  var all=DB.demands; all.push({id:'P'+Date.now(),buyerPhone:u.phone,buyerName:u.name,categoryId:'service',serviceGroup:postCurCat,title:postCurCat,fields:vals,note:document.getElementById('pf-note').value.trim(),qty:'',qtyNum:0,unit:'',price:0,region:'',status:'open',createdAt:Date.now()});
+  DB.demands=all; toast('ثبت شد ✓'); go('home');
+}

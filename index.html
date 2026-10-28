@@ -299,9 +299,6 @@
         <small>همراه مطمئن کشاورزان و دامداران</small>
       </div>
       <div class="post-list">
-        <button type="button" class="post-btn pb-buy" onclick="postPick('buy')">
-          <span class="pb-ic">🐂</span><span class="pb-txt">خرید</span><span class="pb-arr">‹</span>
-        </button>
         <button type="button" class="post-btn pb-sell" onclick="postPick('sell')">
           <span class="pb-ic">🌱</span><span class="pb-txt">فروش</span><span class="pb-arr">‹</span>
         </button>
@@ -327,7 +324,7 @@
     <div class="post-page">
       <div class="post-subhead">
         <button type="button" class="post-back" onclick="go('sell')" aria-label="بازگشت">›</button>
-        <b id="post-sub-title">ثبت آگهی خرید</b>
+        <b id="post-sub-title">ثبت آگهی</b>
       </div>
       <div class="post-list">
         <button type="button" class="post-btn pb-cat" onclick="postCat('حمل و نقل')"><span class="pb-ic">🚚</span><span class="pb-txt">حمل و نقل</span><span class="pb-arr">‹</span></button>
@@ -338,6 +335,16 @@
         <button type="button" class="post-btn pb-cat" onclick="postCat('دامپزشکی و مشاوره')"><span class="pb-ic">🩺</span><span class="pb-txt">دامپزشکی و مشاوره</span><span class="pb-arr">‹</span></button>
         <button type="button" class="post-btn pb-cat" onclick="postCat('نیروی کار و خدمات')"><span class="pb-ic">🧑‍🌾</span><span class="pb-txt">نیروی کار و خدمات</span><span class="pb-arr">‹</span></button>
       </div>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-post-form">
+    <div class="post-page">
+      <div class="post-subhead">
+        <button type="button" class="post-back" onclick="go('post-sub')" aria-label="بازگشت">›</button>
+        <b id="post-form-title">ثبت آگهی</b>
+      </div>
+      <div id="post-form-body" style="padding:8px 4px 40px"></div>
     </div>
   </section>
 
