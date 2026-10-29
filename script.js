@@ -348,7 +348,7 @@ else if(currentScreen === 'detail') openDetail(currentDetailId, detailReturnTo);
 }
 async function addNotification(n){
 var u=DB.user;if(!u)return;
-var notifData={ id:'N'+Date.now(), userPhone:u.phone, type:n.type||'info', icon:n.icon||'🔔', title:n.title||'اعلان', body:n.body||'' };
+var notifData={ id:n.id||('N'+Date.now()), userPhone:u.phone, type:n.type||'info', icon:n.icon||'🔔', title:n.title||'اعلان', body:n.body||'' };
 var result=null; try{result=await api.createNotification(notifData)}catch(e){}
 var all=DB.notifications; all.unshift({ id:notifData.id, type:notifData.type, icon:notifData.icon, title:notifData.title, body:notifData.body, read:false, createdAt:Date.now() }); DB.notifications=all; updateBellBadge();
 }
@@ -360,8 +360,19 @@ list=list.map(function(n){ return { id:n.id, type:n.type, icon:n.icon||'🔔', t
 list.sort(function(a,b){return b.createdAt-a.createdAt});
 var wrap=document.getElementById('notif-list'); if(!wrap)return;
 if(!list.length){ wrap.innerHTML='<div class="empty"><span class="emoji">🔔</span>اعلانی نیست</div>'; return; }
-wrap.innerHTML=list.map(function(n){ var cid=''; if(n.type==='message'&&typeof n.id==='string'&&n.id.indexOf('NM-')===0){ cid=n.id.slice(3); var k=cid.lastIndexOf('-'); if(k>0)cid=cid.slice(0,k); } var oc=cid?' onclick="openChat(this.dataset.cid)" data-cid="'+esc(cid)+'" style="cursor:pointer"':''; return '<div class="notif-card '+(n.read?'':'unread')+'"'+oc+'><div class="notif-ic">'+(n.icon||'🔔')+'</div><div class="notif-main"><b>'+esc(n.title)+'</b><small>'+esc(n.body)+'</small><span class="time">'+timeAgo(n.createdAt)+'</span></div></div>'; }).join('');
+wrap.innerHTML=list.map(function(n){ var cid=''; if(n.type==='message'&&typeof n.id==='string'&&n.id.indexOf('NM-')===0){ cid=n.id.slice(3); var k=cid.lastIndexOf('-'); if(k>0)cid=cid.slice(0,k); } var capId=''; if(n.type==='booking'&&typeof n.id==='string'&&n.id.indexOf('NB-')===0){ capId=n.id.slice(3); var k2=capId.lastIndexOf('-'); if(k2>0)capId=capId.slice(0,k2); } var oc=cid?' onclick="openChat(this.dataset.cid)" data-cid="'+esc(cid)+'" style="cursor:pointer"':(capId?' onclick="openBookingCapacity(this.dataset.cid)" data-cid="'+esc(capId)+'" style="cursor:pointer"':''); return '<div class="notif-card '+(n.read?'':'unread')+'"'+oc+'><div class="notif-ic">'+(n.icon||'🔔')+'</div><div class="notif-main"><b>'+esc(n.title)+'</b><small>'+esc(n.body)+'</small><span class="time">'+timeAgo(n.createdAt)+'</span></div></div>'; }).join('');
 var all=DB.notifications; all.forEach(function(n){n.read=true}); DB.notifications=all; updateBellBadge();
+}
+
+async function openBookingCapacity(capId){
+  if(!DB.capacities.find(function(c){return c.id===capId})){
+    var res=null; try{res=await api.getCapacities()}catch(e){}
+    var raw=(res&&res.capacities||[]).find(function(c){return c.id===capId});
+    if(!raw){ toast('این ظرفیت دیگر موجود نیست'); return; }
+    var c={ id: raw.id, ownerPhone: raw.owner_phone || raw.ownerPhone, ownerName: raw.owner_name || raw.ownerName, serviceType: raw.service_type || raw.serviceType, typeId: raw.type_id || raw.typeId, title: raw.title, region: raw.region, routeFrom: raw.route_from || raw.routeFrom, routeTo: raw.route_to || raw.routeTo, capacityTotal: Number(raw.capacity_total || raw.capacityTotal), capacityUsed: Number(raw.capacity_used || raw.capacityUsed), price: Number(raw.price), unit: raw.unit, availableFrom: Number(raw.available_from || raw.availableFrom), availableTo: Number(raw.available_to || raw.availableTo), meta: raw.meta, rating: Number(raw.rating || 0), createdAt: Number(raw.created_at || raw.createdAt) };
+    DB.capacities=DB.capacities.concat([c]);
+  }
+  openCapacity(capId,'notifs');
 }
 
 /* NAVIGATION */
@@ -857,7 +868,7 @@ function submitBooking(capacityId){
   const booking={id:'B'+Date.now(),capacityId:c.id,customerPhone:u.phone,customerName:u.name,qty:qty,total:total,status:'pending',createdAt:Date.now()};
   const all=DB.bookings;all.push(booking);DB.bookings=all;
   const caps=DB.capacities;const idx=caps.findIndex(x=>x.id===c.id); if(idx>=0){caps[idx].capacityUsed+=qty;DB.capacities=caps}
-  addNotification({type:'booking',icon:'📅',title:'رزرو ثبت شد',body:c.title+' — '+faDigits(qty)+' '+c.unit});
+  addNotification({id:'NB-'+c.id+'-'+Date.now(),type:'booking',icon:'📅',title:'رزرو ثبت شد',body:c.title+' — '+faDigits(qty)+' '+c.unit});
   toast('رزرو شد ✓'); renderCapacityDetail();
 }
 function acceptBooking(id){ const b=DB.bookings.find(x=>x.id===id);if(!b)return; b.status='confirmed';DB.bookings=DB.bookings; toast('تأیید شد ✓'); renderCapacityDetail(); }
