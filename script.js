@@ -391,7 +391,7 @@ if(s==='browse'){ renderBazaar(); loadFavorites().then(renderHome); updateHomeRe
   if(s==='favorites')renderFavorites();
   if(s==='profile')renderProfile();
   if(s==='sell')resetSellForm();
-  if(s==='chatlist')renderChatList();
+  if(s==='chatlist'){renderChatList();pollChatBadge();}
   if(s==='chat')renderChat();
   if(s==='settings')applyTheme();
   if(s==='notifs')renderNotifs();
@@ -1074,7 +1074,7 @@ all.forEach(function(n){ if(!n.read && typeof n.id==='string' && n.id.indexOf(pr
 if(changed) DB.notifications=all;
 updateBellBadge();
 }
-function markConvSeen(cid){var m=_seenMap();m[cid]=Date.now();try{localStorage.setItem('taraz_seen',JSON.stringify(m))}catch(e){}}
+function markConvSeen(cid){var m=_seenMap();var mx=m[cid]||0;DB.messages.forEach(function(x){if(x.convId===cid&&x.createdAt>mx)mx=x.createdAt});m[cid]=mx;try{localStorage.setItem('taraz_seen',JSON.stringify(m))}catch(e){}}
 function updateChatBadge(){
 var u=DB.user; var badge=document.getElementById('nav-chat-badge'); if(!badge)return;
 if(!u){badge.textContent='';badge.classList.remove('show');return}
@@ -1090,8 +1090,9 @@ var cc=DB.conversations; convs.forEach(function(c){var n={id:c.id,listingId:c.li
 }catch(e){}
 try{ if(!localStorage.getItem('taraz_seen_init2')){ DB.conversations.forEach(function(c){markConvSeen(c.id)}); localStorage.setItem('taraz_seen_init2','1'); } }catch(e){}
 updateChatBadge(); updateBellBadge();
+var _cl=document.getElementById('screen-chatlist'); if(_cl&&_cl.classList.contains('active'))renderChatList();
 }
-setInterval(pollChatBadge,20000); setTimeout(pollChatBadge,3000);
+setInterval(pollChatBadge,10000); setTimeout(pollChatBadge,3000); document.addEventListener('visibilitychange',function(){if(!document.hidden)pollChatBadge()});
 function openRating(toPhone,toName){
   ratingTarget={toPhone:toPhone,toName:toName}; ratingScore=0;
   document.getElementById('rating-title').textContent='تجربه‌ات با '+toName;
