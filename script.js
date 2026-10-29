@@ -20,7 +20,7 @@ var API_BASE = window.TARAZ_API_BASE || 'https://taraz-backend-prog.vercel.app';
     var p = _f(input, init);
     try {
       var u2 = typeof input === 'string' ? input : (input && input.url) || '';
-      if (u2.indexOf(API_BASE) === 0 && u2.indexOf('/api/auth/login') < 0 && u2.indexOf('/api/auth/register') < 0) {
+      if (u2.indexOf(API_BASE) === 0 && u2.indexOf('/api/auth/login') < 0 && u2.indexOf('/api/missions/') < 0 && u2.indexOf('/api/bookings/') < 0 && u2.indexOf('/api/auth/register') < 0) {
         p.then(function (r) {
           if (r && r.status === 401 && !window._sessionExpiring) {
             window._sessionExpiring = true;
@@ -2069,7 +2069,7 @@ var api = {
     
     var res = await fetch(url, config);
     if (!res.ok) {
-      if (res.status === 401 && _tok) { try { localStorage.removeItem('taraz.token'); } catch (e) {} }
+      if (res.status === 401 && _tok && path.indexOf('/api/missions/') !== 0 && path.indexOf('/api/bookings/') !== 0) { try { localStorage.removeItem('taraz.token'); } catch (e) {} }
       if (path.indexOf('/api/auth/') === 0) { try { return await res.json(); } catch (e) {} }
       return null;
     }
