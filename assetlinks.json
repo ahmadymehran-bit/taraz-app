@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "ir.tarazapp.app",
+        "sha256_cert_fingerprints": ["25:A4:3A:0A:D7:6C:87:E7:5F:80:3B:30:9E:98:A3:D4:54:39:C9:93:CD:C8:73:D1:08:AD:E3:ED:19:EB:26:B2"]
+      }
+    }]
