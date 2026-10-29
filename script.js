@@ -735,7 +735,7 @@ return '<div class="browse-card" onclick="openDetail(\''+l.id+'\',\'browse\')">'
 
 '<button type="button" class="bc-chat" onclick="event.stopPropagation();openChatWithSeller(\''+l.id+'\')">💬 چت با فروشنده</button></div></div>';
 }
-var BROWSE_GROUPS={livestock:['livestock','poultry'],crops:['crops','feed','forage','agri_inputs'],vet_drugs:['vet_drugs','vet_equipment'],services:['service','offer']};
+var BROWSE_GROUPS={livestock:['livestock','poultry'],crops:['crops','feed','forage','agri_inputs'],vet_drugs:['vet_drugs','vet_equipment'],services:['service']};
 async function renderBrowse(){
   renderBrowseSkeleton(); renderBrowseChips();
 var ss=document.getElementById('browse-search'); if(ss&&ss.value!==browseSearch)ss.value=browseSearch;
