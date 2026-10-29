@@ -1037,7 +1037,7 @@ function chatChannelFor(convId, myPhone){
   _chatChId = convId;
   _chatCh = supabaseClient.channel('chat_' + convId)
     .on('broadcast', { event: 'new_message' }, function(p){
-      if(p && p.payload && p.payload.from !== myPhone && currentConvId === convId) renderChat();
+      if(p && p.payload && p.payload.from !== myPhone && currentConvId === convId && (document.getElementById('screen-chat')||{classList:{contains:function(){return false}}}).classList.contains('active')) renderChat(); else { try{pollChatBadge()}catch(e){} }
     })
     .subscribe();
   return _chatCh;
