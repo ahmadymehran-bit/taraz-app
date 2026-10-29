@@ -1939,3 +1939,14 @@ html body #screen-home #browse-chips .chip-big .ic {
 /* bargain chip: 3D gift icon, larger than others */
 #screen-home #browse-chips .chip-big[onclick*="bargain"] .ic svg { width: 54px !important; height: 54px !important; filter: drop-shadow(0 3px 4px rgba(0,0,0,.45)); }
 #screen-home #browse-chips .chip-big[onclick*="bargain"].active .ic svg { filter: drop-shadow(0 0 7px rgba(240,200,100,.95)) drop-shadow(0 3px 4px rgba(0,0,0,.4)); }
+
+/* «پیشنهاد ویژه»: همان ظاهر چیپ هدیه (بدون قاب، آیکون بزرگ، وسط‌چین) */
+html body #screen-home .offer-btn {
+  display: flex !important; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  width: auto !important; margin: 6px auto 8px !important; padding: 4px 2px !important;
+  background: none !important; border: none !important; box-shadow: none !important; border-radius: 0 !important;
+  outline: none !important; -webkit-tap-highlight-color: transparent;
+}
+html body #screen-home .offer-btn .ic { display: inline-flex; background: none !important; border: none !important; }
+html body #screen-home .offer-btn .ic svg { width: 54px !important; height: 54px !important; filter: drop-shadow(0 3px 4px rgba(0,0,0,.45)); }
+html body #screen-home .offer-btn .offer-txt { font-size: 14px !important; font-weight: 800 !important; color: #ffe9a0 !important; text-shadow: 0 1px 0 rgba(0,0,0,.5); }
