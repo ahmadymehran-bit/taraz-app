@@ -2287,7 +2287,7 @@ function postCat(c){
   document.getElementById('post-form-body').innerHTML=h;
   go('post-form');
 }
-function submitPostForm(){
+async function submitPostForm(){
   var u=DB.user; if(!u){go('auth');return}
   var d=(postMode==='offer')?OFFER_FORMS[postCurCat]:POST_FORMS[postCurCat]; if(!d)return;
   var vals={}, miss=false;
@@ -2301,8 +2301,10 @@ function submitPostForm(){
   var _op=parseInt(String(vals['قیمت عادی (تومان)']||'').replace(/[^0-9]/g,''),10)||0;
   var _item={id:'L'+Date.now(),sellerName:u.name,sellerPhone:u.phone,categoryId:_p.categoryId,title:(postCurCat+' - '+_first).slice(0,200),qty:'',qtyNum:0,price:_sp,oldPrice:(_op>_sp&&_sp>0)?_op:null,urgent:false,urgentReason:(postMode==='offer')?'special':null,region:vals['منطقه']||vals['شهر']||'',desc:_desc,photos:_p.photos||[],productKey:'',createdAt:Date.now()};
   window._tempListingPhotos=[];
-  api.createListing(_item).then(function(){toast('ثبت شد ✓')}).catch(function(){toast('⚠ ثبت روی سرور انجام نشد')});
+  try { await api.createListing(_item); toast('ثبت شد ✓'); }
+  catch(e){ toast('⚠ ثبت روی سرور انجام نشد'); }
   go('home');
+  if(typeof renderBrowse==='function') renderBrowse();
 }
 
 // ===== زیر صفحه فروش: ثبت آگهی ساده دام =====
