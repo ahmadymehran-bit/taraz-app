@@ -1025,7 +1025,7 @@ var html = ''; var lastDay = '';
 thread.forEach(function(m){ var d = new Date(m.createdAt); var dayStr = faDigits(d.toLocaleDateString('fa-IR')); if(dayStr !== lastDay){ html += '<div class="chat-day">' + dayStr + '</div>'; lastDay = dayStr; } var mine = m.fromPhone === u.phone; var t = new Date(m.createdAt); var hh = faDigits(String(t.getHours()).padStart(2,'0')); var mm = faDigits(String(t.getMinutes()).padStart(2,'0')); html += '<div class="msg ' + (mine ? 'me' : 'them') + '">' + esc(m.text) + '<span class="msg-time">' + hh + ':' + mm + '</span></div>'; });
 body.innerHTML = html;
 }
-setTimeout(function(){ body.scrollTop = body.scrollHeight; }, 50); markConvSeen(c.id); updateChatBadge();
+setTimeout(function(){ body.scrollTop = body.scrollHeight; }, 50); markConvSeen(c.id); updateChatBadge(); markConvNotifsRead(c.id, u.phone);
 chatChannelFor(c.id, u.phone);
 
 }
@@ -1067,6 +1067,13 @@ var l=DB.listings.find(function(x){return x.id===listingId});if(!l)return;
 var reqs=DB.requests; reqs.push({ id:'R'+Date.now(), listingId:listingId, listingTitle:l.title, sellerPhone:l.sellerPhone, sellerName:l.sellerName, buyerPhone:u.phone, buyerName:u.name, price:l.price, region:l.region, status:'pending', createdAt:Date.now() }); DB.requests=reqs;
 }
 function _seenMap(){try{return JSON.parse(localStorage.getItem('taraz_seen')||'{}')}catch(e){return {}}}
+async function markConvNotifsRead(cid, phone){
+try{ await api.markConvNotifsRead(cid, phone); }catch(e){}
+var all=DB.notifications; var pre='NM-'+cid+'-'; var changed=false;
+all.forEach(function(n){ if(!n.read && typeof n.id==='string' && n.id.indexOf(pre)===0){ n.read=true; changed=true; } });
+if(changed) DB.notifications=all;
+updateBellBadge();
+}
 function markConvSeen(cid){var m=_seenMap();m[cid]=Date.now();try{localStorage.setItem('taraz_seen',JSON.stringify(m))}catch(e){}}
 function updateChatBadge(){
 var u=DB.user; var badge=document.getElementById('nav-chat-badge'); if(!badge)return;
@@ -2097,6 +2104,7 @@ var api = {
   getMissions: async function(phone){ return this._fetch('/api/missions/' + encodeURIComponent(phone)); },
   createNotification: async function(n){ return this._fetch('/api/notifications', { method: 'POST', body: JSON.stringify(n) }); },
   getNotifications: async function(phone){ return this._fetch('/api/notifications/' + encodeURIComponent(phone)); },
+  markConvNotifsRead: async function(convId, phone){ return this._fetch('/api/notifications/read-conv', { method: 'POST', body: JSON.stringify({ convId: convId, phone: phone }) }); },
   addFavorite: async function(phone, listingId){ return this._fetch('/api/favorites', { method: 'POST', body: JSON.stringify({ id: 'F' + Date.now(), userPhone: phone, listingId: listingId }) }); },
   getFavorites: async function(phone){ return this._fetch('/api/favorites/' + encodeURIComponent(phone)); },
   deleteAccount: async function(phone) { return this._fetch('/api/users/' + encodeURIComponent(phone) + '/delete', { method: 'DELETE' }); },
