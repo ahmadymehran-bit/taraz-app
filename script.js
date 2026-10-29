@@ -360,7 +360,7 @@ list=list.map(function(n){ return { id:n.id, type:n.type, icon:n.icon||'🔔', t
 list.sort(function(a,b){return b.createdAt-a.createdAt});
 var wrap=document.getElementById('notif-list'); if(!wrap)return;
 if(!list.length){ wrap.innerHTML='<div class="empty"><span class="emoji">🔔</span>اعلانی نیست</div>'; return; }
-wrap.innerHTML=list.map(function(n){ var cid=''; if(n.type==='message'&&typeof n.id==='string'&&n.id.indexOf('NM-')===0){ cid=n.id.slice(3); var k=cid.lastIndexOf('-'); if(k>0)cid=cid.slice(0,k); } var capId=''; if(n.type==='booking'&&typeof n.id==='string'&&n.id.indexOf('NB-')===0){ capId=n.id.slice(3); var k2=capId.lastIndexOf('-'); if(k2>0)capId=capId.slice(0,k2); } var oc=cid?' onclick="openChat(this.dataset.cid)" data-cid="'+esc(cid)+'" style="cursor:pointer"':(capId?' onclick="openBookingCapacity(this.dataset.cid)" data-cid="'+esc(capId)+'" style="cursor:pointer"':''); return '<div class="notif-card '+(n.read?'':'unread')+'"'+oc+'><div class="notif-ic">'+(n.icon||'🔔')+'</div><div class="notif-main"><b>'+esc(n.title)+'</b><small>'+esc(n.body)+'</small><span class="time">'+timeAgo(n.createdAt)+'</span></div></div>'; }).join('');
+wrap.innerHTML=list.map(function(n){ var cid=''; if((n.type==='message'||n.type==='request')&&typeof n.id==='string'&&(n.id.indexOf('NM-')===0||n.id.indexOf('NR-')===0)){ cid=n.id.slice(3); var k=cid.lastIndexOf('-'); if(k>0)cid=cid.slice(0,k); } var capId=''; if(n.type==='booking'&&typeof n.id==='string'&&n.id.indexOf('NB-')===0){ capId=n.id.slice(3); var k2=capId.lastIndexOf('-'); if(k2>0)capId=capId.slice(0,k2); } var oc=cid?' onclick="openChat(this.dataset.cid)" data-cid="'+esc(cid)+'" style="cursor:pointer"':(capId?' onclick="openBookingCapacity(this.dataset.cid)" data-cid="'+esc(capId)+'" style="cursor:pointer"':''); return '<div class="notif-card '+(n.read?'':'unread')+'"'+oc+'><div class="notif-ic">'+(n.icon||'🔔')+'</div><div class="notif-main"><b>'+esc(n.title)+'</b><small>'+esc(n.body)+'</small><span class="time">'+timeAgo(n.createdAt)+'</span></div></div>'; }).join('');
 var all=DB.notifications; all.forEach(function(n){n.read=true}); DB.notifications=all; updateBellBadge();
 }
 
@@ -1001,8 +1001,11 @@ if(!listing){ listing = DB.listings.find(function(x){ return x.id === listingId;
 if(!listing){ toast('آگهی یافت نشد'); return; }
 var sellerPhone = listing.seller_phone || listing.sellerPhone; var sellerName = listing.seller_name || listing.sellerName;
 if(sellerPhone === u.phone){ toast('آگهی خودت است'); return; }
+var isFirstReq = !DB.requests.some(function(r){ return r.listingId===listingId && r.buyerPhone===u.phone; });
 createBuyRequest(listingId);
-var c = await getOrCreateConv(listingId, sellerPhone, sellerName); if(c) openChat(c.id);
+var c = await getOrCreateConv(listingId, sellerPhone, sellerName);
+if(c && isFirstReq) notifySellerRequest(c.id, sellerPhone, listing.title, u.name);
+if(c) openChat(c.id);
 }
 function openChat(convId){ currentConvId = convId; go('chat'); }
 async function renderChatList(){
@@ -1076,11 +1079,16 @@ var u=DB.user;if(!u)return;
 var l=DB.listings.find(function(x){return x.id===listingId});if(!l)return;
 var reqs=DB.requests; reqs.push({ id:'R'+Date.now(), listingId:listingId, listingTitle:l.title, sellerPhone:l.sellerPhone, sellerName:l.sellerName, buyerPhone:u.phone, buyerName:u.name, price:l.price, region:l.region, status:'pending', createdAt:Date.now() }); DB.requests=reqs;
 }
+async function notifySellerRequest(convId, sellerPhone, title, buyerName){
+var n={ id:'NR-'+convId+'-'+Date.now(), userPhone:sellerPhone, type:'request', icon:'📥', title:'درخواست خرید', body:buyerName+' برای «'+title+'» درخواست خرید داده' };
+try{ await api.createNotification(n); }catch(e){}
+try{ fetch(API_BASE + '/api/push/send', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ toPhone:sellerPhone, title:'درخواست خرید', body:n.body, data:{convId:convId} }) }); }catch(e){}
+}
 function _seenMap(){try{return JSON.parse(localStorage.getItem('taraz_seen')||'{}')}catch(e){return {}}}
 async function markConvNotifsRead(cid, phone){
 try{ await api.markConvNotifsRead(cid, phone); }catch(e){}
-var all=DB.notifications; var pre='NM-'+cid+'-'; var changed=false;
-all.forEach(function(n){ if(!n.read && typeof n.id==='string' && n.id.indexOf(pre)===0){ n.read=true; changed=true; } });
+var all=DB.notifications; var pre='NM-'+cid+'-', pre2='NR-'+cid+'-'; var changed=false;
+all.forEach(function(n){ if(!n.read && typeof n.id==='string' && (n.id.indexOf(pre)===0||n.id.indexOf(pre2)===0)){ n.read=true; changed=true; } });
 if(changed) DB.notifications=all;
 updateBellBadge();
 }
