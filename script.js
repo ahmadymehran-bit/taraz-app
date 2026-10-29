@@ -62,6 +62,10 @@ function jdateChange(id){
 }
 function jdateToMs(v){var p=String(v||'').split('/');if(p.length!==3)return 0;var g=j2g(+p[0],+p[1],+p[2]);return new Date(g[0],g[1]-1,g[2]).getTime()}
 
+function pgalIndex(g){return Math.round(Math.abs(g.scrollLeft)/Math.max(1,g.clientWidth))}
+function pgalUpdate(g){var n=g.children.length;var i=Math.min(pgalIndex(g),n-1);var box=g.parentNode;var c=box.querySelector('.pgal-count');if(c)c.textContent=faDigits(i+1)+' / '+faDigits(n);var ds=box.querySelectorAll('.pdot');for(var k=0;k<ds.length;k++){ds[k].style.background=(k===i)?'#023D2E':'#c9d6cf'}}
+function pgalGo(btn,step){var g=btn.parentNode.querySelector('.pgal');var n=g.children.length;var i=Math.max(0,Math.min(n-1,pgalIndex(g)+step));g.children[i].scrollIntoView({behavior:'smooth',block:'nearest',inline:'start'})}
+
 const faPrice=n=>faDigits(Number(n||0).toLocaleString('en-US'));
 const timeAgo=ts=>{const m=Math.floor((Date.now()-ts)/60000);if(m<1)return'الان';if(m<60)return faDigits(m)+' دقیقه پیش';const h=Math.floor(m/60);if(h<24)return faDigits(h)+' ساعت پیش';return faDigits(Math.floor(h/24))+' روز پیش'};
 const initials=n=>{const p=(n||'').trim().split(' ');if(!p[0])return'؟';return (p[0][0]||'')+((p[1]||'')[0]||'')};
@@ -992,7 +996,14 @@ if(isMine){ actionBlock='<button type="button" class="btn-red" onclick="deleteLi
 var loc = l.location; var mapHTML = '';
 if(loc && loc.lat && loc.lng){ mapHTML = '<div style="margin-top:20px;padding-top:16px;border-top:2px dashed var(--line)"><b style="font-size:15px">📍 موقعیت روی نقشه</b><div id="map-detail" style="height:250px;border-radius:14px;margin-top:10px;border:2px solid #e0e0e0"></div></div>'; }
 var body=document.getElementById('detail-body');
-var photosHTML=(l.photos&&l.photos.length)?'<div style="display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;margin-bottom:14px;border-radius:14px">'+l.photos.map(function(p){return '<img src="'+esc(p)+'" alt="" style="flex:0 0 100%;width:100%;max-height:300px;object-fit:cover;border-radius:14px;scroll-snap-align:center">'}).join('')+'</div>':'';
+var photosHTML='';
+if(l.photos&&l.photos.length){
+ var pn=l.photos.length;
+ var pimgs=l.photos.map(function(p){return '<img src="'+esc(p)+'" alt="" style="flex:0 0 100%;width:100%;max-height:300px;object-fit:cover;border-radius:14px;scroll-snap-align:start">'}).join('');
+ var pdots=''; for(var pi=0;pi<pn;pi++){pdots+='<i class="pdot" style="width:7px;height:7px;border-radius:50%;background:'+(pi?'#c9d6cf':'#023D2E')+'"></i>'}
+ var pnav=(pn>1)?('<span class="pgal-count" style="position:absolute;top:10px;left:10px;background:rgba(0,0,0,.6);color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:100px">۱ / '+faDigits(pn)+'</span>'+'<button type="button" onclick="pgalGo(this,-1)" aria-label="عکس قبلی" style="position:absolute;top:50%;right:6px;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;border:0;background:rgba(0,0,0,.45);color:#fff;font-size:22px;cursor:pointer">›</button>'+'<button type="button" onclick="pgalGo(this,1)" aria-label="عکس بعدی" style="position:absolute;top:50%;left:6px;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;border:0;background:rgba(0,0,0,.45);color:#fff;font-size:22px;cursor:pointer">‹</button>'+'<div style="display:flex;justify-content:center;gap:6px;margin-top:8px">'+pdots+'</div>'):'';
+ photosHTML='<div style="position:relative;margin-bottom:14px"><div class="pgal" onscroll="pgalUpdate(this)" style="display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;border-radius:14px">'+pimgs+'</div>'+pnav+'</div>';
+}
 body.innerHTML='<div style="padding:16px 16px 0"><div class="detail-card" style="margin:0">'+photosHTML+'<span class="pill" style="display:inline-block;background:#eef8f3;color:var(--accent);font-size:13px;font-weight:900;padding:6px 14px;border-radius:100px">'+cat.icon+' '+cat.short+'</span><div class="detail-title" style="margin-top:14px">'+esc(l.title)+'</div><div class="detail-meta">فروشنده: <b>'+esc(l.sellerName)+'</b><br>📍 '+esc(l.region)+'<br>📦 '+esc(l.qty)+'<br>🕒 '+timeAgo(l.createdAt)+'</div>'+(r.count?'<div class="rate-badge-big">⭐ '+faDigits(r.avg.toFixed(1))+' از '+faDigits(r.count)+' نفر</div>':'')+'<div class="detail-price-block">'+(l.oldPrice&&l.price<l.oldPrice?'<div class="old-price">'+faPrice(l.oldPrice)+'</div>':'')+'<div class="lbl">قیمت هر واحد</div><div class="val">'+faPrice(l.price)+'</div>'+(l.oldPrice&&l.price<l.oldPrice?'<div class="discount">🔥 تخفیف ویژه</div>':'')+'</div>'+(l.desc?'<div style="margin-top:20px;padding-top:16px;border-top:2px dashed var(--line)"><b style="font-size:15px">توضیحات</b><div style="font-size:14px;color:var(--muted);margin-top:8px;line-height:2;white-space:pre-line;word-break:break-word;text-align:right;direction:rtl">'+esc(l.desc)+'</div></div>':'')+'</div>'+mapHTML+actionBlock+'</div>';
 go('detail');
   if(loc && loc.lat && loc.lng){ setTimeout(function(){ if(window._mapDetail){window._mapDetail.remove();} window._mapDetail = L.map('map-detail').setView([loc.lat, loc.lng], 13); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '© OpenStreetMap' }).addTo(window._mapDetail); L.marker([loc.lat, loc.lng]).addTo(window._mapDetail); }, 100); }
