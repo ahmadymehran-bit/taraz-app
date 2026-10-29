@@ -702,9 +702,9 @@ function renderBrowseChips(){
   }).join('');
 }
 var browseBargain=false;
-function toggleBargain(){browseBargain=!browseBargain;if(browseBargain)browseCategory='all';renderBrowse()}
+function toggleBargain(){browseBargain=!browseBargain;if(browseBargain)browseCategory='all';var ob=document.getElementById('offer-btn');if(ob)ob.classList.toggle('active',browseBargain);renderBrowse()}
 function isBargainListing(l){return !!((l.oldPrice&&l.price<l.oldPrice)||l.urgentReason==="expiry"||l.urgentReason==="special"||l.categoryId==="offer")}
-function pickBrowseCat(id){if(id==='all'){browseCategory='all';browseBargain=false;renderBrowse();return}if(id==='bargain'){toggleBargain();return}browseCategory=(browseCategory===id)?'all':id;renderBrowse()}
+function pickBrowseCat(id){if(id==='all'){browseCategory='all';browseBargain=false;var ob=document.getElementById('offer-btn');if(ob)ob.classList.remove('active');renderBrowse();return}if(id==='bargain'){toggleBargain();return}browseCategory=(browseCategory===id)?'all':id;browseBargain=false;var ob2=document.getElementById('offer-btn');if(ob2)ob2.classList.remove('active');renderBrowse()}
 function filterBrowse(v){browseSearch=v.toLowerCase();const c=document.getElementById('browse-clear');if(c)c.hidden=!v;renderBrowse()}
 var _browseFilters = { priceMin: 0, priceMax: 0, region: '' };
 function toggleFilterPanel(){

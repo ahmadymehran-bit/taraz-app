@@ -1950,3 +1950,5 @@ html body #screen-home .offer-btn {
 html body #screen-home .offer-btn .ic { display: inline-flex; background: none !important; border: none !important; }
 html body #screen-home .offer-btn .ic svg { width: 54px !important; height: 54px !important; filter: drop-shadow(0 3px 4px rgba(0,0,0,.45)); }
 html body #screen-home .offer-btn .offer-txt { font-size: 14px !important; font-weight: 800 !important; color: #ffe9a0 !important; text-shadow: 0 1px 0 rgba(0,0,0,.5); }
+
+html body #screen-home .offer-btn.active { outline: 2px solid #f3c969 !important; background: rgba(243,201,105,.18) !important; border-radius: 14px; }
