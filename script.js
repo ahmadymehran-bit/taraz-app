@@ -702,7 +702,7 @@ function renderBrowseChips(){
   }).join('');
 }
 var browseBargain=false;
-function toggleBargain(){browseBargain=!browseBargain;renderBrowse()}
+function toggleBargain(){browseBargain=!browseBargain;if(browseBargain)browseCategory='all';renderBrowse()}
 function isBargainListing(l){return !!((l.oldPrice&&l.price<l.oldPrice)||l.urgentReason==="expiry"||l.urgentReason==="special")}
 function pickBrowseCat(id){if(id==='all'){browseCategory='all';browseBargain=false;renderBrowse();return}if(id==='bargain'){toggleBargain();return}browseCategory=(browseCategory===id)?'all':id;renderBrowse()}
 function filterBrowse(v){browseSearch=v.toLowerCase();const c=document.getElementById('browse-clear');if(c)c.hidden=!v;renderBrowse()}
@@ -754,7 +754,7 @@ return true;
 });
 list.sort(function(a,b){return b.createdAt-a.createdAt});
 var grid=document.getElementById('browse-grid');
-var _svcBtn=browseCategory==='services'?'<button type="button" class="btn-green" style="grid-column:1/-1" onclick="go(\'services\')">➕ ثبت یا رزرو خدمات</button>':'';
+var _svcBtn='';
 if(grid){ grid.innerHTML = _svcBtn + (list.length ? list.map(homeCard).join('') : '<div class="empty" style="grid-column:1/-1"><span class="emoji">🔍</span>آگهی‌ای پیدا نشد</div>'); }
 }
 function goServicesStep1(){
