@@ -1058,7 +1058,7 @@ var msgs = DB.messages; msgs.push({ id: msgData.id, convId: c.id, fromPhone: u.p
 var convs = DB.conversations; var idx = convs.findIndex(function(x){ return x.id === c.id; }); if(idx >= 0){ convs[idx].lastMessageAt = Date.now(); DB.conversations = convs; }
 inp.value = '';
   try { var otherPhone = (u.phone === c.sellerPhone) ? c.buyerPhone : c.sellerPhone; fetch(API_BASE + '/api/push/send', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ toPhone: otherPhone, title: 'پیام جدید از ' + u.name, body: text, data: { convId: c.id } }) }); } catch(e){}
-try { var _ch = chatChannelFor(c.id, u.phone); if(_ch) _ch.send({ type: 'broadcast', event: 'new_message', payload: { from: u.phone } }); } catch(e){}
+try { var _ch = chatChannelFor(c.id, u.phone); if(_ch){ var _pl={ type: 'broadcast', event: 'new_message', payload: { from: u.phone } }; if(typeof _ch.httpSend==='function') _ch.httpSend(_pl.event,_pl.payload); else _ch.send(_pl); } } catch(e){}
   renderChat();
 }
 function createBuyRequest(listingId){
