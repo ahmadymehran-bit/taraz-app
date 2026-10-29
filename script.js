@@ -703,7 +703,7 @@ function renderBrowseChips(){
 }
 var browseBargain=false;
 function toggleBargain(){browseBargain=!browseBargain;if(browseBargain)browseCategory='all';renderBrowse()}
-function isBargainListing(l){return !!((l.oldPrice&&l.price<l.oldPrice)||l.urgentReason==="expiry"||l.urgentReason==="special")}
+function isBargainListing(l){return !!((l.oldPrice&&l.price<l.oldPrice)||l.urgentReason==="expiry"||l.urgentReason==="special"||l.categoryId==="offer")}
 function pickBrowseCat(id){if(id==='all'){browseCategory='all';browseBargain=false;renderBrowse();return}if(id==='bargain'){toggleBargain();return}browseCategory=(browseCategory===id)?'all':id;renderBrowse()}
 function filterBrowse(v){browseSearch=v.toLowerCase();const c=document.getElementById('browse-clear');if(c)c.hidden=!v;renderBrowse()}
 var _browseFilters = { priceMin: 0, priceMax: 0, region: '' };
@@ -2301,6 +2301,7 @@ async function submitPostForm(){
   var _op=parseInt(String(vals['قیمت عادی (تومان)']||'').replace(/[^0-9]/g,''),10)||0;
   var _item={id:'L'+Date.now(),sellerName:u.name,sellerPhone:u.phone,categoryId:_p.categoryId,title:(postCurCat+' - '+_first).slice(0,200),qty:'',qtyNum:0,price:_sp,oldPrice:(_op>_sp&&_sp>0)?_op:null,urgent:false,urgentReason:(postMode==='offer')?'special':null,region:vals['منطقه']||vals['شهر']||'',desc:_desc,photos:_p.photos||[],productKey:'',createdAt:Date.now()};
   window._tempListingPhotos=[];
+  if(postMode==='offer' && !(_sp>0 && _op>_sp)){toast('قیمت ویژه باید کمتر از قیمت عادی باشد');return}
   try { await api.createListing(_item); toast('ثبت شد ✓'); }
   catch(e){ toast('⚠ ثبت روی سرور انجام نشد'); }
   go('home');
