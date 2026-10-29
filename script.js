@@ -2041,7 +2041,7 @@ var api = {
   _fetch: async function(path, options, retries = 2) {
   try {
     var url = API_BASE + path;
-    var config = { headers: { 'Content-Type': 'application/json' } };
+    var config = { cache: 'no-store', headers: { 'Content-Type': 'application/json' } };
     var _tok = null; try { _tok = localStorage.getItem('taraz.token'); } catch (e) {}
     if (_tok) config.headers['Authorization'] = 'Bearer ' + _tok;
     if (options) { 
