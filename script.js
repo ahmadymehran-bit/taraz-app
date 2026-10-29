@@ -703,7 +703,7 @@ function renderBrowseChips(){
 }
 var browseBargain=false;
 function toggleBargain(){browseBargain=!browseBargain;renderBrowse()}
-function isBargainListing(l){return !!((l.oldPrice&&l.price<l.oldPrice)||l.urgentReason==="expiry")}
+function isBargainListing(l){return !!((l.oldPrice&&l.price<l.oldPrice)||l.urgentReason==="expiry"||l.urgentReason==="special")}
 function pickBrowseCat(id){if(id==='all'){browseCategory='all';browseBargain=false;renderBrowse();return}if(id==='bargain'){toggleBargain();return}browseCategory=(browseCategory===id)?'all':id;renderBrowse()}
 function filterBrowse(v){browseSearch=v.toLowerCase();const c=document.getElementById('browse-clear');if(c)c.hidden=!v;renderBrowse()}
 var _browseFilters = { priceMin: 0, priceMax: 0, region: '' };
@@ -2297,7 +2297,9 @@ function submitPostForm(){
   DB.demands=all; var _p=all[all.length-1];
   var _first=''; for(var k in vals){_first=vals[k];break}
   var _desc=Object.keys(vals).map(function(k){return k+': '+vals[k]}).join(' | ')+(_p.note?' | '+_p.note:'');
-  var _item={id:'L'+Date.now(),sellerName:u.name,sellerPhone:u.phone,categoryId:_p.categoryId,title:(postCurCat+' - '+_first).slice(0,200),qty:'',qtyNum:0,price:0,region:vals['منطقه']||vals['شهر']||'',desc:_desc,photos:_p.photos||[],productKey:'',createdAt:Date.now()};
+  var _sp=parseInt(String(vals['قیمت ویژه (تومان)']||'').replace(/[^0-9]/g,''),10)||0;
+  var _op=parseInt(String(vals['قیمت عادی (تومان)']||'').replace(/[^0-9]/g,''),10)||0;
+  var _item={id:'L'+Date.now(),sellerName:u.name,sellerPhone:u.phone,categoryId:_p.categoryId,title:(postCurCat+' - '+_first).slice(0,200),qty:'',qtyNum:0,price:_sp,oldPrice:(_op>_sp&&_sp>0)?_op:null,urgent:false,urgentReason:(postMode==='offer')?'special':null,region:vals['منطقه']||vals['شهر']||'',desc:_desc,photos:_p.photos||[],productKey:'',createdAt:Date.now()};
   window._tempListingPhotos=[];
   api.createListing(_item).then(function(){toast('ثبت شد ✓')}).catch(function(){toast('⚠ ثبت روی سرور انجام نشد')});
   go('home');
