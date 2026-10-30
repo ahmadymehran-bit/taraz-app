@@ -124,19 +124,26 @@
       <div class="mh-bell" onclick="go('notifs')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e0b04a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="bell-badge" id="bz-bell-badge"></span></div>
     </header>
 
-    <!-- گام ۱: موقعیت -->
-    <div class="rd-step" id="rd-s0">
+    
+    <!-- صفحه اول: رادار -->
+    <div class="rd-step rd-home" id="rd-s0">
+      <div class="home-banner"><img src="image/banner-shepherd.webp" alt="تاراز"></div>
+      <div class="rd-tk"><div class="rd-tk-s"><small>نسبت به هفته قبل</small><b class="up" id="rd-tk-w">▲ +۱.۲٪</b></div><div class="rd-tk-m"><small id="rd-tk-n">قیمت روز دام نهاده</small><b id="rd-tk-p">۳,۵۲۰,۰۰۰</b><small id="rd-tk-u">تومان</small></div><div class="rd-tk-s"><small>نسبت به دیروز</small><b class="dn" id="rd-tk-d">▼ -۲.۸٪</b></div></div>
+      <div class="rd-scope rd-demo">
+        <div class="rd-ring r1"></div><div class="rd-ring r2"></div><div class="rd-ring r3"></div>
+        <div class="rd-cross"></div><div class="rd-sweep"></div><div class="rd-me"></div>
+        <i class="rd-pin" style="left:30%;top:30%"></i><i class="rd-pin" style="left:72%;top:36%"></i><i class="rd-pin" style="left:59%;top:62%"></i><i class="rd-pin" style="left:68%;top:78%"></i><i class="rd-pin" style="left:34%;top:78%"></i>
+      </div>
+      <button type="button" class="rd-big" onclick="rdShow(1)">جستجوی نزدیک‌ترین آگهی <span>🔍</span></button>
+    </div>
+
+    <!-- زیرصفحه: فرم -->
+    <div class="rd-step" id="rd-s1" hidden>
+      <button type="button" class="rd-back" onclick="rdShow(0)">‹ بازگشت</button>
       <h2 class="rd-h">کجا دنبال می‌گردی؟</h2>
-      <p class="rd-p">موقعیتت را روی نقشه انتخاب کن یا از GPS استفاده کن.</p>
       <div id="rd-map" class="rd-map"></div>
       <div class="rd-loc" id="rd-loc">موقعیتی انتخاب نشده</div>
       <button type="button" class="rd-ghost" onclick="rdLocate()">📍 موقعیت فعلی من</button>
-      <button type="button" class="rd-main" id="rd-search" onclick="rdToWizard()" disabled>🔍 جستجو</button>
-    </div>
-
-    <!-- گام ۲: سؤال‌ها -->
-    <div class="rd-step" id="rd-s1" hidden>
-      <button type="button" class="rd-back" onclick="rdShow(0)">‹ تغییر موقعیت</button>
       <h2 class="rd-h">چه چیزی لازم داری؟</h2>
       <div class="rd-chips" id="rd-cats"></div>
       <label class="rd-l">دقیقاً چه چیزی؟ <small>(مثلاً بز، گوسفند، گندم، دامپزشک)</small></label>
@@ -149,18 +156,15 @@
       <input class="rd-in" id="rd-price" type="number" min="0" inputmode="numeric" placeholder="بدون محدودیت">
       <label class="rd-chk"><input type="checkbox" id="rd-urg"> فقط آگهی‌های فوری</label>
       <label class="rd-chk"><input type="checkbox" id="rd-photo"> فقط دارای عکس</label>
-      <button type="button" class="rd-main" onclick="rdConfirm()">✅ تأیید و شروع رادار</button>
+      <button type="button" class="rd-main" id="rd-search" onclick="rdConfirm()" disabled>🔍 جستجو</button>
     </div>
 
-    <!-- گام ۳: رادار -->
+    <!-- نتیجه: رادار روی نقشه ایران ← نقشه واقعی -->
     <div class="rd-step" id="rd-s2" hidden>
       <button type="button" class="rd-back" onclick="rdStop();rdShow(1)">‹ تغییر درخواست</button>
-      <div class="rd-scope" id="rd-scope">
-        <div class="rd-ring r1"></div><div class="rd-ring r2"></div><div class="rd-ring r3"></div>
-        <div class="rd-cross"></div>
-        <div class="rd-sweep"></div>
-        <div class="rd-me"></div>
-        <div class="rd-blips" id="rd-blips"></div>
+      <div class="rd-stage">
+        <div id="rd-rmap" class="rd-rmap"></div>
+        <div class="rd-over" id="rd-over"><div class="rd-scope"><div class="rd-ring r1"></div><div class="rd-ring r2"></div><div class="rd-ring r3"></div><div class="rd-cross"></div><div class="rd-sweep"></div><div class="rd-me"></div></div></div>
       </div>
       <div class="rd-status" id="rd-status">در حال اسکن…</div>
       <div id="rd-results"></div>
