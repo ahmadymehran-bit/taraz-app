@@ -112,17 +112,6 @@
       <div class="mh-brand" onclick="go('home')"><span class="mh-title">رادار</span></div>
       <div class="mh-bell" onclick="go('notifs')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e0b04a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="bell-badge" id="bz-bell-badge"></span></div>
     </header>
-
-    
-    <div class="rd-lm" id="rd-lm" hidden onclick="if(event.target===this)rdLocPanel(false)"><div class="rd-lm-b">
-      <div id="rd-lm-warn" class="rd-lm-warn" hidden>📍 برای دیدن آگهی‌های اطراف، لوکیشن (GPS) دستگاه را روشن کن و اجازه دسترسی بده.</div>
-      <h3>موقعیت جستجو</h3>
-      <div class="rd-lm-chips" id="rd-lm-chips"></div>
-      <select class="rd-in" id="rd-lm-prov" onchange="rdProvPick(this.value)"></select>
-      <div class="rd-lm-cities" id="rd-lm-cities"></div>
-      <small>می‌توانی چند شهر را از استان‌های مختلف انتخاب کنی.</small>
-      <div class="rd-lm-row"><button type="button" class="rd-ghost" onclick="rdAutoLocate(true)">🎯 پیدا کردن خودکار با GPS</button><button type="button" class="rd-main" onclick="rdLocPanel(false)">تأیید</button></div>
-    </div></div>
     <!-- صفحه اول: رادار -->
     <div class="rd-step rd-home" id="rd-s0">
       <div class="home-banner"><img src="image/banner-shepherd.webp" alt="تاراز"></div>
@@ -693,5 +682,17 @@
 })();
 </script>
 
+
+
+    
+    <div class="rd-lm" id="rd-lm" hidden onclick="if(event.target===this)rdLocPanel(false)"><div class="rd-lm-b">
+      <div id="rd-lm-warn" class="rd-lm-warn" hidden>📍 برای دیدن آگهی‌های اطراف، لوکیشن (GPS) دستگاه را روشن کن و اجازه دسترسی بده.</div>
+      <h3>موقعیت جستجو</h3>
+      <div class="rd-lm-chips" id="rd-lm-chips"></div>
+      <select class="rd-in" id="rd-lm-prov" onchange="rdProvPick(this.value)"></select>
+      <div class="rd-lm-cities" id="rd-lm-cities"></div>
+      <small>می‌توانی چند شهر را از استان‌های مختلف انتخاب کنی.</small>
+      <div class="rd-lm-row"><button type="button" class="rd-ghost" onclick="rdAutoLocate(true)">🎯 پیدا کردن خودکار با GPS</button><button type="button" class="rd-main" onclick="rdLocPanel(false)">تأیید</button></div>
+    </div></div>
 </body>
 </html>

@@ -2040,3 +2040,6 @@ html body #screen-home .offer-btn.active { outline: 2px solid #f3c969 !important
 /* نوار پایین مات تا آگهی‌ها از زیرش دیده نشوند */
 .nav{background:#0b2a22 !important;z-index:500 !important}
 #screen-home{padding-bottom:130px !important}
+
+#screen-home .browse-header{position:static !important;top:auto !important}
+.rd-lm{z-index:10000 !important}
