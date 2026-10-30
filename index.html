@@ -117,62 +117,53 @@
 
   <!-- ============ HOME (جدید) ============ -->
 <section class="screen" id="screen-browse">
-  <div class="bz">
+  <div class="rd" id="rd">
     <header class="modern-header">
       <div class="mh-profile" onclick="go('profile')"><div class="mh-avatar" id="bz-avatar"></div></div>
-      <div class="mh-brand" onclick="go('home')"><span class="mh-title">تاراز</span></div>
-      <div class="mh-bell" onclick="go('notifs')">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e0b04a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
-        <span class="bell-badge" id="bz-bell-badge"></span>
-      </div>
+      <div class="mh-brand" onclick="go('home')"><span class="mh-title">رادار</span></div>
+      <div class="mh-bell" onclick="go('notifs')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e0b04a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="bell-badge" id="bz-bell-badge"></span></div>
     </header>
-    <div class="home-banner"><img src="image/banner-flock.webp" alt="تاراز"></div>
-    <div class="bz-locword">موقعیت</div>
-    <div class="bz-tick-rect">
-      <span class="bz-tk-t">📈 قیمت زنده</span>
-      <b id="bz-tk-n">—</b>
-      <span class="bz-tk-pp"><span id="bz-tk-p">—</span> <small id="bz-tk-u"></small></span>
-      <small class="bz-demo" id="bz-tk-s">نمونه نمایشی</small>
+
+    <!-- گام ۱: موقعیت -->
+    <div class="rd-step" id="rd-s0">
+      <h2 class="rd-h">کجا دنبال می‌گردی؟</h2>
+      <p class="rd-p">موقعیتت را روی نقشه انتخاب کن یا از GPS استفاده کن.</p>
+      <div id="rd-map" class="rd-map"></div>
+      <div class="rd-loc" id="rd-loc">موقعیتی انتخاب نشده</div>
+      <button type="button" class="rd-ghost" onclick="rdLocate()">📍 موقعیت فعلی من</button>
+      <button type="button" class="rd-main" id="rd-search" onclick="rdToWizard()" disabled>🔍 جستجو</button>
     </div>
-    <div class="bz-buy">
-      <select class="bz-catsel" id="bz-cats" onchange="bzCat(this.value)"></select>
-      <div class="bz-bh"><img id="bz-thumb" src="image/bz-calf-v2.webp" alt=""><h3 id="bz-btitle">خرید</h3></div>
-      <div class="bz-two">
-        <div class="bz-box"><label>تعداد</label><div class="bz-step"><button onclick="bzStep('count',1)">+</button><b><span id="bz-count">5</span> <small id="bz-cu">رأس</small></b><button onclick="bzStep('count',-1)">−</button></div></div>
-        <div class="bz-box" id="bz-wbox"><label>میانگین وزن</label><div class="bz-step"><button onclick="bzStep('w',1)">+</button><b><span id="bz-w">250</span> <small>کیلو</small></b><button onclick="bzStep('w',-1)">−</button></div></div>
+
+    <!-- گام ۲: سؤال‌ها -->
+    <div class="rd-step" id="rd-s1" hidden>
+      <button type="button" class="rd-back" onclick="rdShow(0)">‹ تغییر موقعیت</button>
+      <h2 class="rd-h">چه چیزی لازم داری؟</h2>
+      <div class="rd-chips" id="rd-cats"></div>
+      <label class="rd-l">دقیقاً چه چیزی؟ <small>(مثلاً بز، گوسفند، گندم، دامپزشک)</small></label>
+      <input class="rd-in" id="rd-q" type="text" placeholder="نام محصول یا خدمت">
+      <div class="rd-two">
+        <div><label class="rd-l">مقدار</label><input class="rd-in" id="rd-qty" type="number" min="1" inputmode="numeric" placeholder="اختیاری"></div>
+        <div><label class="rd-l">حداکثر فاصله</label><select class="rd-in" id="rd-km"><option value="25">۲۵ کیلومتر</option><option value="50" selected>۵۰ کیلومتر</option><option value="100">۱۰۰ کیلومتر</option><option value="300">۳۰۰ کیلومتر</option><option value="0">بدون محدودیت</option></select></div>
       </div>
-      <div class="bz-two bz-est">
-        <div class="bz-box"><label>وزن کل تقریبی</label><b class="bz-gr" id="bz-tw">—</b></div>
-        <div class="bz-box"><label>مبلغ تقریبی</label><b id="bz-tp">—</b></div>
-      </div>
-      <p class="bz-note">ⓘ برآورد اولیه؛ قیمت نهایی پس از توافق طرفین</p>
-      <button class="bz-main" onclick="bzFind()">🔍 محاسبه و مشاهده فروشندگان</button>
-      <button class="bz-sell" onclick="toast('نمایشی: ثبت پیشنهاد فروش بعداً وصل می‌شود')">🏷 ثبت پیشنهاد فروش</button>
+      <label class="rd-l">حداکثر قیمت (تومان) <small>اختیاری</small></label>
+      <input class="rd-in" id="rd-price" type="number" min="0" inputmode="numeric" placeholder="بدون محدودیت">
+      <label class="rd-chk"><input type="checkbox" id="rd-urg"> فقط آگهی‌های فوری</label>
+      <label class="rd-chk"><input type="checkbox" id="rd-photo"> فقط دارای عکس</label>
+      <button type="button" class="rd-main" onclick="rdConfirm()">✅ تأیید و شروع رادار</button>
     </div>
-    <div class="bz-sh" id="bz-sellers-h"><b id="bz-near">📍 فروشندگان</b><label class="bz-check"><input type="checkbox" id="bz-cert" onchange="renderBazaar()"> فقط دارای گواهی سلامت</label></div>
-    <div id="bz-lots"></div>
-    <details class="bz-bookwrap"><summary>تالار قیمت (اردر بووک)</summary>
-      <div class="bz-book">
-        <div class="bz-col"><h4>سفارش‌های فروش</h4><div class="bz-row bz-hd"><span>قیمت</span><span>تعداد</span></div><div id="bz-asks"></div></div>
-        <div class="bz-col"><h4>سفارش‌های خرید</h4><div class="bz-row bz-hd"><span>قیمت</span><span>تعداد</span></div><div id="bz-bids"></div></div>
-      </div></details>
-    <div class="bz-mission" onclick="go('missions-list')"><span>‹</span><div><b>ادامه در مأموریت</b><small>تأیید خریدار و فروشنده ← هماهنگی دامپزشک و باربری</small></div><i>🤝</i></div>
-    <div class="bz-sheet" id="bz-sheet" hidden>
-      <div class="bz-card">
-        <button class="bz-x" onclick="bzClose()">✕</button>
-        <h3 id="bz-st"></h3>
-        <div class="bz-meta" id="bz-sm"></div>
-        <label>سهم خرید از گله: <b id="bz-pv">100%</b></label>
-        <input type="range" id="bz-pct" min="10" max="100" step="10" value="100" oninput="bzCalc()">
-        <div class="bz-sum" id="bz-sum"></div>
-        <div class="bz-terms"><h4>شرایط معامله</h4>
-          <p>۱. پرداخت بیعانه (۲۰٪) هنگام ثبت سفارش؛ مبلغ تا تحویل نزد تاراز امانت می‌ماند.</p>
-          <p>۲. باقی‌مانده به‌صورت نقدی هنگام تحویل دام و پس از تأیید سلامت.</p></div>
-        <h4>بعد از خرید</h4>
-        <div class="bz-opt"><label><input type="radio" name="bzpost" checked> حمل با راننده (پیشنهاد از آگهی‌های حمل)</label>
-        <label><input type="radio" name="bzpost"> کشتار در کشتارگاه مشخص</label></div>
-        <button class="bz-go" onclick="bzOrder()">ثبت سفارش و پرداخت بیعانه</button>
+
+    <!-- گام ۳: رادار -->
+    <div class="rd-step" id="rd-s2" hidden>
+      <button type="button" class="rd-back" onclick="rdStop();rdShow(1)">‹ تغییر درخواست</button>
+      <div class="rd-scope" id="rd-scope">
+        <div class="rd-ring r1"></div><div class="rd-ring r2"></div><div class="rd-ring r3"></div>
+        <div class="rd-cross"></div>
+        <div class="rd-sweep"></div>
+        <div class="rd-me"></div>
+        <div class="rd-blips" id="rd-blips"></div>
       </div>
+      <div class="rd-status" id="rd-status">در حال اسکن…</div>
+      <div id="rd-results"></div>
     </div>
   </div>
 </section>
@@ -629,7 +620,7 @@
   </button>
   <button type="button" data-nav="browse" onclick="go('browse')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-    بازار
+    رادار
   </button>
   
  <!-- 👇 دکمه وسط (چه می‌خواهم) - طراحی جدید 👇 -->

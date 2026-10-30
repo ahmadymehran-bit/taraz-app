@@ -423,7 +423,7 @@ function go(s){
   if(map[s]){const b=document.querySelector('#nav button[data-nav="'+map[s]+'"]');if(b)b.classList.add('active')}
 // به دلیل جابجایی صفحه‌ها، renderBrowse برای صفحه Home و renderHome برای صفحه Browse اجرا میشه
 if(s==='home') { loadFavorites().then(renderBrowse); }
-if(s==='browse'){ renderBazaar(); loadFavorites().then(renderHome); updateHomeReadyButton(); }
+if(s==='browse'){ renderRadar(); }
   if(s==='capacity')renderCapacityDetail();
   if(s==='services')renderServices();
   if(s==='favorites')renderFavorites();
@@ -2422,3 +2422,110 @@ window.addEventListener('load', function () {
     } catch (e) {}
   }, 800);
 });
+
+/* ===== RADAR (رادار) ===== */
+var _rd={map:null,marker:null,loc:null,cat:'all',timer:null};
+function rdShow(n){
+  for(var i=0;i<3;i++){var e=document.getElementById('rd-s'+i); if(e)e.hidden=(i!==n)}
+  if(n===0&&_rd.map)setTimeout(function(){_rd.map.invalidateSize()},50);
+}
+function rdSetLoc(lat,lng,zoom){
+  _rd.loc={lat:lat,lng:lng};
+  if(_rd.marker)_rd.marker.remove();
+  if(_rd.map){_rd.marker=L.marker([lat,lng]).addTo(_rd.map); if(zoom)_rd.map.setView([lat,lng],zoom)}
+  document.getElementById('rd-loc').textContent='📍 موقعیت انتخاب شد';
+  document.getElementById('rd-search').disabled=false;
+}
+function rdLocate(){
+  if(!navigator.geolocation){toast('مرورگر GPS را پشتیبانی نمی‌کند');return}
+  navigator.geolocation.getCurrentPosition(function(p){rdSetLoc(p.coords.latitude,p.coords.longitude,11)},function(){toast('دسترسی به موقعیت داده نشد؛ روی نقشه انتخاب کن')},{timeout:10000});
+}
+function renderRadar(){
+  rdStop(); rdShow(0);
+  if(!_rd.map&&window.L){
+    _rd.map=L.map('rd-map').setView([32.4279,53.688],5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© OpenStreetMap'}).addTo(_rd.map);
+    _rd.map.on('click',function(e){rdSetLoc(e.latlng.lat,e.latlng.lng)});
+  }
+  setTimeout(function(){if(_rd.map)_rd.map.invalidateSize()},80);
+  var el=document.getElementById('rd-cats');
+  if(el&&!el.children.length){
+    el.innerHTML=CATEGORIES_ALL.filter(function(c){return c.id!=='urgent'}).map(function(c){return '<button type="button" data-c="'+c.id+'" class="'+(c.id===_rd.cat?'on':'')+'" onclick="rdPickCat(\''+c.id+'\')">'+c.icon+' '+c.short+'</button>'}).join('');
+  }
+}
+function rdPickCat(id){
+  _rd.cat=id;
+  document.querySelectorAll('#rd-cats button').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-c')===id)});
+}
+function rdToWizard(){ if(!_rd.loc){toast('ابتدا موقعیت را انتخاب کن');return} rdShow(1); }
+function rdStop(){ if(_rd.timer){clearInterval(_rd.timer);_rd.timer=null} }
+function rdDist(a,b){
+  var R=6371,t=Math.PI/180,dLa=(b.lat-a.lat)*t,dLn=(b.lng-a.lng)*t;
+  var x=Math.sin(dLa/2)*Math.sin(dLa/2)+Math.cos(a.lat*t)*Math.cos(b.lat*t)*Math.sin(dLn/2)*Math.sin(dLn/2);
+  return 2*R*Math.asin(Math.sqrt(x));
+}
+function rdNorm(s){return String(s||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').toLowerCase()}
+async function rdConfirm(){
+  var q=rdNorm(document.getElementById('rd-q').value.trim());
+  var qty=Number(document.getElementById('rd-qty').value)||0;
+  var km=Number(document.getElementById('rd-km').value);
+  var maxP=Number(document.getElementById('rd-price').value)||0;
+  var urg=document.getElementById('rd-urg').checked, photo=document.getElementById('rd-photo').checked;
+  rdShow(2);
+  var scope=document.getElementById('rd-scope'); scope.classList.remove('done');
+  document.getElementById('rd-blips').innerHTML=''; document.getElementById('rd-results').innerHTML='';
+  var st=document.getElementById('rd-status'); st.textContent='در حال اسکن اطراف…';
+  var started=Date.now(), res=null;
+  try{res=await api.getListings()}catch(e){}
+  var list=(res&&res.listings)?res.listings:DB.listings;
+  list=(list||[]).map(function(l){
+    var lat=l.location_lat||(l.location&&l.location.lat), lng=l.location_lng||(l.location&&l.location.lng);
+    return {id:l.id,sellerName:l.seller_name||l.sellerName,categoryId:l.category_id||l.categoryId,title:l.title,qty:l.qty,qtyNum:Number(l.qty_num||l.qtyNum)||0,price:Number(l.price),oldPrice:l.old_price?Number(l.old_price):null,region:l.region,urgent:l.urgent,productKey:l.product_key||l.productKey,photos:l.photos||[],createdAt:Number(l.created_at||l.createdAt),_hasLoc:!!(lat&&lng),location:(lat&&lng)?{lat:Number(lat),lng:Number(lng)}:null};
+  });
+  var out=[];
+  list.forEach(function(l){
+    if(_rd.cat!=='all'&&l.categoryId!==_rd.cat)return;
+    if(urg&&!l.urgent)return;
+    if(photo&&!l.photos.length)return;
+    if(maxP&&l.price>maxP)return;
+    var score=0;
+    if(q){
+      var hay=rdNorm(l.title+' '+(l.productKey||'')+' '+(l.region||''));
+      var words=q.split(/\s+/).filter(Boolean), hit=words.filter(function(w){return hay.indexOf(w)>-1}).length;
+      if(!hit)return; score+=hit/words.length*50;
+    }
+    if(qty&&l.qtyNum){score+=l.qtyNum>=qty?15:0}
+    if(l.urgent)score+=5;
+    var d=l.location?rdDist(_rd.loc,l.location):null;
+    if(d==null){if(km)return; d=null}
+    else if(km&&d>km)return;
+    else score+=Math.max(0,40-d/ (km||300) *40);
+    l._d=d; l._s=score; out.push(l);
+  });
+  out.sort(function(a,b){return b._s-a._s});
+  out=out.slice(0,12);
+  // نمایش با کمی تأخیر تا انیمیشن رادار دیده شود
+  var wait=Math.max(0,2200-(Date.now()-started));
+  setTimeout(function(){rdShowResults(out,km)},wait);
+}
+function rdShowResults(out,km){
+  var scope=document.getElementById('rd-scope'); scope.classList.add('done');
+  var maxD=km||Math.max.apply(null,[10].concat(out.map(function(l){return l._d||0})))*1.1;
+  var blips=document.getElementById('rd-blips'), i=0;
+  var items=out.filter(function(l){return l._d!=null});
+  rdStop();
+  _rd.timer=setInterval(function(){
+    if(i>=items.length){rdStop();return}
+    var l=items[i++], ang=Math.random()*2*Math.PI, r=Math.min(1,l._d/maxD)*46;
+    var b=document.createElement('div'); b.className='rd-blip';
+    b.style.left=(50+r*Math.cos(ang))+'%'; b.style.top=(50+r*Math.sin(ang))+'%';
+    blips.appendChild(b);
+  },250);
+  var st=document.getElementById('rd-status'), box=document.getElementById('rd-results');
+  if(!out.length){st.textContent='موردی پیدا نشد؛ فاصله را بیشتر کن یا جستجو را ساده‌تر کن';box.innerHTML='';return}
+  st.textContent=faDigits(out.length)+' مورد پیدا شد (نزدیک‌ترین و مرتبط‌ترین)';
+  box.innerHTML=out.map(function(l){
+    var d=l._d==null?'':'<span class="rd-dist">'+faDigits(l._d<10?l._d.toFixed(1):Math.round(l._d))+' کیلومتر</span><br>';
+    return homeCard(l).replace('<div style="flex:1;min-width:0">','<div style="flex:1;min-width:0">'+d).replace("'home')","'browse')");
+  }).join('');
+}
