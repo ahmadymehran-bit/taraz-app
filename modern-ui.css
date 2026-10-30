@@ -2105,3 +2105,21 @@ html body #screen-home .offer-btn.active { outline: 2px solid #f3c969 !important
 /* حذف نوار اسکرول خاکستری در همه صفحات */
 html, body, *, *::before, *::after { scrollbar-width: none !important; -ms-overflow-style: none !important; }
 ::-webkit-scrollbar, *::-webkit-scrollbar { width: 0 !important; height: 0 !important; display: none !important; background: transparent !important; }
+
+/* radar: gold icons + readable white text */
+.rd-ic{display:inline-flex;vertical-align:middle;width:22px;height:22px}
+.rd-ic svg{width:100%;height:100%;display:block}
+.rd-main .rd-ic{margin-left:6px}
+#rd-s1 .rd-h,#rd-s1 .rd-l,#rd-s1 .rd-chk,#rd-s1 .rd-back,#rd-s1 .rd-loc,#rd-s1 .rd-status,#rd-s1 #rd-status,#rd-s1 .rd-p{color:#fff}
+#rd-s1 .rd-l small,#rd-s1 .rd-p{color:rgba(255,255,255,.7)}
+#rd-s1 .rd-chips button{background:rgba(255,255,255,.06);color:#fff;border:1.5px solid rgba(239,184,46,.45);display:flex;align-items:center;gap:6px}
+#rd-s1 .rd-chips button.on{background:var(--gold);color:var(--forest);border-color:var(--gold)}
+#rd-s1 .rd-chips button .rd-ic{width:20px;height:20px}
+#rd-s1 .rd-chips button .rd-ic svg{stroke:#f3c969}
+#rd-s1 .rd-chips button.on .rd-ic svg{stroke:var(--forest)}
+#rd-s1 .rd-in{background:rgba(255,255,255,.07);color:#fff;border:1.5px solid rgba(239,184,46,.35)}
+#rd-s1 .rd-in::placeholder{color:rgba(255,255,255,.5)}
+#rd-s1 .rd-ghost{background:transparent;color:#fff;border-color:rgba(239,184,46,.6)}
+#rd-s1 .rd-main{background:var(--gold);color:var(--forest)}
+#rd-s1 .rd-main .rd-ic svg{stroke:var(--forest)}
+#rd-s1 .rd-back{color:var(--gold)}

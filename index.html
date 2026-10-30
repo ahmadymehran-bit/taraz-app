@@ -127,7 +127,7 @@
         <div class="rd-cross"></div><div class="rd-sweep"></div><div class="rd-me"></div>
         <i class="rd-pin" style="left:30%;top:30%"></i><i class="rd-pin" style="left:72%;top:36%"></i><i class="rd-pin" style="left:59%;top:62%"></i><i class="rd-pin" style="left:68%;top:78%"></i><i class="rd-pin" style="left:34%;top:78%"></i>
       </div>
-      <button type="button" class="rd-big" onclick="rdShow(1)">جستجوی نزدیک‌ترین آگهی <span>🔍</span></button>
+      <button type="button" class="rd-big" onclick="rdShow(1)">جستجوی نزدیک‌ترین آگهی <span class="rd-ic"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="#f3c969" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg></span></button>
     </div>
 
     <!-- زیرصفحه: فرم -->
@@ -148,7 +148,7 @@
       <input class="rd-in" id="rd-price" type="number" min="0" inputmode="numeric" placeholder="بدون محدودیت">
       <label class="rd-chk"><input type="checkbox" id="rd-urg"> فقط آگهی‌های فوری</label>
       <label class="rd-chk"><input type="checkbox" id="rd-photo"> فقط دارای عکس</label>
-      <button type="button" class="rd-main" id="rd-search" onclick="rdConfirm()" disabled>🔍 جستجو</button>
+      <button type="button" class="rd-main" id="rd-search" onclick="rdConfirm()" disabled><span class="rd-ic"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="#f3c969" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg></span> جستجو</button>
     </div>
 
     <!-- نتیجه: رادار روی نقشه ایران ← نقشه واقعی -->
@@ -692,13 +692,13 @@
 
     
     <div class="rd-lm" id="rd-lm" hidden onclick="if(event.target===this)rdLocPanel(false)"><div class="rd-lm-b">
-      <div id="rd-lm-warn" class="rd-lm-warn" hidden>📍 برای دیدن آگهی‌های اطراف، لوکیشن (GPS) دستگاه را روشن کن و اجازه دسترسی بده.</div>
+      <div id="rd-lm-warn" class="rd-lm-warn" hidden><span class="rd-ic"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="#f3c969" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0113 0c0 5-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg></span> برای دیدن آگهی‌های اطراف، لوکیشن (GPS) دستگاه را روشن کن و اجازه دسترسی بده.</div>
       <h3>موقعیت جستجو</h3>
       <div class="rd-lm-chips" id="rd-lm-chips"></div>
       <select class="rd-in" id="rd-lm-prov" onchange="rdProvPick(this.value)"></select>
       <div class="rd-lm-cities" id="rd-lm-cities"></div>
       <small>می‌توانی چند شهر را از استان‌های مختلف انتخاب کنی.</small>
-      <div class="rd-lm-row"><button type="button" class="rd-ghost" onclick="rdAutoLocate(true)">🎯 پیدا کردن خودکار با GPS</button><button type="button" class="rd-main" onclick="rdLocPanel(false)">تأیید</button></div>
+      <div class="rd-lm-row"><button type="button" class="rd-ghost" onclick="rdAutoLocate(true)"><span class="rd-ic"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="#f3c969" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></span> پیدا کردن خودکار با GPS</button><button type="button" class="rd-main" onclick="rdLocPanel(false)">تأیید</button></div>
     </div></div>
 </body>
 </html>
