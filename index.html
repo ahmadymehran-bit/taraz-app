@@ -161,7 +161,7 @@
 
     <!-- نتیجه: رادار روی نقشه ایران ← نقشه واقعی -->
     <div class="rd-step" id="rd-s2" hidden>
-      <button type="button" class="rd-back" onclick="rdStop();rdShow(1)">‹ تغییر درخواست</button>
+      <div style="display:flex;justify-content:space-between;align-items:center"><button type="button" class="rd-back" onclick="rdStop();rdShow(1)">‹ تغییر درخواست</button><button type="button" id="rd-mute" class="rd-back" onclick="rdToggleMute()" aria-label="صدا">🔊</button></div>
       <div class="rd-stage">
         <div id="rd-rmap" class="rd-rmap"></div>
         <div class="rd-over" id="rd-over"><div class="rd-scope"><div class="rd-ring r1"></div><div class="rd-ring r2"></div><div class="rd-ring r3"></div><div class="rd-cross"></div><div class="rd-sweep"></div><div class="rd-me"></div></div></div>

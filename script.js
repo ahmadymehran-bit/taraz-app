@@ -2448,7 +2448,7 @@ function rdTickerStart(){
   f();_rd.tick=setInterval(f,5000);
 }
 function renderRadar(){
-  rdStop(); rdShow(0); rdTickerStart();
+  rdStop(); rdShow(0); rdTickerStart(); rdBindSound();
   if(!_rd.map&&window.L){
     _rd.map=L.map('rd-map').setView([32.4279,53.688],5);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© OpenStreetMap'}).addTo(_rd.map);
@@ -2522,23 +2522,83 @@ async function rdConfirm(){
   var wait=Math.max(0,4800-(Date.now()-started));
   _rd.timer=setTimeout(function(){rdShowResults(out)},wait);
 }
+/* ----- صداهای رادار ----- */
+var _sfx={ctx:null,muted:localStorage.getItem('rdMute')==='1'};
+function rdAudio(){
+  if(!_sfx.ctx){var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;_sfx.ctx=new AC();}
+  if(_sfx.ctx.state==='suspended')_sfx.ctx.resume();
+  return _sfx.ctx;
+}
+function rdToggleMute(){
+  _sfx.muted=!_sfx.muted;localStorage.setItem('rdMute',_sfx.muted?'1':'0');
+  var b=document.getElementById('rd-mute');if(b)b.textContent=_sfx.muted?'🔇':'🔊';
+}
+// صدای کوتاه ضربه روی صفحه رادار
+function rdSfxTap(){
+  var c=rdAudio();if(!c||_sfx.muted)return;
+  var t=c.currentTime,o=c.createOscillator(),g=c.createGain();
+  o.type='triangle';o.frequency.setValueAtTime(1600,t);o.frequency.exponentialRampToValueAtTime(700,t+0.09);
+  g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(0.12,t+0.005);g.gain.exponentialRampToValueAtTime(0.0001,t+0.1);
+  o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+0.12);
+}
+// زنگوله گله: چند ضربه زنگ فلزی با طنین بلند
+function rdBell(c,t,f,vol){
+  var parts=[[1,1],[2.76,0.55],[5.4,0.3],[8.93,0.14]];
+  parts.forEach(function(p){
+    var o=c.createOscillator(),g=c.createGain();
+    o.type='sine';o.frequency.value=f*p[0];
+    g.gain.setValueAtTime(0.0001,t);
+    g.gain.exponentialRampToValueAtTime(vol*p[1],t+0.004);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+1.4/Math.sqrt(p[0]));
+    o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+1.6);
+  });
+  // صدای ضربه زبانه به بدنه زنگ
+  var len=Math.floor(c.sampleRate*0.02),buf=c.createBuffer(1,len,c.sampleRate),d=buf.getChannelData(0);
+  for(var k=0;k<len;k++)d[k]=(Math.random()*2-1)*(1-k/len);
+  var n=c.createBufferSource(),bp=c.createBiquadFilter(),ng=c.createGain();
+  n.buffer=buf;bp.type='bandpass';bp.frequency.value=3200;ng.gain.value=vol*2;
+  n.connect(bp);bp.connect(ng);ng.connect(c.destination);n.start(t);
+}
+function rdSfxFound(){
+  var c=rdAudio();if(!c||_sfx.muted)return;
+  var t=c.currentTime+0.05;
+  // سه ضربه تند زنگوله، مثل گله‌ای که به هم می‌رسد
+  rdBell(c,t,2100,0.16);
+  rdBell(c,t+0.22,2400,0.12);
+  rdBell(c,t+0.44,1900,0.1);
+}
 function rdShowResults(out){
   document.getElementById('rd-over').classList.add('off');
   var map=_rd.rmap, st=document.getElementById('rd-status'), box=document.getElementById('rd-results');
-  var me=L.circleMarker([_rd.loc.lat,_rd.loc.lng],{radius:8,color:'#fff',weight:3,fillColor:'#123d32',fillOpacity:1}).addTo(_rd.layer);
   var pts=[[_rd.loc.lat,_rd.loc.lng]];
+  L.circleMarker([_rd.loc.lat,_rd.loc.lng],{radius:8,color:'#fff',weight:3,fillColor:'#123d32',fillOpacity:1}).addTo(_rd.layer);
   out.forEach(function(l){
     var m=L.marker([l.location.lat,l.location.lng],{icon:L.divIcon({className:'rd-pinmk',html:'<i></i>',iconSize:[26,26],iconAnchor:[13,26]})}).addTo(_rd.layer);
     m.bindTooltip(esc(l.title)+' · '+faDigits(Math.round(l._d))+' کیلومتر');
     m.on('click',function(){openDetail(l.id,'browse')});
     pts.push([l.location.lat,l.location.lng]);
   });
-  if(pts.length>1)map.fitBounds(pts,{padding:[40,40],maxZoom:13,animate:true});
+  if(pts.length>1)map.fitBounds(pts,{padding:[30,30],maxZoom:13});
   else map.setView(pts[0],11);
-  if(!out.length){st.textContent='موردی پیدا نشد؛ فاصله را بیشتر کن یا جستجو را ساده‌تر کن';box.innerHTML='';return}
-  st.textContent=faDigits(out.length)+' آگهی پیدا شد؛ روی هر نشانگر لمس کن';
+  if(!out.length){
+    st.textContent='موردی پیدا نشد؛ فاصله را بیشتر کن یا جستجو را ساده‌تر کن';
+    box.innerHTML='';return;
+  }
+  rdSfxFound();
+  st.textContent=faDigits(out.length)+' آگهی مرتبط پیدا شد';
   box.innerHTML=out.map(function(l){
-    var d='<span class="rd-dist">'+faDigits(l._d<10?l._d.toFixed(1):Math.round(l._d))+' کیلومتر</span><br>';
-    return homeCard(l).replace('<div style="flex:1;min-width:0">','<div style="flex:1;min-width:0">'+d).replace("'home')","'browse')");
+    var d='<div class="rd-dist">📍 '+faDigits(l._d<10?l._d.toFixed(1):Math.round(l._d))+' کیلومتر از شما</div>';
+    return d+homeCard(l).replace("'home')","'browse')");
   }).join('');
+  st.scrollIntoView({behavior:'smooth',block:'start'});
 }
+// لمس روی صفحه رادار: فقط با ضربه صدا پخش شود
+(function(){
+  var bound=false;
+  window.rdBindSound=function(){
+    if(bound)return;bound=true;
+    var scr=document.getElementById('screen-browse');if(!scr)return;
+    scr.addEventListener('pointerdown',function(){ if(scr.offsetParent!==null)rdSfxTap(); },{passive:true});
+    var b=document.getElementById('rd-mute');if(b)b.textContent=_sfx.muted?'🔇':'🔊';
+  };
+})();
