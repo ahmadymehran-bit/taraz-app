@@ -2138,6 +2138,7 @@ var api = {
     
     var res = await fetch(url, config);
     if (!res.ok) {
+      if (res.status === 401 && _tok && path.indexOf('/api/auth/') !== 0) { try { sessionExpiredAlarm(); } catch (e) {} }
       if (res.status === 401 && _tok && path.indexOf('/api/missions/') !== 0 && path.indexOf('/api/bookings/') !== 0) { try { localStorage.removeItem('taraz.token'); } catch (e) {} }
       if (path.indexOf('/api/auth/') === 0) { try { return await res.json(); } catch (e) {} }
       return null;
@@ -2698,3 +2699,18 @@ function rdShowResults(out){
     scr.addEventListener('pointerdown',rdSfxTap,{passive:true});
   };
 })();
+
+/* هشدار انقضای نشست — فقط یک بار */
+var _sessAlarm = false;
+function sessionExpiredAlarm(){
+  if(_sessAlarm || document.getElementById('sess-alarm')) return;
+  _sessAlarm = true;
+  try{ if(navigator.vibrate) navigator.vibrate([200,100,200]); }catch(e){}
+  var d=document.createElement('div'); d.id='sess-alarm';
+  d.style.cssText='position:fixed;inset:0;z-index:20000;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:20px;direction:rtl';
+  d.innerHTML='<div style="background:#fff;border-radius:18px;padding:22px;max-width:340px;width:100%;text-align:center;font-family:inherit">'+
+    '<div style="font-size:42px">🔔</div><h3 style="margin:8px 0;color:#123d32">نشست شما تمام شده است</h3>'+
+    '<p style="color:#666;font-size:14px;line-height:1.9;margin:0 0 16px">برای امنیت حساب، لطفاً دوباره وارد شوید. اطلاعات شما حفظ شده است.</p>'+
+    '<button type="button" onclick="document.getElementById(\'sess-alarm\').remove();_sessAlarm=false;logout()" style="width:100%;padding:12px;border:0;border-radius:12px;background:#efb82e;color:#123d32;font-weight:800;font-size:15px">ورود دوباره</button></div>';
+  document.body.appendChild(d);
+}
