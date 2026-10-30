@@ -397,8 +397,10 @@ list=list.map(function(n){ return { id:n.id, type:n.type, icon:n.icon||'🔔', t
 list.sort(function(a,b){return b.createdAt-a.createdAt});
 var wrap=document.getElementById('notif-list'); if(!wrap)return;
 if(!list.length){ wrap.innerHTML='<div class="empty"><span class="emoji">🔔</span>اعلانی نیست</div>'; return; }
-wrap.innerHTML=list.map(function(n){ var cid=''; if((n.type==='message'||n.type==='request')&&typeof n.id==='string'&&(n.id.indexOf('NM-')===0||n.id.indexOf('NR-')===0)){ cid=n.id.slice(3); var k=cid.lastIndexOf('-'); if(k>0)cid=cid.slice(0,k); } var capId=''; if(n.type==='booking'&&typeof n.id==='string'&&n.id.indexOf('NB-')===0){ capId=n.id.slice(3); var k2=capId.lastIndexOf('-'); if(k2>0)capId=capId.slice(0,k2); } var oc=cid?' onclick="openChat(this.dataset.cid)" data-cid="'+esc(cid)+'" style="cursor:pointer"':(capId?' onclick="openBookingCapacity(this.dataset.cid)" data-cid="'+esc(capId)+'" style="cursor:pointer"':''); return '<div class="notif-card '+(n.read?'':'unread')+'"'+oc+'><div class="notif-ic">'+(n.icon||'🔔')+'</div><div class="notif-main"><b>'+esc(n.title)+'</b><small>'+esc(n.body)+'</small><span class="time">'+timeAgo(n.createdAt)+'</span></div></div>'; }).join('');
-var all=DB.notifications; all.forEach(function(n){n.read=true}); DB.notifications=all; updateBellBadge();
+wrap.innerHTML=list.map(function(n){ var cid=''; if((n.type==='message'||n.type==='request'||n.type==='deal'||n.type==='deal-remind')&&typeof n.id==='string'&&(n.id.indexOf('NM-')===0||n.id.indexOf('NR-')===0||n.id.indexOf('ND-')===0||n.id.indexOf('NQ-')===0)){ cid=n.id.slice(3); var k=cid.lastIndexOf('-'); if(k>0)cid=cid.slice(0,k); } var capId=''; if(n.type==='booking'&&typeof n.id==='string'&&n.id.indexOf('NB-')===0){ capId=n.id.slice(3); var k2=capId.lastIndexOf('-'); if(k2>0)capId=capId.slice(0,k2); } var oc=cid?' onclick="openChat(this.dataset.cid)" data-nid="'+esc(n.id)+'" data-cid="'+esc(cid)+'" style="cursor:pointer"':(capId?' onclick="openBookingCapacity(this.dataset.cid)" data-nid="'+esc(n.id)+'" data-cid="'+esc(capId)+'" style="cursor:pointer"':''); return '<div class="notif-card '+(n.read?'':'unread')+'"'+oc+'><div class="notif-ic">'+(n.icon||'🔔')+'</div><div class="notif-main"><b>'+esc(n.title)+'</b><small>'+esc(n.body)+'</small><span class="time">'+timeAgo(n.createdAt)+'</span></div></div>'; }).join('');
+DB.notifications=[]; updateBellBadge();
+var ids=list.map(function(n){return n.id}).filter(Boolean);
+if(ids.length){ setTimeout(function(){ api.clearNotifs(u.phone, ids).then(updateBellBadge).catch(function(){}); }, 1500); }
 }
 
 async function openBookingCapacity(capId){
@@ -2194,6 +2196,7 @@ var api = {
   getMissions: async function(phone){ return this._fetch('/api/missions/' + encodeURIComponent(phone)); },
   createNotification: async function(n){ return this._fetch('/api/notifications', { method: 'POST', body: JSON.stringify(n) }); },
   getNotifications: async function(phone){ return this._fetch('/api/notifications/' + encodeURIComponent(phone)); },
+  clearNotifs: async function(phone, ids){ return this._fetch('/api/notifications/clear', { method: 'POST', body: JSON.stringify({ phone: phone, ids: ids }) }); },
   markConvNotifsRead: async function(convId, phone){ return this._fetch('/api/notifications/read-conv', { method: 'POST', body: JSON.stringify({ convId: convId, phone: phone }) }); },
   addFavorite: async function(phone, listingId){ return this._fetch('/api/favorites', { method: 'POST', body: JSON.stringify({ id: 'F' + Date.now(), userPhone: phone, listingId: listingId }) }); },
   getFavorites: async function(phone){ return this._fetch('/api/favorites/' + encodeURIComponent(phone)); },
