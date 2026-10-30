@@ -2494,7 +2494,7 @@ async function rdConfirm(){
   var list=(res&&res.listings)?res.listings:(DB.listings||[]);
   list=list.map(function(l){
     var lat=l.location_lat||(l.location&&l.location.lat), lng=l.location_lng||(l.location&&l.location.lng);
-    return {id:l.id,sellerName:l.seller_name||l.sellerName,categoryId:l.category_id||l.categoryId,title:l.title,qty:l.qty,qtyNum:Number(l.qty_num||l.qtyNum)||0,price:Number(l.price),oldPrice:l.old_price?Number(l.old_price):null,region:l.region,urgent:l.urgent,productKey:l.product_key||l.productKey,photos:l.photos||[],createdAt:Number(l.created_at||l.createdAt),location:(lat&&lng)?{lat:Number(lat),lng:Number(lng)}:null};
+    return {id:l.id,sellerName:l.seller_name||l.sellerName,categoryId:l.category_id||l.categoryId,title:l.title,qty:l.qty,qtyNum:Number(l.qty_num||l.qtyNum)||0,price:Number(l.price),oldPrice:l.old_price?Number(l.old_price):null,region:l.region,urgent:l.urgent,desc:l.description||l.desc,productKey:l.product_key||l.productKey,photos:l.photos||[],createdAt:Number(l.created_at||l.createdAt),location:(lat&&lng)?{lat:Number(lat),lng:Number(lng)}:null};
   });
   var out=[];
   list.forEach(function(l){
@@ -2504,16 +2504,17 @@ async function rdConfirm(){
     if(maxP&&l.price>maxP)return;
     var score=0;
     if(q){
-      var hay=rdNorm(l.title+' '+(l.productKey||'')+' '+(l.region||''));
+      var hay=rdNorm(l.title+' '+(l.productKey||'')+' '+(l.region||'')+' '+(l.desc||''));
       var words=q.split(/\s+/).filter(Boolean), hit=words.filter(function(w){return hay.indexOf(w)>-1}).length;
       if(!hit)return; score+=hit/words.length*50;
     }
     if(qty&&l.qtyNum&&l.qtyNum>=qty)score+=15;
     if(l.urgent)score+=5;
     var d=l.location?rdDist(_rd.loc,l.location):null;
-    if(d==null)return;
-    if(km&&d>km)return;
-    score+=Math.max(0,40-d/(km||300)*40);
+    if(d!=null){
+      if(km&&d>km)return;
+      score+=Math.max(0,40-d/(km||300)*40);
+    }
     l._d=d; l._s=score; out.push(l);
   });
   out.sort(function(a,b){return b._s-a._s});
@@ -2522,50 +2523,40 @@ async function rdConfirm(){
   var wait=Math.max(0,4800-(Date.now()-started));
   _rd.timer=setTimeout(function(){rdShowResults(out)},wait);
 }
-/* ----- صداهای رادار ----- */
-var _sfx={ctx:null,muted:localStorage.getItem('rdMute')==='1'};
+/* ----- صدای پنهان رادار: زنگوله گله در کوهستان (فقط هنگام جستجو و با لمس) ----- */
+var _sfx={ctx:null,last:0,verb:null};
 function rdAudio(){
   if(!_sfx.ctx){var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;_sfx.ctx=new AC();}
   if(_sfx.ctx.state==='suspended')_sfx.ctx.resume();
   return _sfx.ctx;
 }
-function rdToggleMute(){
-  _sfx.muted=!_sfx.muted;localStorage.setItem('rdMute',_sfx.muted?'1':'0');
-  var b=document.getElementById('rd-mute');if(b)b.textContent=_sfx.muted?'🔇':'🔊';
+function rdBus(c){
+  if(_sfx.verb)return _sfx.verb;
+  var inp=c.createGain(),dl=c.createDelay(1),fb=c.createGain(),lp=c.createBiquadFilter(),out=c.createGain();
+  dl.delayTime.value=0.34;fb.gain.value=0.45;lp.type='lowpass';lp.frequency.value=2600;out.gain.value=0.6;
+  inp.connect(c.destination);           // صدای مستقیم
+  inp.connect(dl);dl.connect(lp);lp.connect(fb);fb.connect(dl);lp.connect(out);out.connect(c.destination); // پژواک دره
+  _sfx.verb=inp;return inp;
 }
-// صدای کوتاه ضربه روی صفحه رادار
-function rdSfxTap(){
-  var c=rdAudio();if(!c||_sfx.muted)return;
-  var t=c.currentTime,o=c.createOscillator(),g=c.createGain();
-  o.type='triangle';o.frequency.setValueAtTime(1600,t);o.frequency.exponentialRampToValueAtTime(700,t+0.09);
-  g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(0.12,t+0.005);g.gain.exponentialRampToValueAtTime(0.0001,t+0.1);
-  o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+0.12);
-}
-// زنگوله گله: چند ضربه زنگ فلزی با طنین بلند
 function rdBell(c,t,f,vol){
-  var parts=[[1,1],[2.76,0.55],[5.4,0.3],[8.93,0.14]];
+  var bus=rdBus(c),parts=[[1,1],[2.4,0.5],[3.9,0.28],[6.1,0.12]];
   parts.forEach(function(p){
     var o=c.createOscillator(),g=c.createGain();
-    o.type='sine';o.frequency.value=f*p[0];
+    o.type='sine';o.frequency.value=f*p[0]*(1+(Math.random()-.5)*0.01);
     g.gain.setValueAtTime(0.0001,t);
-    g.gain.exponentialRampToValueAtTime(vol*p[1],t+0.004);
-    g.gain.exponentialRampToValueAtTime(0.0001,t+1.4/Math.sqrt(p[0]));
-    o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+1.6);
+    g.gain.exponentialRampToValueAtTime(vol*p[1],t+0.006);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+1.1/Math.sqrt(p[0]));
+    o.connect(g);g.connect(bus);o.start(t);o.stop(t+1.3);
   });
-  // صدای ضربه زبانه به بدنه زنگ
-  var len=Math.floor(c.sampleRate*0.02),buf=c.createBuffer(1,len,c.sampleRate),d=buf.getChannelData(0);
-  for(var k=0;k<len;k++)d[k]=(Math.random()*2-1)*(1-k/len);
-  var n=c.createBufferSource(),bp=c.createBiquadFilter(),ng=c.createGain();
-  n.buffer=buf;bp.type='bandpass';bp.frequency.value=3200;ng.gain.value=vol*2;
-  n.connect(bp);bp.connect(ng);ng.connect(c.destination);n.start(t);
 }
-function rdSfxFound(){
-  var c=rdAudio();if(!c||_sfx.muted)return;
-  var t=c.currentTime+0.05;
-  // سه ضربه تند زنگوله، مثل گله‌ای که به هم می‌رسد
-  rdBell(c,t,2100,0.16);
-  rdBell(c,t+0.22,2400,0.12);
-  rdBell(c,t+0.44,1900,0.1);
+// فقط وقتی رادار در حال جستجوست
+function rdSfxTap(){
+  var ov=document.getElementById('rd-over'),s2=document.getElementById('rd-s2');
+  if(!ov||!s2||s2.hidden||ov.classList.contains('off'))return;
+  var now=Date.now();if(now-_sfx.last<700)return;_sfx.last=now;
+  var c=rdAudio();if(!c)return;
+  var t=c.currentTime+0.02,base=520+Math.random()*180,n=2+Math.floor(Math.random()*3);
+  for(var i=0;i<n;i++)rdBell(c,t+i*(0.18+Math.random()*0.2),base*(i%2?1.12:1),0.1-i*0.015);
 }
 function rdShowResults(out){
   document.getElementById('rd-over').classList.add('off');
@@ -2573,6 +2564,7 @@ function rdShowResults(out){
   var pts=[[_rd.loc.lat,_rd.loc.lng]];
   L.circleMarker([_rd.loc.lat,_rd.loc.lng],{radius:8,color:'#fff',weight:3,fillColor:'#123d32',fillOpacity:1}).addTo(_rd.layer);
   out.forEach(function(l){
+    if(!l.location)return;
     var m=L.marker([l.location.lat,l.location.lng],{icon:L.divIcon({className:'rd-pinmk',html:'<i></i>',iconSize:[26,26],iconAnchor:[13,26]})}).addTo(_rd.layer);
     m.bindTooltip(esc(l.title)+' · '+faDigits(Math.round(l._d))+' کیلومتر');
     m.on('click',function(){openDetail(l.id,'browse')});
@@ -2584,10 +2576,9 @@ function rdShowResults(out){
     st.textContent='موردی پیدا نشد؛ فاصله را بیشتر کن یا جستجو را ساده‌تر کن';
     box.innerHTML='';return;
   }
-  rdSfxFound();
   st.textContent=faDigits(out.length)+' آگهی مرتبط پیدا شد';
   box.innerHTML=out.map(function(l){
-    var d='<div class="rd-dist">📍 '+faDigits(l._d<10?l._d.toFixed(1):Math.round(l._d))+' کیلومتر از شما</div>';
+    var d='<div class="rd-dist">'+(l._d==null?'📍 موقعیت دقیق ثبت نشده':'📍 '+faDigits(l._d<10?l._d.toFixed(1):Math.round(l._d))+' کیلومتر از شما')+'</div>';
     return d+homeCard(l).replace("'home')","'browse')");
   }).join('');
   st.scrollIntoView({behavior:'smooth',block:'start'});
@@ -2598,7 +2589,6 @@ function rdShowResults(out){
   window.rdBindSound=function(){
     if(bound)return;bound=true;
     var scr=document.getElementById('screen-browse');if(!scr)return;
-    scr.addEventListener('pointerdown',function(){ if(scr.offsetParent!==null)rdSfxTap(); },{passive:true});
-    var b=document.getElementById('rd-mute');if(b)b.textContent=_sfx.muted?'🔇':'🔊';
+    scr.addEventListener('pointerdown',rdSfxTap,{passive:true});
   };
 })();
