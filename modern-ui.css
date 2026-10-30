@@ -1803,7 +1803,7 @@ body, .screen { background: linear-gradient(180deg, #13402f 0%, #0b2a22 100%) !i
 }
 
 /* کمی بالاتر بردن متن ثبت آگهی */
-.nav .nav-center .fab-txt { position: relative !important; top: -3px !important; }
+.nav .nav-center .fab-txt { position: relative !important; top: -5px !important; }
 
 /* صفحه جزئیات آگهی: چیدمان بالا به پایین */
 #screen-detail .detail-card{
