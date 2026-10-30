@@ -2093,3 +2093,15 @@ html body #screen-home .offer-btn.active { outline: 2px solid #f3c969 !important
 #screen-home .browse-header .browse-search-big:focus-within { border:0 !important; background:rgba(255,255,255,.06) !important; }
 
 #screen-browse .modern-header .mh-profile, #screen-home .modern-header .mh-profile { min-height:44px !important; }
+
+/* زنگوله هدر: طلایی روی سبز، هم‌شکل در همه صفحه‌ها */
+#screen-home .modern-header .mh-bell,
+#screen-browse .modern-header .mh-bell {
+  background:#0b2a22 !important; border:1.5px solid rgba(224,176,74,.7) !important; box-shadow:none !important;
+}
+#screen-home .modern-header .mh-bell svg,
+#screen-browse .modern-header .mh-bell svg { stroke:#e0b04a !important; }
+
+/* حذف نوار اسکرول خاکستری در همه صفحات */
+html, body, *, *::before, *::after { scrollbar-width: none !important; -ms-overflow-style: none !important; }
+::-webkit-scrollbar, *::-webkit-scrollbar { width: 0 !important; height: 0 !important; display: none !important; background: transparent !important; }
