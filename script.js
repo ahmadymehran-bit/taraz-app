@@ -310,7 +310,7 @@ async function renderHeaderAvatars(){
   
   // نام کاربر
   const nameEl = document.getElementById('header-user-name');
-  if (nameEl) nameEl.textContent = u.name ? u.name.split(' ')[0] : 'کاربر';
+  if (nameEl) nameEl.textContent = u.name ? u.name : 'کاربر';
   
   // شغل
   const roleEl = document.getElementById('header-user-role');
