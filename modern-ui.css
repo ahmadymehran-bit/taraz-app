@@ -2013,3 +2013,19 @@ html body #screen-home .offer-btn.active { outline: 2px solid #f3c969 !important
 .rd-dist{font-size:12px;font-weight:900;color:var(--forest);margin:14px 0 4px;padding-right:4px}
 #rd-results .card{margin-bottom:10px}
 #rd-status{font-weight:900;color:var(--forest);margin:10px 4px 4px;min-height:22px}
+
+.rd-pos{font-size:11px;color:var(--muted,#667);margin:6px 14px 0;display:flex;gap:4px;align-items:center;cursor:pointer}
+.rd-pos b{color:var(--forest);font-weight:900;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60%}
+.rd-pos u{color:var(--gold-d,#b8860b);margin-right:auto}
+.rd-lm{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:flex-end}
+.rd-lm[hidden]{display:none}
+.rd-lm-b{background:#fff;width:100%;border-radius:22px 22px 0 0;padding:18px 16px 24px;max-height:85vh;overflow:auto}
+.rd-lm-b h3{margin:0 0 10px;color:var(--forest)}
+.rd-lm-warn{background:#fff4d6;border:1px solid var(--gold);border-radius:12px;padding:10px;font-size:13px;font-weight:700;margin-bottom:10px}
+.rd-lm-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.rd-lm-chips span{background:#eef8f3;border:1px solid var(--forest);color:var(--forest);border-radius:100px;padding:6px 12px;font-size:13px;font-weight:800}
+.rd-lm-chips span i{font-style:normal;margin-right:8px;cursor:pointer;color:#b00}
+.rd-lm-row{display:flex;gap:8px;margin:10px 0}
+.rd-lm-row .rd-in{flex:1;margin:0}
+.rd-lm-row .rd-main{width:auto;padding:0 18px;margin:0}
+.rd-lm-row .rd-ghost{flex:1}

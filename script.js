@@ -2430,17 +2430,75 @@ function rdShow(n){
   if(n===1&&_rd.map)setTimeout(function(){_rd.map.invalidateSize()},60);
   window.scrollTo(0,0);
 }
-function rdSetLoc(lat,lng,zoom){
-  _rd.loc={lat:lat,lng:lng};
-  if(_rd.marker)_rd.marker.remove();
-  if(_rd.map){_rd.marker=L.marker([lat,lng]).addTo(_rd.map); if(zoom)_rd.map.setView([lat,lng],zoom)}
-  document.getElementById('rd-loc').textContent='📍 موقعیت انتخاب شد';
-  document.getElementById('rd-search').disabled=false;
+function rdSetLoc(lat,lng,zoom,name){
+  rdSetLocs([{name:name||'نقطه انتخابی',lat:lat,lng:lng}],zoom);
 }
-function rdLocate(){
-  if(!navigator.geolocation){toast('مرورگر GPS را پشتیبانی نمی‌کند');return}
-  navigator.geolocation.getCurrentPosition(function(p){rdSetLoc(p.coords.latitude,p.coords.longitude,11)},function(){toast('دسترسی به موقعیت داده نشد؛ روی نقشه انتخاب کن')},{timeout:10000});
+function rdSetLocs(arr,zoom){
+  _rd.locs=arr; _rd.loc=arr[0]||null;
+  if(_rd.markers)_rd.markers.forEach(function(m){m.remove()});
+  _rd.markers=[];
+  if(_rd.map){
+    arr.forEach(function(p){_rd.markers.push(L.marker([p.lat,p.lng]).addTo(_rd.map))});
+    if(arr.length>1)_rd.map.fitBounds(arr.map(function(p){return [p.lat,p.lng]}),{padding:[30,30]});
+    else if(arr.length&&zoom)_rd.map.setView([arr[0].lat,arr[0].lng],zoom);
+  }
+  rdPosUpdate();
 }
+function rdPosUpdate(){
+  var t=_rd.locs&&_rd.locs.length?_rd.locs.map(function(p){return p.name}).join('، '):'در حال یافتن…';
+  document.querySelectorAll('.rd-pos-t').forEach(function(e){e.textContent=t});
+  var sb=document.getElementById('rd-search'); if(sb)sb.disabled=!(_rd.locs&&_rd.locs.length);
+  var ch=document.getElementById('rd-lm-chips');
+  if(ch)ch.innerHTML=(_rd.locs||[]).map(function(p,i){return '<span>'+esc(p.name)+'<i onclick="rdDelCity('+i+')">×</i></span>'}).join('');
+}
+function rdLocPanel(show,warn){
+  var m=document.getElementById('rd-lm'); if(!m)return;
+  m.hidden=!show; document.getElementById('rd-lm-warn').hidden=!warn;
+  if(show)rdPosUpdate();
+}
+function rdDelCity(i){
+  var a=(_rd.locs||[]).slice(); a.splice(i,1);
+  if(!a.length){rdAutoLocate(true);return}
+  rdSetLocs(a);
+}
+async function rdAddCity(){
+  var inp=document.getElementById('rd-lm-in'), q=inp.value.trim(); if(!q)return;
+  try{
+    var r=await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=fa&countrycodes=ir&q='+encodeURIComponent(q));
+    var j=await r.json();
+    if(!j.length){toast('این مکان پیدا نشد');return}
+    var cur=(_rd.locs||[]).filter(function(p){return !p.gps||true});
+    cur.push({name:q,lat:Number(j[0].lat),lng:Number(j[0].lon)});
+    inp.value=''; rdSetLocs(cur);
+  }catch(e){toast('اتصال اینترنت را بررسی کن')}
+}
+async function rdRevName(lat,lng){
+  try{
+    var r=await fetch('https://nominatim.openstreetmap.org/reverse?format=json&zoom=12&accept-language=fa&lat='+lat+'&lon='+lng);
+    var j=await r.json(), a=j.address||{};
+    var city=a.city||a.town||a.village||a.county||a.state||'';
+    var sub=a.suburb||a.neighbourhood||a.city_district||'';
+    return (city+(sub?'، '+sub:''))||'موقعیت شما';
+  }catch(e){return 'موقعیت شما'}
+}
+function rdAutoLocate(fromPanel){
+  if(_rd.locating)return;
+  if(!navigator.geolocation){rdLocPanel(true,true);return}
+  _rd.locating=true;
+  navigator.geolocation.getCurrentPosition(async function(p){
+    _rd.locating=false;
+    var lat=p.coords.latitude,lng=p.coords.longitude;
+    rdSetLocs([{name:'در حال یافتن…',lat:lat,lng:lng,gps:true}],11);
+    var n=await rdRevName(lat,lng);
+    if(_rd.locs&&_rd.locs[0]&&_rd.locs[0].gps){_rd.locs[0].name=n;rdPosUpdate()}
+    if(fromPanel)rdLocPanel(false);
+  },function(){
+    _rd.locating=false;
+    if(!_rd.locs||!_rd.locs.length)rdLocPanel(true,true);
+    else toast('دسترسی به موقعیت داده نشد؛ لوکیشن دستگاه را روشن کن');
+  },{timeout:15000,enableHighAccuracy:true,maximumAge:60000});
+}
+window.addEventListener('load',function(){setTimeout(function(){if(!_rd.locs)rdAutoLocate()},800)});
 function rdTickerStart(){
   if(_rd.tick||typeof BZ_TICK==='undefined')return;
   var i=0,f=function(){var t=BZ_TICK[i++%BZ_TICK.length],g=function(x){return document.getElementById(x)};
@@ -2449,10 +2507,11 @@ function rdTickerStart(){
 }
 function renderRadar(){
   rdStop(); rdShow(0); rdTickerStart(); rdBindSound();
+  if(_rd.locs&&_rd.locs.length)rdPosUpdate(); else rdAutoLocate();
   if(!_rd.map&&window.L){
     _rd.map=L.map('rd-map').setView([32.4279,53.688],5);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© OpenStreetMap'}).addTo(_rd.map);
-    _rd.map.on('click',function(e){rdSetLoc(e.latlng.lat,e.latlng.lng)});
+    _rd.map.on('click',async function(e){rdSetLoc(e.latlng.lat,e.latlng.lng,0,'در حال یافتن…');var n=await rdRevName(e.latlng.lat,e.latlng.lng);if(_rd.locs&&_rd.locs.length===1){_rd.locs[0].name=n;rdPosUpdate()}});
   }
   var el=document.getElementById('rd-cats');
   if(el&&!el.children.length){
@@ -2471,7 +2530,7 @@ function rdDist(a,b){
 }
 function rdNorm(s){return String(s||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').toLowerCase()}
 async function rdConfirm(){
-  if(!_rd.loc){toast('ابتدا موقعیت را انتخاب کن');return}
+  if(!_rd.locs||!_rd.locs.length){rdLocPanel(true,true);return}
   var q=rdNorm(document.getElementById('rd-q').value.trim());
   var qty=Number(document.getElementById('rd-qty').value)||0;
   var km=Number(document.getElementById('rd-km').value);
@@ -2510,7 +2569,7 @@ async function rdConfirm(){
     }
     if(qty&&l.qtyNum&&l.qtyNum>=qty)score+=15;
     if(l.urgent)score+=5;
-    var d=l.location?rdDist(_rd.loc,l.location):null;
+    var d=l.location?Math.min.apply(null,_rd.locs.map(function(p){return rdDist(p,l.location)})):null;
     if(d!=null){
       if(km&&d>km)return;
       score+=Math.max(0,40-d/(km||300)*40);
@@ -2561,8 +2620,8 @@ function rdSfxTap(){
 function rdShowResults(out){
   document.getElementById('rd-over').classList.add('off');
   var map=_rd.rmap, st=document.getElementById('rd-status'), box=document.getElementById('rd-results');
-  var pts=[[_rd.loc.lat,_rd.loc.lng]];
-  L.circleMarker([_rd.loc.lat,_rd.loc.lng],{radius:8,color:'#fff',weight:3,fillColor:'#123d32',fillOpacity:1}).addTo(_rd.layer);
+  var pts=_rd.locs.map(function(p){return [p.lat,p.lng]});
+  _rd.locs.forEach(function(p){L.circleMarker([p.lat,p.lng],{radius:8,color:'#fff',weight:3,fillColor:'#123d32',fillOpacity:1}).addTo(_rd.layer)});
   out.forEach(function(l){
     if(!l.location)return;
     var m=L.marker([l.location.lat,l.location.lng],{icon:L.divIcon({className:'rd-pinmk',html:'<i></i>',iconSize:[26,26],iconAnchor:[13,26]})}).addTo(_rd.layer);
@@ -2570,7 +2629,7 @@ function rdShowResults(out){
     m.on('click',function(){openDetail(l.id,'browse')});
     pts.push([l.location.lat,l.location.lng]);
   });
-  if(pts.length>1)map.fitBounds(pts,{padding:[30,30],maxZoom:13});
+  if(out.length||pts.length>1)map.fitBounds(pts,{padding:[30,30],maxZoom:13});
   else map.setView(pts[0],11);
   if(!out.length){
     st.textContent='موردی پیدا نشد؛ فاصله را بیشتر کن یا جستجو را ساده‌تر کن';

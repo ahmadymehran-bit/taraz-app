@@ -90,6 +90,7 @@
     </div>
   </header>
     <div class="home-banner"><img src="image/banner-shepherd.webp" alt="تاراز"></div>
+      <div class="rd-pos" onclick="rdLocPanel(true)"><span>موقعیت:</span> <b class="rd-pos-t">در حال یافتن…</b> <u>تغییر</u></div>
     <div class="browse-header">
       <div class="browse-search-big">
         <span class="ic">🔍</span>
@@ -125,6 +126,14 @@
     </header>
 
     
+    <div class="rd-lm" id="rd-lm" hidden onclick="if(event.target===this)rdLocPanel(false)"><div class="rd-lm-b">
+      <div id="rd-lm-warn" class="rd-lm-warn" hidden>📍 برای دیدن آگهی‌های اطراف، لوکیشن (GPS) دستگاه را روشن کن و اجازه دسترسی بده.</div>
+      <h3>موقعیت جستجو</h3>
+      <div class="rd-lm-chips" id="rd-lm-chips"></div>
+      <div class="rd-lm-row"><input class="rd-in" id="rd-lm-in" type="text" placeholder="نام شهر یا روستا، مثلاً اهواز" onkeydown="if(event.key==='Enter')rdAddCity()"><button type="button" class="rd-main" onclick="rdAddCity()">افزودن</button></div>
+      <small>می‌توانی چند شهر را با هم اضافه کنی.</small>
+      <div class="rd-lm-row"><button type="button" class="rd-ghost" onclick="rdAutoLocate(true)">🎯 پیدا کردن خودکار با GPS</button><button type="button" class="rd-main" onclick="rdLocPanel(false)">تأیید</button></div>
+    </div></div>
     <!-- صفحه اول: رادار -->
     <div class="rd-step rd-home" id="rd-s0">
       <div class="home-banner"><img src="image/banner-shepherd.webp" alt="تاراز"></div>
@@ -140,10 +149,9 @@
     <!-- زیرصفحه: فرم -->
     <div class="rd-step" id="rd-s1" hidden>
       <button type="button" class="rd-back" onclick="rdShow(0)">‹ بازگشت</button>
+      <div class="rd-pos" onclick="rdLocPanel(true)"><span>موقعیت:</span> <b class="rd-pos-t">در حال یافتن…</b> <u>تغییر</u></div>
       <h2 class="rd-h">کجا دنبال می‌گردی؟</h2>
       <div id="rd-map" class="rd-map"></div>
-      <div class="rd-loc" id="rd-loc">موقعیتی انتخاب نشده</div>
-      <button type="button" class="rd-ghost" onclick="rdLocate()">📍 موقعیت فعلی من</button>
       <h2 class="rd-h">چه چیزی لازم داری؟</h2>
       <div class="rd-chips" id="rd-cats"></div>
       <label class="rd-l">دقیقاً چه چیزی؟ <small>(مثلاً بز، گوسفند، گندم، دامپزشک)</small></label>
