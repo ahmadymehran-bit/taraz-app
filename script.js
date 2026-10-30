@@ -2445,7 +2445,7 @@ function rdSetLocs(arr,zoom){
   rdPosUpdate();
 }
 function rdPosUpdate(){
-  var t=_rd.locs&&_rd.locs.length?_rd.locs.map(function(p){return p.name}).join('، '):'در حال یافتن…';
+  var t=_rd.locs&&_rd.locs.length?_rd.locs.map(function(p){return p.name}).join('، '):(_rd.failed?'انتخاب کنید':'در حال یافتن…');
   document.querySelectorAll('.rd-pos-t').forEach(function(e){e.textContent=t});
   var sb=document.getElementById('rd-search'); if(sb)sb.disabled=!(_rd.locs&&_rd.locs.length);
   var ch=document.getElementById('rd-lm-chips');
@@ -2454,22 +2454,33 @@ function rdPosUpdate(){
 function rdLocPanel(show,warn){
   var m=document.getElementById('rd-lm'); if(!m)return;
   m.hidden=!show; document.getElementById('rd-lm-warn').hidden=!warn;
-  if(show)rdPosUpdate();
+  if(show){rdPosUpdate();rdProvPick(_rd.prov||'')}
 }
 function rdDelCity(i){
   var a=(_rd.locs||[]).slice(); a.splice(i,1);
   if(!a.length){rdAutoLocate(true);return}
   rdSetLocs(a);
 }
-async function rdAddCity(){
-  var inp=document.getElementById('rd-lm-in'), q=inp.value.trim(); if(!q)return;
+var RD_PROV={"آذربایجان شرقی": ["تبریز", "مراغه", "مرند", "میانه", "اهر", "سراب", "بناب"], "آذربایجان غربی": ["ارومیه", "خوی", "میاندوآب", "مهاباد", "سلماس", "بوکان"], "اردبیل": ["اردبیل", "پارس‌آباد", "مشگین‌شهر", "خلخال"], "اصفهان": ["اصفهان", "کاشان", "نجف‌آباد", "خمینی‌شهر", "شاهین‌شهر", "فلاورجان", "گلپایگان"], "البرز": ["کرج", "فردیس", "نظرآباد", "اشتهارد"], "ایلام": ["ایلام", "دهلران", "آبدانان", "مهران"], "بوشهر": ["بوشهر", "برازجان", "کنگان", "گناوه"], "تهران": ["تهران", "ورامین", "شهریار", "اسلام‌شهر", "پاکدشت", "دماوند"], "چهارمحال و بختیاری": ["شهرکرد", "بروجن", "فارسان", "لردگان"], "خراسان جنوبی": ["بیرجند", "قائن", "طبس", "فردوس"], "خراسان رضوی": ["مشهد", "نیشابور", "سبزوار", "تربت‌حیدریه", "قوچان"], "خراسان شمالی": ["بجنورد", "شیروان", "اسفراین"], "خوزستان": ["اهواز", "ایذه", "دزفول", "شوش", "اندیمشک", "آبادان", "خرمشهر", "ماهشهر", "بهبهان", "شوشتر", "مسجدسلیمان", "باغ‌ملک", "رامهرمز", "دهدز", "لالی"], "زنجان": ["زنجان", "ابهر", "خرمدره"], "سمنان": ["سمنان", "شاهرود", "دامغان", "گرمسار"], "سیستان و بلوچستان": ["زاهدان", "چابهار", "زابل", "ایرانشهر", "خاش"], "فارس": ["شیراز", "مرودشت", "کازرون", "لار", "فسا", "جهرم"], "قزوین": ["قزوین", "تاکستان", "البرز"], "قم": ["قم"], "کردستان": ["سنندج", "سقز", "مریوان", "بانه", "قروه"], "کرمان": ["کرمان", "رفسنجان", "سیرجان", "جیرفت", "بم"], "کرمانشاه": ["کرمانشاه", "اسلام‌آباد غرب", "سنقر", "کنگاور", "پاوه"], "کهگیلویه و بویراحمد": ["یاسوج", "دوگنبدان", "گچساران"], "گلستان": ["گرگان", "گنبد کاووس", "علی‌آباد", "آق‌قلا"], "گیلان": ["رشت", "انزلی", "لاهیجان", "لنگرود", "آستارا"], "لرستان": ["خرم‌آباد", "بروجرد", "دورود", "الیگودرز"], "مازندران": ["ساری", "بابل", "آمل", "قائم‌شهر", "چالوس", "تنکابن"], "مرکزی": ["اراک", "ساوه", "خمین", "محلات"], "هرمزگان": ["بندرعباس", "میناب", "قشم", "بندر لنگه"], "همدان": ["همدان", "ملایر", "نهاوند", "تویسرکان"], "یزد": ["یزد", "میبد", "اردکان", "ابرکوه"]};
+function rdProvPick(p){
+  _rd.prov=p;
+  var sel=document.getElementById('rd-lm-prov');
+  if(sel&&!sel.options.length){sel.innerHTML='<option value="">انتخاب استان…</option>'+Object.keys(RD_PROV).map(function(k){return '<option>'+k+'</option>'}).join('')}
+  if(sel)sel.value=p||'';
+  var box=document.getElementById('rd-lm-cities'); if(!box)return;
+  var names=(_rd.locs||[]).map(function(x){return x.name});
+  box.innerHTML=(RD_PROV[p]||[]).map(function(c){return '<button type="button" class="'+(names.indexOf(c)>=0?'on':'')+'" onclick="rdToggleCity(\''+c+'\')">'+c+'</button>'}).join('');
+}
+async function rdToggleCity(name){
+  var cur=(_rd.locs||[]).slice(), i=cur.findIndex(function(x){return x.name===name});
+  if(i>=0){cur.splice(i,1); if(!cur.length){_rd.locs=[];_rd.loc=null}else rdSetLocs(cur); rdPosUpdate(); rdProvPick(_rd.prov); return}
   try{
-    var r=await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=fa&countrycodes=ir&q='+encodeURIComponent(q));
+    var r=await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=fa&countrycodes=ir&q='+encodeURIComponent(name+'، '+(_rd.prov||'')));
     var j=await r.json();
     if(!j.length){toast('این مکان پیدا نشد');return}
-    var cur=(_rd.locs||[]).filter(function(p){return !p.gps||true});
-    cur.push({name:q,lat:Number(j[0].lat),lng:Number(j[0].lon)});
-    inp.value=''; rdSetLocs(cur);
+    cur=cur.filter(function(x){return !x.gps});
+    cur.push({name:name,lat:Number(j[0].lat),lng:Number(j[0].lon)});
+    rdSetLocs(cur); rdProvPick(_rd.prov);
   }catch(e){toast('اتصال اینترنت را بررسی کن')}
 }
 async function rdRevName(lat,lng){
@@ -2493,7 +2504,7 @@ function rdAutoLocate(fromPanel){
     if(_rd.locs&&_rd.locs[0]&&_rd.locs[0].gps){_rd.locs[0].name=n;rdPosUpdate()}
     if(fromPanel)rdLocPanel(false);
   },function(){
-    _rd.locating=false;
+    _rd.locating=false;_rd.failed=true;rdPosUpdate();
     if(!_rd.locs||!_rd.locs.length)rdLocPanel(true,true);
     else toast('دسترسی به موقعیت داده نشد؛ لوکیشن دستگاه را روشن کن');
   },{timeout:15000,enableHighAccuracy:true,maximumAge:60000});

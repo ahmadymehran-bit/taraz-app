@@ -2029,3 +2029,14 @@ html body #screen-home .offer-btn.active { outline: 2px solid #f3c969 !important
 .rd-lm-row .rd-in{flex:1;margin:0}
 .rd-lm-row .rd-main{width:auto;padding:0 18px;margin:0}
 .rd-lm-row .rd-ghost{flex:1}
+
+.rd-pos{display:block;text-align:center;margin:8px 0 2px;font-size:12px;font-weight:800;color:#ffe9a0;letter-spacing:.2px;text-shadow:0 1px 6px rgba(0,0,0,.6);cursor:pointer}
+.rd-pos b{color:#efb82e;font-weight:900;max-width:none;white-space:normal}
+.rd-lm-cities{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.rd-lm-cities button{border:1px solid #cfd8d3;background:#fff;border-radius:100px;padding:7px 13px;font-size:13px;font-weight:800;color:#123d32;font-family:inherit}
+.rd-lm-cities button.on{background:#123d32;color:#ffe9a0;border-color:#123d32}
+#rd-lm-prov{width:100%;margin:0}
+#screen-home .browse-search-big .ic{display:flex;align-items:center;color:#e0b04a}
+/* نوار پایین مات تا آگهی‌ها از زیرش دیده نشوند */
+.nav{background:#0b2a22 !important;z-index:500 !important}
+#screen-home{padding-bottom:130px !important}

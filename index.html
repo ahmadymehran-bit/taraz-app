@@ -90,28 +90,16 @@
     </div>
   </header>
     <div class="home-banner"><img src="image/banner-shepherd.webp" alt="تاراز"></div>
-      <div class="rd-pos" onclick="rdLocPanel(true)"><span>موقعیت:</span> <b class="rd-pos-t">در حال یافتن…</b> <u>تغییر</u></div>
+      <div class="rd-pos" onclick="rdLocPanel(true)">موقعیت: <b class="rd-pos-t">در حال یافتن…</b></div>
     <div class="browse-header">
       <div class="browse-search-big">
-        <span class="ic">🔍</span>
+        <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg></span>
         <input id="browse-search" placeholder="جستجو..." oninput="filterBrowse(this.value)">
-        <button type="button" onclick="toggleFilterPanel()" style="background:#eef8f3;color:var(--forest);border:2px solid var(--line);border-radius:14px;font-size:14px;font-weight:700;cursor:pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8v6l-4-2v-4z"/></svg>فیلتر پیشرفته</button>
         <span class="clear-x" onclick="clearBrowseSearch()" id="browse-clear" hidden>×</span>
       </div>
       
       <div class="chips-row" id="browse-chips"></div>
       <button type="button" class="offer-btn" id="offer-btn" onclick="toggleBargain()" aria-label="پیشنهاد ویژه"><span class="ic"><svg viewBox="0 0 64 64" width="54" height="54" aria-hidden="true"><defs><linearGradient id="gfF" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe9a0"/><stop offset="1" stop-color="#c8901f"/></linearGradient><linearGradient id="gfS" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#9a6b00"/><stop offset="1" stop-color="#6d4a00"/></linearGradient><linearGradient id="gfR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1f7a52"/><stop offset="1" stop-color="#0b3d2b"/></linearGradient></defs><ellipse cx="32" cy="59" rx="20" ry="3" fill="#000" opacity=".3"/><path d="M8 26 L32 33 L32 58 L8 50 Z" fill="url(#gfF)"/><path d="M56 26 L32 33 L32 58 L56 50 Z" fill="url(#gfS)"/><path d="M8 26 L32 19 L56 26 L32 33 Z" fill="#fff3b0"/><path d="M26 31 L38 34.500 L38 59 L26 55.500 Z" fill="url(#gfR)" opacity=".95"/><path d="M14 24.500 L38 17.500 L50 21 L26 28 Z" fill="url(#gfR)" opacity=".9"/><path d="M32 20 C22 6 10 12 18 19 C22 22 28 21 32 20 Z" fill="url(#gfR)" stroke="#f3c969" stroke-width="1.500"/><path d="M32 20 C42 6 54 12 46 19 C42 22 36 21 32 20 Z" fill="url(#gfR)" stroke="#f3c969" stroke-width="1.500"/><circle cx="32" cy="20" r="3.500" fill="#f3c969" stroke="#9a6b00"/><path d="M10 28 L30 34" stroke="#fff" stroke-width="1.500" opacity=".5" stroke-linecap="round"/></svg></span><span class="offer-txt">پیشنهاد ویژه</span></button>
-      <div class="filter-panel" id="browse-filter-panel" style="display:none">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-          <div><label style="font-size:12px;color:var(--muted);font-weight:700">قیمت از (تومان)</label><input id="filter-price-min" type="tel" inputmode="numeric" placeholder="۰" style="width:100%;padding:12px;border:2px solid var(--line);border-radius:12px;font-size:14px;direction:ltr;text-align:left;margin-top:4px"></div>
-          <div><label style="font-size:12px;color:var(--muted);font-weight:700">قیمت تا (تومان)</label><input id="filter-price-max" type="tel" inputmode="numeric" placeholder="∞" style="width:100%;padding:12px;border:2px solid var(--line);border-radius:12px;font-size:14px;direction:ltr;text-align:left;margin-top:4px"></div>
-        </div>
-        <div style="margin-bottom:10px"><label style="font-size:12px;color:var(--muted);font-weight:700">منطقه</label><input id="filter-region" type="text" placeholder="مثلاً: اهواز" style="width:100%;padding:12px;border:2px solid var(--line);border-radius:12px;font-size:14px;margin-top:4px"></div>
-        <div style="display:flex;gap:10px">
-          <button type="button" class="btn-green" onclick="applyFilters()" style="flex:1;min-height:50px;font-size:15px">اعمال فیلتر</button>
-          <button type="button" class="btn-outline" onclick="clearFilters()" style="flex:1;min-height:50px;font-size:15px">پاک کردن</button>
-        </div>
-      </div>
     </div>
     <div class="browse-grid" id="browse-grid"></div>
   </section>
@@ -130,8 +118,9 @@
       <div id="rd-lm-warn" class="rd-lm-warn" hidden>📍 برای دیدن آگهی‌های اطراف، لوکیشن (GPS) دستگاه را روشن کن و اجازه دسترسی بده.</div>
       <h3>موقعیت جستجو</h3>
       <div class="rd-lm-chips" id="rd-lm-chips"></div>
-      <div class="rd-lm-row"><input class="rd-in" id="rd-lm-in" type="text" placeholder="نام شهر یا روستا، مثلاً اهواز" onkeydown="if(event.key==='Enter')rdAddCity()"><button type="button" class="rd-main" onclick="rdAddCity()">افزودن</button></div>
-      <small>می‌توانی چند شهر را با هم اضافه کنی.</small>
+      <select class="rd-in" id="rd-lm-prov" onchange="rdProvPick(this.value)"></select>
+      <div class="rd-lm-cities" id="rd-lm-cities"></div>
+      <small>می‌توانی چند شهر را از استان‌های مختلف انتخاب کنی.</small>
       <div class="rd-lm-row"><button type="button" class="rd-ghost" onclick="rdAutoLocate(true)">🎯 پیدا کردن خودکار با GPS</button><button type="button" class="rd-main" onclick="rdLocPanel(false)">تأیید</button></div>
     </div></div>
     <!-- صفحه اول: رادار -->
@@ -149,7 +138,7 @@
     <!-- زیرصفحه: فرم -->
     <div class="rd-step" id="rd-s1" hidden>
       <button type="button" class="rd-back" onclick="rdShow(0)">‹ بازگشت</button>
-      <div class="rd-pos" onclick="rdLocPanel(true)"><span>موقعیت:</span> <b class="rd-pos-t">در حال یافتن…</b> <u>تغییر</u></div>
+      <div class="rd-pos" onclick="rdLocPanel(true)">موقعیت: <b class="rd-pos-t">در حال یافتن…</b></div>
       <h2 class="rd-h">کجا دنبال می‌گردی؟</h2>
       <div id="rd-map" class="rd-map"></div>
       <h2 class="rd-h">چه چیزی لازم داری؟</h2>
