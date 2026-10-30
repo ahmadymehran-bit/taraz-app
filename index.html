@@ -108,9 +108,15 @@
 <section class="screen" id="screen-browse">
   <div class="rd" id="rd">
     <header class="modern-header">
-      <div class="mh-profile" onclick="go('profile')"><div class="mh-avatar" id="bz-avatar"></div></div>
-      <div class="mh-brand" onclick="go('home')"><span class="mh-title">رادار</span></div>
-      <div class="mh-bell" onclick="go('notifs')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e0b04a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="bell-badge" id="bz-bell-badge"></span></div>
+    <div class="mh-profile" onclick="go('profile')">
+      <div class="mh-avatar" id="rd-h-avatar"></div>
+      <div class="mh-info">
+        <div class="mh-name" id="rd-h-name">کاربر</div>
+        <div class="mh-meta"><span id="rd-h-role">شغل</span><span class="star">★ <span id="rd-h-rating">۰</span></span></div>
+      </div>
+    </div>
+    <div class="mh-brand" onclick="scrollToTop()"><span class="mh-title">تاراز</span></div>
+    <div class="mh-bell" id="rd-h-bell" onclick="go('notifs')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e0b04a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="bell-badge" id="rd-h-badge"></span></div>
     </header>
     <!-- صفحه اول: رادار -->
     <div class="rd-step rd-home" id="rd-s0">

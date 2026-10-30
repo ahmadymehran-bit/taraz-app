@@ -297,6 +297,14 @@ let servicesStep=1;
 let servicesCurrentService=null;
 let servicesCurrentType=null;
 
+/* هدر صفحه رادار: همان هدر صفحه اول */
+function rdSyncHeader(){
+  var m=function(id){return document.getElementById(id)};
+  var a=m('header-avatar'),b=m('rd-h-avatar');
+  if(a&&b){b.innerHTML=a.innerHTML;b.className=a.className;b.style.cssText=a.style.cssText;}
+  var pairs=[['header-user-name','rd-h-name'],['header-user-role','rd-h-role'],['header-user-rating','rd-h-rating'],['bell-badge','rd-h-badge']];
+  pairs.forEach(function(p){var x=m(p[0]),y=m(p[1]);if(x&&y){y.textContent=x.textContent;y.className=x.className;}});
+}
 /* HEADER AVATARS */
 async function renderHeaderAvatars(){
   const u = DB.user;
@@ -319,6 +327,7 @@ async function renderHeaderAvatars(){
   // امتیاز
   const ratingEl = document.getElementById('header-user-rating');
   if (ratingEl) ratingEl.textContent = r.count > 0 ? faDigits(r.avg.toFixed(1)) : '۰';
+  rdSyncHeader();
 }
 
 /* NOTIFICATIONS */
@@ -329,6 +338,7 @@ var result=null; try{result=await api.getNotifications(u.phone)}catch(e){}
 var unread=0;
 if(result&&result.notifications){ unread=result.notifications.filter(function(n){return !n.read}).length; } else { unread=DB.notifications.filter(function(n){return !n.read}).length; }
 badge.textContent=faDigits(unread); badge.classList.toggle('show',unread>0);
+rdSyncHeader();
 }
 var _favoritesCache = [];
 async function loadFavorites(){
@@ -2516,7 +2526,7 @@ function rdTickerStart(){
     if(!g('rd-tk-n'))return; g('rd-tk-n').textContent=t[0]; g('rd-tk-p').textContent=Number(t[1]).toLocaleString('fa-IR'); g('rd-tk-u').textContent=t[2]};
   f();_rd.tick=setInterval(f,5000);
 }
-function renderRadar(){
+function renderRadar(){ rdSyncHeader();
   rdStop(); rdShow(0); rdTickerStart(); rdBindSound();
   if(_rd.locs&&_rd.locs.length)rdPosUpdate(); else rdAutoLocate();
   if(!_rd.map&&window.L){
