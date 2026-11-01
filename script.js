@@ -1066,11 +1066,26 @@ var body = document.getElementById('chatlist-body'); if(!body) return;
 if(!convs.length){ body.innerHTML = '<div class="empty"><span class="emoji">💬</span>گفتگویی نیست</div>'; return; }
 body.innerHTML = convs.map(function(c){ var isSeller = u.phone === c.sellerPhone; var otherName = isSeller ? c.buyerName : c.sellerName; var msgs = DB.messages.filter(function(m){ return m.convId === c.id; }).sort(function(a,b){ return a.createdAt - b.createdAt; }); var last = msgs[msgs.length - 1]; var _sn=_seenMap()[c.id]||0; var unread = msgs.filter(function(m){ return m.fromPhone !== u.phone && m.createdAt > _sn; }).length; var preview = last ? ((last.fromPhone === u.phone ? 'شما: ' : '') + (last.text.length > 40 ? last.text.slice(0,40) + '…' : last.text)) : 'شروع گفتگو'; return '<div class="conv-card" onclick="openChat(\'' + c.id + '\')"><div class="conv-avatar">' + initials(otherName) + '</div><div class="conv-main"><div class="conv-name"><span>' + esc(otherName) + '</span><span class="conv-time">' + timeAgo(c.lastMessageAt) + '</span></div><div class="conv-preview">' + esc(preview) + '</div></div>' + (unread ? '<span class="unread-badge">' + faDigits(unread) + '</span>' : '') + '</div>'; }).join('');
 }
-async function deleteChatMessage(id){
-  if(!confirm('این پیام حذف شود؟')) return;
-  var r = await api.deleteMessage(id);
-  if(r && r.ok){ DB.messages = DB.messages.filter(function(x){ return x.id !== id; }); renderChat(); }
-  else toast((r && r.error) || 'حذف نشد');
+var _selMsgs = {}; var _selMode = false;
+function startMsgSel(){ _selMode = !_selMode; if(!_selMode){ clearMsgSel(); return; } updateSelBar(); toast('پیام‌های خودتان را لمس کنید'); }
+function toggleMsgSel(id){ if(_selMsgs[id]) delete _selMsgs[id]; else _selMsgs[id]=1; var els=document.querySelectorAll('#chat-body .msg.selectable'); els.forEach(function(el){ var oc=el.getAttribute('onclick')||''; var mm=oc.match(/'([^']+)'/); if(mm) el.classList.toggle('selected', !!_selMsgs[mm[1]]); }); updateSelBar(); }
+function clearMsgSel(){ _selMsgs = {}; _selMode = false; document.querySelectorAll('#chat-body .msg.selected').forEach(function(el){ el.classList.remove('selected'); }); updateSelBar(); }
+function updateSelBar(){
+  var n = Object.keys(_selMsgs).length; var bar = document.getElementById('chat-sel-bar');
+  if(!n && !_selMode){ if(bar) bar.style.display='none'; return; }
+  if(!bar){ bar = document.createElement('div'); bar.id='chat-sel-bar'; bar.className='chat-sel-bar'; var body=document.getElementById('chat-body'); body.parentNode.insertBefore(bar, body); }
+  bar.style.display='flex';
+  bar.innerHTML = '<button type="button" class="sel-cancel" onclick="clearMsgSel()">✕ لغو</button><span>' + (n ? faDigits(String(n)) + ' پیام انتخاب شد' : 'پیام‌ها را انتخاب کنید') + '</span><button type="button" class="sel-del" onclick="deleteSelectedMsgs()">🗑 حذف</button>';
+}
+async function deleteSelectedMsgs(){
+  var ids = Object.keys(_selMsgs); if(!ids.length) return;
+  if(!confirm(faDigits(String(ids.length)) + ' پیام حذف شود؟')) return;
+  var res = await Promise.all(ids.map(function(id){ return api.deleteMessage(id).then(function(r){ return { id: id, ok: !!(r && r.ok) }; }).catch(function(){ return { id: id, ok: false }; }); }));
+  var okIds = res.filter(function(x){ return x.ok; }).map(function(x){ return x.id; });
+  DB.messages = DB.messages.filter(function(x){ return okIds.indexOf(x.id) < 0; });
+  _selMsgs = {}; _selMode = false; updateSelBar();
+  if(okIds.length < ids.length) toast('حذف بعضی پیام‌ها انجام نشد');
+  renderChat();
 }
 async function renderChat(){
 var u = DB.user; if(!u || !currentConvId) return;
@@ -1088,9 +1103,10 @@ var body = document.getElementById('chat-body'); if(!body) return;
 if(!thread.length){ body.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:15px;padding:50px 20px">اولین پیام را بفرست</div>'; }
 else {
 var html = ''; var lastDay = '';
-thread.forEach(function(m){ var d = new Date(m.createdAt); var dayStr = faDigits(d.toLocaleDateString('fa-IR')); if(dayStr !== lastDay){ html += '<div class="chat-day">' + dayStr + '</div>'; lastDay = dayStr; } var mine = m.fromPhone === u.phone; var t = new Date(m.createdAt); var hh = faDigits(String(t.getHours()).padStart(2,'0')); var mm = faDigits(String(t.getMinutes()).padStart(2,'0')); html += '<div class="msg ' + (mine ? 'me' : 'them') + '">' + (mine ? '<button type="button" class="msg-del" aria-label="حذف پیام" onclick="deleteChatMessage(\'' + m.id + '\')">🗑</button>' : '') + esc(m.text) + '<span class="msg-time">' + hh + ':' + mm + '</span></div>'; });
+thread.forEach(function(m){ var d = new Date(m.createdAt); var dayStr = faDigits(d.toLocaleDateString('fa-IR')); if(dayStr !== lastDay){ html += '<div class="chat-day">' + dayStr + '</div>'; lastDay = dayStr; } var mine = m.fromPhone === u.phone; var t = new Date(m.createdAt); var hh = faDigits(String(t.getHours()).padStart(2,'0')); var mm = faDigits(String(t.getMinutes()).padStart(2,'0')); html += '<div class="msg ' + (mine ? 'me' : 'them') + (mine ? ' selectable' : '') + (_selMsgs[m.id] ? ' selected' : '') + '"' + (mine ? ' onclick="toggleMsgSel(\'' + m.id + '\')"' : '') + '>' + esc(m.text) + '<span class="msg-time">' + hh + ':' + mm + '</span></div>'; });
 body.innerHTML = html;
 }
+updateSelBar();
 setTimeout(function(){ body.scrollTop = body.scrollHeight; }, 50); markConvSeen(c.id); updateChatBadge(); markConvNotifsRead(c.id, u.phone);
 chatChannelFor(c.id, u.phone);
 chatDealRefresh(c, otherName);

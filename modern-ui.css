@@ -2126,3 +2126,12 @@ html, body, *, *::before, *::after { scrollbar-width: none !important; -ms-overf
 
 .msg-del{background:none;border:0;cursor:pointer;font-size:13px;opacity:.55;padding:0 4px;margin-inline-end:6px}
 .msg-del:hover{opacity:1}
+
+.msg.selectable{cursor:pointer}
+.msg.selected{outline:3px solid #e0a82e;box-shadow:0 0 0 4px rgba(224,168,46,.3)}
+.chat-sel-bar{align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;background:#fff8e1;border-bottom:1px solid var(--line);font-weight:800;font-size:15px}
+.chat-sel-bar button{border:0;border-radius:12px;padding:10px 16px;font-size:15px;font-weight:800;cursor:pointer}
+.chat-sel-bar .sel-del{background:#c62828;color:#fff}
+.chat-sel-bar .sel-cancel{background:#fff;border:1px solid var(--line)}
+
+.chat-del-btn{margin-inline-start:auto;border:0;border-radius:12px;padding:10px 14px;background:#fff8e1;color:#c62828;font-weight:800;font-size:15px;cursor:pointer;white-space:nowrap}
