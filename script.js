@@ -530,17 +530,9 @@ var newPass2 = prompt('تکرار پسورد جدید:'); if(newPass2 !== newPas
 var recoverResult = null; try { recoverResult = await api.recoverPassword(phone, answer, newPass); } catch(e){}
 if(recoverResult && recoverResult.ok){ toast('✓ پسورد بازیابی شد، حالا وارد شو'); } else if(recoverResult && recoverResult.error){ toast(recoverResult.error); } else { toast('خطا در بازیابی'); }
 }
-async function doLogin(){
-var phone=document.getElementById('auth-phone').value.trim(); var name=document.getElementById('auth-name').value.trim(); var role=document.getElementById('auth-role').value;
-if(!/^09\d{9}$/.test(phone)){toast('شماره معتبر وارد کنید');return}
-if(name.length<3){toast('نام را وارد کنید');return}
-var result = await api.login(phone, name, role, null);
-var prev=DB.user; var sameUser=!!(prev&&prev.phone===phone);
-var newAvatar=(result&&result.user&&result.user.avatar)||(sameUser&&prev.avatar)||null;
-DB.user={phone:phone,name:name,role:role,avatar:newAvatar,joinedAt:Date.now()};
-var roles=DB.userRoles; if(!roles[phone])roles[phone]=[]; if(roles[phone].indexOf(role)<0)roles[phone].push(role); DB.userRoles=roles;
-if(result && result.user){ toast('✓ خوش آمدید '+name); } else { toast('⚠ سرور پاسخ نداد، حالت محلی'); }
-go('home');
+/* ورود بدون رمز حذف شد (سرور strict است و بدون توکن کار نمی‌کند) */
+function doLogin(){
+toast('برای ورود شماره و پسورد را وارد کن');
 }
 
 /* مودال حذف حساب */
