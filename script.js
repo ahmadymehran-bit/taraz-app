@@ -1066,6 +1066,12 @@ var body = document.getElementById('chatlist-body'); if(!body) return;
 if(!convs.length){ body.innerHTML = '<div class="empty"><span class="emoji">💬</span>گفتگویی نیست</div>'; return; }
 body.innerHTML = convs.map(function(c){ var isSeller = u.phone === c.sellerPhone; var otherName = isSeller ? c.buyerName : c.sellerName; var msgs = DB.messages.filter(function(m){ return m.convId === c.id; }).sort(function(a,b){ return a.createdAt - b.createdAt; }); var last = msgs[msgs.length - 1]; var _sn=_seenMap()[c.id]||0; var unread = msgs.filter(function(m){ return m.fromPhone !== u.phone && m.createdAt > _sn; }).length; var preview = last ? ((last.fromPhone === u.phone ? 'شما: ' : '') + (last.text.length > 40 ? last.text.slice(0,40) + '…' : last.text)) : 'شروع گفتگو'; return '<div class="conv-card" onclick="openChat(\'' + c.id + '\')"><div class="conv-avatar">' + initials(otherName) + '</div><div class="conv-main"><div class="conv-name"><span>' + esc(otherName) + '</span><span class="conv-time">' + timeAgo(c.lastMessageAt) + '</span></div><div class="conv-preview">' + esc(preview) + '</div></div>' + (unread ? '<span class="unread-badge">' + faDigits(unread) + '</span>' : '') + '</div>'; }).join('');
 }
+async function deleteChatMessage(id){
+  if(!confirm('این پیام حذف شود؟')) return;
+  var r = await api.deleteMessage(id);
+  if(r && r.ok){ DB.messages = DB.messages.filter(function(x){ return x.id !== id; }); renderChat(); }
+  else toast((r && r.error) || 'حذف نشد');
+}
 async function renderChat(){
 var u = DB.user; if(!u || !currentConvId) return;
 var c = DB.conversations.find(function(x){ return x.id === currentConvId; }); if(!c){ go('chatlist'); return; }
@@ -1082,7 +1088,7 @@ var body = document.getElementById('chat-body'); if(!body) return;
 if(!thread.length){ body.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:15px;padding:50px 20px">اولین پیام را بفرست</div>'; }
 else {
 var html = ''; var lastDay = '';
-thread.forEach(function(m){ var d = new Date(m.createdAt); var dayStr = faDigits(d.toLocaleDateString('fa-IR')); if(dayStr !== lastDay){ html += '<div class="chat-day">' + dayStr + '</div>'; lastDay = dayStr; } var mine = m.fromPhone === u.phone; var t = new Date(m.createdAt); var hh = faDigits(String(t.getHours()).padStart(2,'0')); var mm = faDigits(String(t.getMinutes()).padStart(2,'0')); html += '<div class="msg ' + (mine ? 'me' : 'them') + '">' + esc(m.text) + '<span class="msg-time">' + hh + ':' + mm + '</span></div>'; });
+thread.forEach(function(m){ var d = new Date(m.createdAt); var dayStr = faDigits(d.toLocaleDateString('fa-IR')); if(dayStr !== lastDay){ html += '<div class="chat-day">' + dayStr + '</div>'; lastDay = dayStr; } var mine = m.fromPhone === u.phone; var t = new Date(m.createdAt); var hh = faDigits(String(t.getHours()).padStart(2,'0')); var mm = faDigits(String(t.getMinutes()).padStart(2,'0')); html += '<div class="msg ' + (mine ? 'me' : 'them') + '">' + (mine ? '<button type="button" class="msg-del" aria-label="حذف پیام" onclick="deleteChatMessage(\'' + m.id + '\')">🗑</button>' : '') + esc(m.text) + '<span class="msg-time">' + hh + ':' + mm + '</span></div>'; });
 body.innerHTML = html;
 }
 setTimeout(function(){ body.scrollTop = body.scrollHeight; }, 50); markConvSeen(c.id); updateChatBadge(); markConvNotifsRead(c.id, u.phone);
@@ -1196,7 +1202,7 @@ async function submitRating(){
   if(!ratingTarget)return; if(!ratingScore){toast('امتیاز بده');return}
   const u=DB.user; if(!u)return;
   const resR=await api.createRating({id:'Rt'+Date.now(),fromPhone:u.phone,fromName:u.name,toPhone:ratingTarget.toPhone,score:ratingScore,comment:document.getElementById('rating-comment').value.trim()});
-  if(!resR||!resR.ok){toast('خطا در ثبت امتیاز. دوباره وارد شوید'); return}
+  if(!resR||!resR.ok){toast(resR&&resR.status===401?'نشست تمام شده؛ خارج و دوباره وارد شوید':'ثبت امتیاز ناموفق ('+(resR&&resR.status||0)+'): '+((resR&&resR.error)||'')); return}
   toast('✓ امتیاز شما ثبت شد'); closeRating(); renderProfile();
 }
 document.querySelectorAll('#rating-stars .star-btn').forEach(btn=>{ btn.addEventListener('click',()=>{ ratingScore=Number(btn.dataset.v); document.querySelectorAll('#rating-stars .star-btn').forEach(s=>s.classList.toggle('on',Number(s.dataset.v)<=ratingScore)); const l=['','خیلی بد','بد','متوسط','خوب','عالی']; document.getElementById('rating-label').textContent=l[ratingScore]; }); });
@@ -2189,8 +2195,16 @@ var api = {
     return Object.assign({ ok: true }, data || {});
   },
   getMessages: async function(convId){ return this._fetch('/api/messages/' + encodeURIComponent(convId)); },
+  deleteMessage: async function(id){ return this._fetch('/api/messages/' + encodeURIComponent(id), { method: 'DELETE' }); },
   confirmDeal: async function(convId){ return this._fetch('/api/conversations/' + encodeURIComponent(convId) + '/deal', { method: 'POST', body: '{}' }); },
-  createRating: async function(r){ return this._fetch('/api/ratings', { method: 'POST', body: JSON.stringify(r) }); },
+  createRating: async function(r){
+    try {
+      var tk = null; try { tk = localStorage.getItem('taraz.token'); } catch (e) {}
+      var res = await fetch(API_BASE + '/api/ratings', { method: 'POST', cache: 'no-store', headers: Object.assign({ 'Content-Type': 'application/json' }, tk ? { Authorization: 'Bearer ' + tk } : {}), body: JSON.stringify(r) });
+      var d = {}; try { d = await res.json(); } catch (e) {}
+      return Object.assign({}, d, { ok: res.ok, status: res.status });
+    } catch (e) { return { ok: false, status: 0, error: 'اتصال به سرور برقرار نشد' }; }
+  },
   getRatings: async function(phone){ return this._fetch('/api/ratings/' + encodeURIComponent(phone)); },
   createMission: async function(m){ return this._fetch('/api/missions', { method: 'POST', body: JSON.stringify(m) }); },
   getMissions: async function(phone){ return this._fetch('/api/missions/' + encodeURIComponent(phone)); },

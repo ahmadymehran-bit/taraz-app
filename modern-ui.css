@@ -2123,3 +2123,6 @@ html, body, *, *::before, *::after { scrollbar-width: none !important; -ms-overf
 #rd-s1 .rd-main{background:var(--gold);color:var(--forest)}
 #rd-s1 .rd-main .rd-ic svg{stroke:var(--forest)}
 #rd-s1 .rd-back{color:var(--gold)}
+
+.msg-del{background:none;border:0;cursor:pointer;font-size:13px;opacity:.55;padding:0 4px;margin-inline-end:6px}
+.msg-del:hover{opacity:1}
