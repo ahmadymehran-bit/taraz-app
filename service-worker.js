@@ -1,16 +1,17 @@
 /* تاراز - Service Worker (نسخه ۲)
    استراتژی: شبکه اول (همیشه آخرین نسخه)، اگر آفلاین بود از کش استفاده می‌شود.
    /api/ و دامنه‌های خارجی کش نمی‌شوند. */
-var CACHE_NAME = 'taraz-v42';
+var CACHE_NAME = 'taraz-v43';
 var PRECACHE = ['./', './index.html', './manifest.json', './offline.html', './icons/icon-192.png'];
 
 self.addEventListener('install', function(event){
 event.waitUntil(
 caches.open(CACHE_NAME).then(function(cache){
-return cache.addAll(PRECACHE).catch(function(e){ console.warn(e); });
-})
+return Promise.all(PRECACHE.map(function(u){
+return cache.add(u).catch(function(e){ console.warn('precache skip', u, e); });
+}));
+}).then(function(){ return self.skipWaiting(); })
 );
-self.skipWaiting();
 });
 
 self.addEventListener('activate', function(event){

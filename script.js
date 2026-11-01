@@ -2242,60 +2242,6 @@ window.addEventListener('load', function () {
 })();
 
 
-/* ===== بازار دام زنده (نمایشی؛ بدون اتصال به سرور) ===== */
-var BZ={cat:'calf',scope:'city',place:'قم',count:5,w:250,lot:null,
-cats:{calf:{t:'گوساله',i:'🐮',img:'image/bz-calf-v2.webp',p:320000,lo:310000,hi:330000,c:5,cs:1,w:250,ws:10,u:'رأس'},
-cow:{t:'گاو',i:'🐄',img:'image/bz-cow.webp',p:280000,lo:270000,hi:290000,c:2,cs:1,w:500,ws:10,u:'رأس'},
-sheep:{t:'گوسفند',i:'🐑',img:'image/bz-sheep.webp',p:320000,lo:300000,hi:340000,c:20,cs:5,w:55,ws:5,u:'رأس'},
-lamb:{t:'بره',i:'🐏',img:'image/bz-lamb-v2.webp',p:360000,lo:350000,hi:370000,c:20,cs:5,w:30,ws:5,u:'رأس'},
-bird:{t:'طیور',i:'🐓',img:'image/bz-bird.webp',p:95000,lo:90000,hi:100000,c:200,cs:50,w:2.5,ws:.5,u:'قطعه'},
-agri:{t:'محصولات کشاورزی',i:'🌱',img:'image/wheat-stalks.webp',p:14000,lo:13000,hi:15000,c:10,cs:1,w:1000,ws:0,u:'تن'}},
-places:{city:['قم','تهران','اصفهان','مشهد','شیراز','تبریز'],prov:['قم','تهران','اصفهان','خراسان رضوی','فارس','آذربایجان شرقی'],mine:['قم']}};
-var BZ_TICK=[['گوساله پرواری (زنده)',320000,'تومان/کیلو'],['جوجه یک‌روزه',28000,'تومان/قطعه'],['ذرت دانه‌ای',16500,'تومان/کیلو'],['گندم',14000,'تومان/کیلو']],bzTi=0,bzTimer=null;
-function bzTick(){var t=BZ_TICK[bzTi%BZ_TICK.length];bzTi++;var n=bzG('bz-tk-n');if(!n)return;n.textContent=t[0];bzG('bz-tk-p').textContent=bzFa(t[1]);bzG('bz-tk-u').textContent=t[2];bzG('bz-tk-s').textContent='نمونه نمایشی · منبع: itpnews.ir'}
-function bzLocate(){var n=bzG('bz-locname');if(!navigator.geolocation){toast('مرورگر موقعیت‌یاب ندارد');return}
-  n.textContent='در حال تشخیص…';
-  navigator.geolocation.getCurrentPosition(function(p){
-    fetch('https://nominatim.openstreetmap.org/reverse?format=json&accept-language=fa&zoom=10&lat='+p.coords.latitude+'&lon='+p.coords.longitude).then(function(r){return r.json()}).then(function(j){
-      var a=j.address||{},c=a.city||a.town||a.county||a.state||'';if(!c)throw 0;
-      if(BZ.places.city.indexOf(c)<0)BZ.places.city.unshift(c);BZ.scope='city';BZ.place=c;renderBazaar()}).catch(function(){n.textContent=BZ.place;toast('شهر تشخیص داده نشد؛ دستی انتخاب کنید')})
-  },function(){n.textContent=BZ.place;toast('اجازه موقعیت داده نشد؛ دستی انتخاب کنید')},{timeout:8000})}
-function bzFa(n){return Number(n).toLocaleString('fa-IR')}
-function bzG(i){return document.getElementById(i)}
-function bzCat(k){BZ.cat=k;var c=BZ.cats[k];BZ.count=c.c;BZ.w=c.w;renderBazaar()}
-function bzScope(s){BZ.scope=s;var l=BZ.places[s];BZ.place=l[0];renderBazaar()}
-function bzPlace(v){BZ.place=v;renderBazaar()}
-function bzStep(f,d){var c=BZ.cats[BZ.cat];if(f==='count')BZ.count=Math.max(c.cs,BZ.count+d*c.cs);else if(c.ws)BZ.w=Math.max(c.ws,+(BZ.w+d*c.ws).toFixed(1));bzSum()}
-function bzSum(){var c=BZ.cats[BZ.cat],ag=BZ.cat==='agri',tw=ag?BZ.count*1000:BZ.count*BZ.w;
-  bzG('bz-count').textContent=bzFa(BZ.count);bzG('bz-w').textContent=bzFa(BZ.w);
-  bzG('bz-tw').textContent=bzFa(tw)+' کیلو';bzG('bz-tp').textContent=bzFa(Math.round(tw*c.p))+' تومان'}
-function bzFind(){var e=bzG('bz-sellers-h');if(e)e.scrollIntoView({behavior:'smooth',block:'start'})}
-function renderBazaar(){
-  try{var _a=document.getElementById('header-avatar'),_b=document.getElementById('bz-avatar');if(_a&&_b)_b.innerHTML=_a.innerHTML;_b.style.cssText=_a.style.cssText;_b.className=_a.className;var _c=document.getElementById('bell-badge'),_d=document.getElementById('bz-bell-badge');if(_c&&_d){_d.className=_c.className;_d.textContent=_c.textContent;}}catch(e){}
-  if(!bzTimer){bzTick();bzTimer=setInterval(bzTick,5000)}
-  if(!bzG('bz-cats'))return;var c=BZ.cats[BZ.cat],ag=BZ.cat==='agri',pl=BZ.places[BZ.scope];
-  bzG('bz-cats').innerHTML=Object.keys(BZ.cats).map(function(k){var x=BZ.cats[k];return '<option value="'+k+'"'+(k===BZ.cat?' selected':'')+'>'+x.i+' '+x.t+'</option>'}).join('');
-  var ln=bzG('bz-locname');if(ln)ln.textContent=BZ.place;
-  bzG('bz-btitle').textContent='🛒 خرید '+c.t;bzG('bz-thumb').src=c.img;bzG('bz-cu').textContent=c.u;bzG('bz-wbox').style.display=ag?'none':'';
-  bzG('bz-near').textContent='📍 فروشندگان نزدیک '+BZ.place;bzSum();
-  var asks='',bids='';
-  for(var i=0;i<5;i++){asks+='<div class="bz-row ask"><span>'+bzFa(c.p+(5-i)*2000)+'</span><span>'+bzFa(10+i*14)+'</span></div>';bids+='<div class="bz-row bid"><span>'+bzFa(c.p-(i+1)*2000)+'</span><span>'+bzFa(20+i*9)+'</span></div>'}
-  bzG('bz-asks').innerHTML=asks;bzG('bz-bids').innerHTML=bids;
-  var only=bzG('bz-cert').checked,h='',d=[[4.8,1,0],[4.6,1,.03],[4.2,0,-.02]];
-  BZ.sellers=d.map(function(x,i){var f=c.cs*(ag?3:8)*(i+1);return {n:'فروشنده '+(x[1]?'تأییدشده ':'')+bzFa(i+1),r:x[0],c:x[1],lo:Math.round(c.lo*(1+x[2])/1000)*1000,hi:Math.round(c.hi*(1+x[2])/1000)*1000,q:f,w:c.w,p:Math.round(c.p*(1+x[2])/1000)*1000}});
-  BZ.sellers.forEach(function(l,i){if(only&&!l.c)return;
-    h+='<div class="bz-lot"><div class="bz-av"><img src="'+c.img+'" alt=""></div><div class="bz-li"><b>'+l.n+(l.c?' <span class="bz-ok">✔</span>':' <span class="bz-no">بدون گواهی</span>')+'</b><div class="bz-lm">★ '+bzFa(l.r)+' · 📍 '+BZ.place+'</div></div><div class="bz-lp"><strong>'+bzFa(l.lo)+' — '+bzFa(l.hi)+'</strong><small>تومان / کیلو</small></div><button onclick="bzOpen('+i+')">‹ جزئیات</button></div>'});
-  bzG('bz-lots').innerHTML=h||'<p class="bz-empty">فروشنده‌ای با این فیلتر پیدا نشد.</p>';
-}
-function bzOpen(i){var l=BZ.lot=BZ.sellers[i],c=BZ.cats[BZ.cat];bzG('bz-st').textContent=l.n+' — '+c.t;
-  bzG('bz-sm').textContent=BZ.place+' · گله '+bzFa(l.q)+' '+c.u+' · '+(l.c?'دارای گواهی سلامت':'بدون گواهی سلامت');
-  bzG('bz-pct').value=Math.min(100,Math.max(10,Math.round(BZ.count/l.q*10)*10));bzCalc();bzG('bz-sheet').hidden=false}
-function bzClose(){bzG('bz-sheet').hidden=true}
-function bzCalc(){var l=BZ.lot;if(!l)return;var ag=BZ.cat==='agri',p=+bzG('bz-pct').value,n=Math.max(1,Math.round(l.q*p/100)),tot=n*(ag?1000:l.w)*l.p;
-  bzG('bz-pv').textContent=bzFa(p)+'٪ ('+bzFa(n)+' '+BZ.cats[BZ.cat].u+')';
-  bzG('bz-sum').innerHTML='<div><span>مبلغ کل</span><b>'+bzFa(tot)+' تومان</b></div><div><span>بیعانه (۲۰٪)</span><b>'+bzFa(Math.round(tot*.2))+' تومان</b></div><div><span>باقی‌مانده نقدی هنگام تحویل</span><b>'+bzFa(Math.round(tot*.8))+' تومان</b></div>'}
-function bzOrder(){bzClose();toast('نمایشی: ثبت سفارش هنوز به سرور وصل نیست')}
-
 // ── تم پروفایل بر اساس نقش کاربر (تصویر و رنگ هدر) ──
 var PROFILE_ROLE_THEMES = {
   'دامدار':   { img: 'image/profile-dam-fixed2.webp', pos: 'center 72%', label: 'توسعه دامداری' },

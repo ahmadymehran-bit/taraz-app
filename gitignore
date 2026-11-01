@@ -1,0 +1,6 @@
+.env
+.env.*
+node_modules
+*.bak
+backup/
+server.new.js
