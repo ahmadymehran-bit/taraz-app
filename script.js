@@ -535,8 +535,9 @@ var phone=document.getElementById('auth-phone').value.trim(); var name=document.
 if(!/^09\d{9}$/.test(phone)){toast('شماره معتبر وارد کنید');return}
 if(name.length<3){toast('نام را وارد کنید');return}
 var result = await api.login(phone, name, role, null);
-if(result && result.user && result.user.avatar){ DB.user.avatar = result.user.avatar; }
-var prev=DB.user; DB.user={phone:phone,name:name,role:role,avatar:prev&&prev.avatar?prev.avatar:null,joinedAt:Date.now()};
+var prev=DB.user; var sameUser=!!(prev&&prev.phone===phone);
+var newAvatar=(result&&result.user&&result.user.avatar)||(sameUser&&prev.avatar)||null;
+DB.user={phone:phone,name:name,role:role,avatar:newAvatar,joinedAt:Date.now()};
 var roles=DB.userRoles; if(!roles[phone])roles[phone]=[]; if(roles[phone].indexOf(role)<0)roles[phone].push(role); DB.userRoles=roles;
 if(result && result.user){ toast('✓ خوش آمدید '+name); } else { toast('⚠ سرور پاسخ نداد، حالت محلی'); }
 go('home');
