@@ -2135,3 +2135,7 @@ html, body, *, *::before, *::after { scrollbar-width: none !important; -ms-overf
 .chat-sel-bar .sel-cancel{background:#fff;border:1px solid var(--line)}
 
 .chat-del-btn{margin-inline-start:auto;border:0;border-radius:12px;padding:10px 14px;background:#fff8e1;color:#c62828;font-weight:800;font-size:15px;cursor:pointer;white-space:nowrap}
+
+.conv-card.selected{outline:3px solid #f5c542;background:#fff8e1}
+.conv-chk{width:28px;height:28px;border-radius:50%;border:2px solid #f5c542;display:inline-flex;align-items:center;justify-content:center;font-weight:900;color:#c62828;background:#fff;flex-shrink:0;margin-inline-end:8px}
+#screen-chatlist .sub-header .chat-del-btn{margin-inline-start:auto}

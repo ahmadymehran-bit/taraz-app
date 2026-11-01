@@ -1055,6 +1055,16 @@ if(c && isFirstReq) notifySellerRequest(c.id, sellerPhone, listing.title, u.name
 if(c) openChat(c.id);
 }
 function openChat(convId){ currentConvId = convId; go('chat'); }
+var _convSel = {}; var _convSelMode = false;
+function convCardClick(id){ if(!_convSelMode){ openChat(id); return; } if(_convSel[id]) delete _convSel[id]; else _convSel[id]=1; renderChatList(); }
+function startConvSel(){ _convSelMode = !_convSelMode; _convSel = {}; renderChatList(); }
+function updateConvBar(){ var bar=document.getElementById('cl-sel-bar'); if(!bar) return; if(!_convSelMode){ bar.style.display='none'; return; } var n=Object.keys(_convSel).length; bar.style.display='flex'; bar.innerHTML='<button type="button" class="sel-cancel" onclick="startConvSel()">✕ لغو</button><span>'+(n?faDigits(String(n))+' گفتگو انتخاب شد':'گفتگوها را انتخاب کنید')+'</span><button type="button" class="sel-del" onclick="deleteSelectedConvs()">🗑 حذف</button>'; }
+async function deleteSelectedConvs(){ var ids=Object.keys(_convSel); if(!ids.length){ toast('گفتگویی انتخاب نشده'); return; } if(!confirm(faDigits(String(ids.length))+' گفتگو با همه پیام‌ها حذف شود؟')) return;
+  var res=await Promise.all(ids.map(function(id){ return api.deleteConversation(id).then(function(r){ return {id:id,ok:!!(r&&r.ok)}; }).catch(function(){ return {id:id,ok:false}; }); }));
+  var ok=res.filter(function(x){return x.ok;}).map(function(x){return x.id;});
+  DB.messages=DB.messages.filter(function(m){ return ok.indexOf(m.convId)<0; }); DB.conversations=DB.conversations.filter(function(c){ return ok.indexOf(c.id)<0; });
+  if(ok.length<ids.length) toast('حذف بعضی گفتگوها انجام نشد');
+  _convSel={}; _convSelMode=false; renderChatList(); }
 async function renderChatList(){
 var u = DB.user; if(!u) return;
 var result = null; try { result = await api.getConversations(u.phone); } catch(e) { }
@@ -1062,9 +1072,9 @@ var convs = [];
 if(result && result.conversations){ convs = result.conversations.map(function(c){ return { id: c.id, listingId: c.listing_id || c.listingId, listingTitle: c.listing_title || c.listingTitle, buyerPhone: c.buyer_phone || c.buyerPhone, buyerName: c.buyer_name || c.buyerName, sellerPhone: c.seller_phone || c.sellerPhone, sellerName: c.seller_name || c.sellerName, createdAt: Number(c.created_at || c.createdAt), lastMessageAt: Number(c.last_message_at || c.lastMessageAt) || Number(c.created_at || c.createdAt) }; }); }
 else { convs = DB.conversations.filter(function(c){ return c.buyerPhone === u.phone || c.sellerPhone === u.phone; }); }
 convs.sort(function(a,b){ return b.lastMessageAt - a.lastMessageAt; });
-var body = document.getElementById('chatlist-body'); if(!body) return;
+var body = document.getElementById('chatlist-body'); if(!body) return; updateConvBar();
 if(!convs.length){ body.innerHTML = '<div class="empty"><span class="emoji">💬</span>گفتگویی نیست</div>'; return; }
-body.innerHTML = convs.map(function(c){ var isSeller = u.phone === c.sellerPhone; var otherName = isSeller ? c.buyerName : c.sellerName; var msgs = DB.messages.filter(function(m){ return m.convId === c.id; }).sort(function(a,b){ return a.createdAt - b.createdAt; }); var last = msgs[msgs.length - 1]; var _sn=_seenMap()[c.id]||0; var unread = msgs.filter(function(m){ return m.fromPhone !== u.phone && m.createdAt > _sn; }).length; var preview = last ? ((last.fromPhone === u.phone ? 'شما: ' : '') + (last.text.length > 40 ? last.text.slice(0,40) + '…' : last.text)) : 'شروع گفتگو'; return '<div class="conv-card" onclick="openChat(\'' + c.id + '\')"><div class="conv-avatar">' + initials(otherName) + '</div><div class="conv-main"><div class="conv-name"><span>' + esc(otherName) + '</span><span class="conv-time">' + timeAgo(c.lastMessageAt) + '</span></div><div class="conv-preview">' + esc(preview) + '</div></div>' + (unread ? '<span class="unread-badge">' + faDigits(unread) + '</span>' : '') + '</div>'; }).join('');
+body.innerHTML = convs.map(function(c){ var isSeller = u.phone === c.sellerPhone; var otherName = isSeller ? c.buyerName : c.sellerName; var msgs = DB.messages.filter(function(m){ return m.convId === c.id; }).sort(function(a,b){ return a.createdAt - b.createdAt; }); var last = msgs[msgs.length - 1]; var _sn=_seenMap()[c.id]||0; var unread = msgs.filter(function(m){ return m.fromPhone !== u.phone && m.createdAt > _sn; }).length; var preview = last ? ((last.fromPhone === u.phone ? 'شما: ' : '') + (last.text.length > 40 ? last.text.slice(0,40) + '…' : last.text)) : 'شروع گفتگو'; return '<div class="conv-card' + (_convSel[c.id] ? ' selected' : '') + '" data-cid="' + c.id + '" onclick="convCardClick(\'' + c.id + '\')">' + (_convSelMode ? '<span class="conv-chk">' + (_convSel[c.id] ? '✔' : '') + '</span>' : '') + '<div class="conv-avatar">' + initials(otherName) + '</div><div class="conv-main"><div class="conv-name"><span>' + esc(otherName) + '</span><span class="conv-time">' + timeAgo(c.lastMessageAt) + '</span></div><div class="conv-preview">' + esc(preview) + '</div></div>' + (unread ? '<span class="unread-badge">' + faDigits(unread) + '</span>' : '') + '</div>'; }).join('');
 }
 var _selMsgs = {}; var _selMode = false;
 function startMsgSel(){ _selMode = !_selMode; if(!_selMode){ clearMsgSel(); return; } updateSelBar(); toast('پیام‌های خودتان را لمس کنید'); }
@@ -2211,6 +2221,7 @@ var api = {
     return Object.assign({ ok: true }, data || {});
   },
   getMessages: async function(convId){ return this._fetch('/api/messages/' + encodeURIComponent(convId)); },
+  deleteConversation: async function(id){ return this._fetch('/api/conversations/' + encodeURIComponent(id), { method: 'DELETE' }); },
   deleteMessage: async function(id){ return this._fetch('/api/messages/' + encodeURIComponent(id), { method: 'DELETE' }); },
   confirmDeal: async function(convId){ return this._fetch('/api/conversations/' + encodeURIComponent(convId) + '/deal', { method: 'POST', body: '{}' }); },
   createRating: async function(r){

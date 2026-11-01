@@ -462,7 +462,8 @@
 
   <!-- ============ CHAT LIST ============ -->
   <section class="screen" id="screen-chatlist">
-    <div class="sub-header"><button type="button" class="back-btn" onclick="go('home')"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg><span class="bk-lbl">بازگشت</span></button><div class="title">💬 گفتگوها</div></div>
+    <div class="sub-header"><button type="button" class="back-btn" onclick="go('home')"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg><span class="bk-lbl">بازگشت</span></button><div class="title">💬 گفتگوها</div><button type="button" class="chat-del-btn" id="cl-del-btn" onclick="startConvSel()">🗑 حذف پیام</button></div>
+    <div id="cl-sel-bar" class="chat-sel-bar" style="display:none"></div>
     <div id="chatlist-body" style="padding:8px 0 40px"></div>
   </section>
 
@@ -475,7 +476,6 @@
         <div class="chat-head-name" id="chat-head-name">—</div>
         <div class="chat-head-sub" id="chat-head-sub">—</div>
       </div>
-      <button type="button" class="chat-del-btn" onclick="startMsgSel()" aria-label="حذف پیام">🗑 حذف پیام</button>
     </header>
     <button type="button" id="chat-deal-btn" onclick="chatDealClick()" style="display:none;margin:0;width:100%;padding:10px;border:0;border-bottom:1px solid var(--line);background:#fff8e1;color:var(--forest);font-weight:800;font-size:14px;"></button>
     <div class="chat-body" id="chat-body"></div>
