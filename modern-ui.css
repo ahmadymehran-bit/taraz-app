@@ -2141,7 +2141,8 @@ html, body, *, *::before, *::after { scrollbar-width: none !important; -ms-overf
 #screen-chatlist .sub-header .chat-del-btn{margin-inline-start:auto}
 
 /* مشاغل: منظومه زنده (هماهنگ با طرح نهایی) */
-.jb-stage{position:relative;width:100%;height:400px;margin:-12px 0 0;overflow:hidden;border-radius:0 0 28px 28px;perspective:1000px;background:radial-gradient(ellipse 80% 60% at 50% 40%,#1f7a4c 0%,#0f4a31 45%,#072619 100%)}
+.jb-stage{position:relative;width:100%;aspect-ratio:1024/690;margin:0;overflow:hidden;perspective:1000px;background:#0a3320 url(image/jobs-hero.webp) center top/cover no-repeat}
+.jb-bg,.jb-beam,.jb-ped,.jb-ttl,.jb-ring{display:none}
 .jb-bg{position:absolute;inset:0;background:radial-gradient(circle at 20% 15%,rgba(255,255,255,.5) 0 1px,transparent 2px) 0 0/90px 70px,radial-gradient(circle at 75% 35%,rgba(255,240,180,.45) 0 1px,transparent 2px) 0 0/130px 110px;opacity:.5;pointer-events:none}
 .jb-beam{position:absolute;left:50%;top:52%;width:200px;height:200px;margin-left:-100px;background:radial-gradient(ellipse at 50% 0%,rgba(90,255,160,.35),transparent 65%);z-index:2;pointer-events:none}
 .jb-ttl{position:absolute;top:14px;right:18px;color:#f7e7b0;font-weight:800;font-size:18px;z-index:10;text-shadow:0 0 10px rgba(255,200,80,.5)}
@@ -2152,13 +2153,12 @@ html, body, *, *::before, *::after { scrollbar-width: none !important; -ms-overf
 .jb-ped i:nth-child(3){width:150px;height:150px;border:1px solid rgba(120,255,180,.6);background:radial-gradient(circle,rgba(60,220,130,.25),transparent 70%)}
 .jb-ring{position:absolute;border:1.5px solid rgba(255,205,90,.55);border-radius:50%;box-shadow:0 0 10px rgba(255,200,80,.35);pointer-events:none;z-index:3}
 #jb-r1{border-color:rgba(90,255,170,.45);box-shadow:0 0 10px rgba(90,255,170,.3)}
-#jb-r2{border-color:rgba(255,205,90,.3);box-shadow:none}
-.jb-core{position:absolute;left:50%;top:40%;width:128px;height:128px;margin:-64px 0 0 -64px;transform-style:preserve-3d;z-index:5;animation:jbspin 10s linear infinite}
+
+.jb-core{position:absolute;left:50%;top:36.2%;width:22.5%;aspect-ratio:1;margin:-11.25% 0 0 -11.25%;transform-style:preserve-3d;z-index:5;animation:jbspin 10s linear infinite}
 .jb-fast .jb-core{animation-duration:1s}
-.jb-face{position:absolute;inset:0;border-radius:30px;overflow:hidden;backface-visibility:hidden;box-shadow:0 0 36px rgba(255,200,70,.6),0 0 80px rgba(60,255,140,.25)}
+.jb-face{position:absolute;inset:0;border-radius:22%;overflow:hidden;backface-visibility:hidden}
 .jb-face img{width:100%;height:100%;object-fit:cover;display:block}
 .jb-back{transform:rotateY(180deg)}
-.jb-front::after{content:"";position:absolute;inset:0;border-radius:30px;background:linear-gradient(150deg,rgba(255,255,255,.22),transparent 40%);pointer-events:none}
 @keyframes jbspin{from{transform:rotateY(0) rotateX(6deg)}to{transform:rotateY(360deg) rotateX(6deg)}}
 #jb-items{position:absolute;inset:0;pointer-events:none;z-index:6}
 .jb-it{position:absolute;left:0;top:0;width:58px;height:58px;border-radius:50%;padding:0;border:1px solid rgba(255,225,140,.45);background:radial-gradient(circle at 32% 28%,rgba(255,255,255,.55),rgba(120,255,180,.18) 35%,rgba(10,70,45,.55) 80%);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);box-shadow:inset 0 0 14px rgba(120,255,180,.35),0 0 14px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;cursor:pointer;pointer-events:auto;will-change:transform}

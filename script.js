@@ -2732,8 +2732,8 @@ var _jb={a:0,v:.005,target:.005,items:[],busy:false,raf:0};
 function jbDims(){
   var st=document.getElementById('jb-stage');if(!st)return null;
   var W=st.clientWidth,H=st.clientHeight;
-  var rx=[W*.3,W*.39,W*.47],ry=rx.map(function(r){return r*.33});
-  var cx=W/2,cy=H*.4;
+  var rx=[W*.3,W*.39,W*.47],ry=rx.map(function(r){return r*.3});
+  var cx=W/2,cy=H*.362;
   [0,1,2].forEach(function(i){
     var el=document.getElementById('jb-r'+i);
     el.style.width=(rx[i]*2)+'px';el.style.height=(ry[i]*2)+'px';
