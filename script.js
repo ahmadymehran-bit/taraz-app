@@ -431,7 +431,7 @@ function go(s){
   }catch(e){}
   document.body.classList.toggle('no-nav',s==='auth'||s==='chat');
   document.querySelectorAll('#nav button').forEach(b=>b.classList.remove('active'));
-  const map={home:'home',browse:'browse',services:'services',favorites:'favorites',profile:'profile',chatlist:'chatlist',buy:'home',sell:'home',settings:'profile',notifs:'home',capacity:'services',detail:'browse'};
+  const map={home:'home',browse:'browse',services:'services',favorites:'profile',jobs:'jobs',profile:'profile',chatlist:'chatlist',buy:'home',sell:'home',settings:'profile',notifs:'home',capacity:'services',detail:'browse'};
   if(map[s]){const b=document.querySelector('#nav button[data-nav="'+map[s]+'"]');if(b)b.classList.add('active')}
 // به دلیل جابجایی صفحه‌ها، renderBrowse برای صفحه Home و renderHome برای صفحه Browse اجرا میشه
 if(s==='home') { loadFavorites().then(renderBrowse); }
@@ -439,6 +439,7 @@ if(s==='browse'){ renderRadar(); }
   if(s==='capacity')renderCapacityDetail();
   if(s==='services')renderServices();
   if(s==='favorites')renderFavorites();
+  if(s==='jobs')renderJobs(true);
   if(s==='profile')renderProfile();
   if(s==='sell')resetSellForm();
   if(s==='chatlist'){renderChatList();pollChatBadge();}
@@ -2725,58 +2726,23 @@ function sessionExpiredAlarm(){
 try { api.getListings(); } catch(e) {}
 
 
-/* ===== مدار سه‌بعدی: آگهی‌ها مثل سیارات دور لوگو می‌چرخند ===== */
-var _ob={a:0,v:.006,target:.006,items:[],raf:0,on:false};
-function obItems(list){
-  var box=document.getElementById('ob-items'); if(!box)return;
-  _ob.items=list.map(function(x,i){
-    var el=document.createElement('button');el.type='button';el.className='ob-it';el.innerHTML=x.icon;
-    if(x.id)el.onclick=function(){openDetail(x.id,'browse')};
-    return {el:el,ph:i/list.length*Math.PI*2,ring:i%3};
-  });
-  box.innerHTML='';_ob.items.forEach(function(o){box.appendChild(o.el)});
-}
-function obIdle(){
-  obItems(CATEGORIES_ALL.filter(function(c){return c.id!=='all'&&c.id!=='urgent'}).slice(0,6).map(function(c){return {icon:c.icon}}));
-}
-function obTick(){
-  var st=document.getElementById('ob-stage');
-  if(!st||!document.getElementById('screen-browse').classList.contains('active')){_ob.on=false;return}
-  _ob.v+=(_ob.target-_ob.v)*0.025; _ob.a+=_ob.v;
-  var W=st.clientWidth,H=st.clientHeight,rs=[.36,.43,.49];
-  _ob.items.forEach(function(o){
-    var t=o.ph+_ob.a*(1+o.ring*.18)*(o.ring%2?-1:1),rx=W*rs[o.ring],ry=rx*.28;
-    var x=Math.cos(t)*rx,y=Math.sin(t)*ry,d=(Math.sin(t)+1)/2,sc=.65+d*.5;
-    o.el.style.transform='translate('+x.toFixed(1)+'px,'+(y+H*.1).toFixed(1)+'px) scale('+sc.toFixed(2)+')';
-    o.el.style.zIndex=Math.round(d*10)+(d>.5?3:0);o.el.style.opacity=.6+d*.4;
-  });
-  _ob.raf=requestAnimationFrame(obTick);
-}
-function obStart(){
-  if(!_ob.items.length)obIdle();
-  if(!_ob.on){_ob.on=true;obTick()}
-}
-async function obSearch(e){
-  if(e)e.preventDefault();
-  var q=rdNorm(document.getElementById('ob-q').value.trim());
-  var stt=document.getElementById('ob-status'),box=document.getElementById('ob-results');
-  _ob.target=.22;_ob.v=Math.max(_ob.v,.12); stt.textContent='در حال جستجو…';box.innerHTML='';
-  var res=null,t0=Date.now();
-  try{res=await api.getListings()}catch(x){}
-  var all=(res&&res.listings)||[];
-  var out=all.filter(function(l){
+/* ===== صفحه مشاغل ===== */
+var _jb={cat:'all',list:null};
+async function renderJobs(first){
+  var ch=document.getElementById('jb-chips'),box=document.getElementById('jb-list');
+  if(!ch||!box)return;
+  ch.innerHTML=[{id:'all',icon:'🌿',title:'همه'}].concat(SERVICES).map(function(c){
+    return '<button type="button" class="'+(c.id===_jb.cat?'on':'')+'" onclick="_jb.cat=\''+c.id+'\';renderJobs()">'+c.icon+' '+c.title+'</button>'}).join('');
+  if(!_jb.list||first){box.innerHTML='<div class="jb-empty">در حال بارگذاری…</div>';
+    var r=null;try{r=await api.getCapacities()}catch(e){}
+    _jb.list=(r&&r.capacities)||[]}
+  var q=rdNorm((document.getElementById('jb-q').value||'').trim());
+  var out=_jb.list.filter(function(c){
+    if(_jb.cat!=='all'&&(c.serviceType||c.service_type)!==_jb.cat)return false;
     if(!q)return true;
-    var c=catOf(l.categoryId);
-    return rdNorm([l.title,l.description,l.city,l.province,c&&c.short].join(' ')).indexOf(q)>-1;
-  }).slice(0,30);
-  var wait=Math.max(0,1800-(Date.now()-t0));
-  setTimeout(function(){
-    _ob.target=.006; // کند شدن تدریجی
-    obItems(out.slice(0,6).map(function(l){var c=catOf(l.categoryId);return {id:l.id,icon:(c&&c.icon)||'📦'}}));
-    document.querySelectorAll('.ob-it').forEach(function(el,i){el.style.animation='obpop .6s '+(i*.12)+'s both'});
-    if(!out.length){stt.textContent='موردی پیدا نشد';return}
-    stt.textContent=faDigits(out.length)+' آگهی مرتبط پیدا شد';
-    box.innerHTML=out.map(function(l){return homeCard(l).replace("'home')","'browse')")}).join('');
-  },wait);
+    return rdNorm([c.title,c.ownerName||c.owner_name,c.region].join(' ')).indexOf(q)>-1});
+  if(!out.length){box.innerHTML='<div class="jb-empty">موردی یافت نشد</div>';return}
+  box.innerHTML=out.map(function(c){
+    var sv=serviceOf(c.serviceType||c.service_type),ph=c.ownerPhone||c.owner_phone||'';
+    return '<div class="jb-card"><div class="jb-ic">'+sv.icon+'</div><div class="jb-in"><b>'+esc(c.title||sv.title)+'</b><small>'+esc(c.ownerName||c.owner_name||'')+' · '+esc(c.region||'')+'</small><small>'+esc(sv.title)+' · ★ '+faDigits(Number(c.rating||0).toFixed(1))+'</small></div>'+(ph?'<a class="jb-call" href="tel:'+esc(ph)+'">📞</a>':'')+'</div>'}).join('');
 }
-(function(){var o=window.renderRadar;window.renderRadar=function(){var r=o.apply(this,arguments);try{obStart()}catch(e){}return r}})();

@@ -121,10 +121,11 @@
     <!-- صفحه اول: رادار -->
     <div class="rd-step rd-home" id="rd-s0">
       <div class="rd-tk"><div class="rd-tk-s"><small>نسبت به هفته قبل</small><b class="up" id="rd-tk-w">▲ +۱.۲٪</b></div><div class="rd-tk-m"><small id="rd-tk-n">قیمت روز دام نهاده</small><b id="rd-tk-p">۳,۵۲۰,۰۰۰</b><small id="rd-tk-u">تومان</small></div><div class="rd-tk-s"><small>نسبت به دیروز</small><b class="dn" id="rd-tk-d">▼ -۲.۸٪</b></div></div>
-      <form class="ob-search" onsubmit="obSearch(event)"><input id="ob-q" type="search" placeholder="جستجو در آگهی‌ها و خدمات..." autocomplete="off"><button type="submit" aria-label="جستجو">🔍</button></form>
-      <div class="ob-stage" id="ob-stage"><div class="ob-glow"></div><div class="ob-ring ob-r1"></div><div class="ob-ring ob-r2"></div><div class="ob-ring ob-r3"></div><div class="ob-core"><img src="logo-app.png" alt="تاراز"></div><div id="ob-items"></div></div>
-      <div class="ob-status" id="ob-status"></div>
-      <div id="ob-results"></div>
+      <div class="rd-scope rd-demo">
+        <div class="rd-ring r1"></div><div class="rd-ring r2"></div><div class="rd-ring r3"></div>
+        <div class="rd-cross"></div><div class="rd-sweep"></div><div class="rd-me"></div>
+        <i class="rd-pin" style="left:30%;top:30%"></i><i class="rd-pin" style="left:72%;top:36%"></i><i class="rd-pin" style="left:59%;top:62%"></i><i class="rd-pin" style="left:68%;top:78%"></i><i class="rd-pin" style="left:34%;top:78%"></i>
+      </div>
       <button type="button" class="rd-big" onclick="rdShow(1)">جستجوی نزدیک‌ترین آگهی <span class="rd-ic"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="#f3c969" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg></span></button>
     </div>
 
@@ -185,6 +186,15 @@
   </section>
 
 <!-- ============ MISSION (Snap & Digikala Style) ============ -->
+<section class="screen" id="screen-jobs" style="padding-bottom:110px;">
+  <div class="jb-hero"><img src="image/jobs-hero.webp" alt="مشاغل"><div class="jb-ttl">مشاغل</div></div>
+  <div class="jb-wrap">
+    <input id="jb-q" class="jb-q" type="search" placeholder="جستجو در مشاغل و خدمات..." oninput="renderJobs()">
+    <div class="jb-chips" id="jb-chips"></div>
+    <div id="jb-list"></div>
+  </div>
+</section>
+
 <section class="screen" id="screen-favorites" style="padding-bottom:110px;">
   <header class="modern-header">
     <div class="mh-brand"><span class="leaf">❤️</span><span class="mh-title">مورد علاقه</span></div>
@@ -624,9 +634,9 @@
 <!-- 👆 تا اینجا 👆 -->
 
 
-  <button type="button" data-nav="favorites" onclick="go('favorites')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 000-7.8z"/></svg>
-    مورد علاقه
+  <button type="button" data-nav="jobs" onclick="go('jobs')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2M3 13h18"/></svg>
+    مشاغل
   </button>
   <button type="button" data-nav="chatlist" onclick="go('chatlist')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
