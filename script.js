@@ -1207,7 +1207,7 @@ try{ if(!localStorage.getItem('taraz_seen_init2')){ DB.conversations.forEach(fun
 updateChatBadge(); updateBellBadge();
 var _cl=document.getElementById('screen-chatlist'); if(_cl&&_cl.classList.contains('active'))renderChatList();
 }
-setInterval(pollChatBadge,10000); setTimeout(pollChatBadge,3000); document.addEventListener('visibilitychange',function(){if(!document.hidden)pollChatBadge()});
+setInterval(pollChatBadge,30000); setTimeout(pollChatBadge,3000); document.addEventListener('visibilitychange',function(){if(!document.hidden)pollChatBadge()});
 function openRating(toPhone,toName){
   ratingTarget={toPhone:toPhone,toName:toName}; ratingScore=0;
   document.getElementById('rating-title').textContent='تجربه‌ات با '+toName;
