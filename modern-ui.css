@@ -2141,7 +2141,7 @@ html, body, *, *::before, *::after { scrollbar-width: none !important; -ms-overf
 #screen-chatlist .sub-header .chat-del-btn{margin-inline-start:auto}
 
 /* مشاغل: منظومه زنده (هماهنگ با طرح نهایی) */
-.jb-stage{position:relative;width:100%;aspect-ratio:1024/690;margin:0;overflow:hidden;perspective:1000px;background:#0a3320 url(image/jobs-hero.webp) center top/cover no-repeat}
+.jb-stage{position:relative;width:100%;aspect-ratio:1024/690;margin:0;overflow:hidden;perspective:1000px;background:#0a3320 url(image/jobs-plate.webp) center top/cover no-repeat}
 .jb-bg,.jb-beam,.jb-ped,.jb-ttl,.jb-ring{display:none}
 .jb-bg{position:absolute;inset:0;background:radial-gradient(circle at 20% 15%,rgba(255,255,255,.5) 0 1px,transparent 2px) 0 0/90px 70px,radial-gradient(circle at 75% 35%,rgba(255,240,180,.45) 0 1px,transparent 2px) 0 0/130px 110px;opacity:.5;pointer-events:none}
 .jb-beam{position:absolute;left:50%;top:52%;width:200px;height:200px;margin-left:-100px;background:radial-gradient(ellipse at 50% 0%,rgba(90,255,160,.35),transparent 65%);z-index:2;pointer-events:none}
