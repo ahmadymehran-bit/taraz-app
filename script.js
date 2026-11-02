@@ -2780,17 +2780,18 @@ async function jbSearch(e,fromChip){
   var qRaw=document.getElementById('jb-q').value.trim(), q=rdNorm(qRaw);
   var stt=document.getElementById('jb-status'),list=document.getElementById('jb-list');
   _jb.busy=true; stt.textContent='در حال اسکن منظومه…'; list.innerHTML='';
-  _jb.target=.16;                      /* سرعت زیاد */
+  _jb.target=.42; document.getElementById('jb-stage').classList.add('jb-fast'); /* شتاب */
   var fetching=(async function(){try{var r=await api.getListings();return (r&&r.listings)||[]}catch(x){return []}})();
-  await new Promise(function(r){setTimeout(r,1400)});
-  _jb.target=.004;                     /* کم‌شدن سرعت */
+  await new Promise(function(r){setTimeout(r,1300)});
+  _jb.target=.003;                     /* کاهش تدریجی */
   var all=await fetching;
   var out=all.filter(function(l){
     if(!q)return false;
     var c=catOf(l.categoryId),sv=serviceOf(l.serviceType||(c&&c.serviceId));
     return rdNorm([l.title,l.description,l.city,l.province,c&&c.title,c&&c.short,sv&&sv.title].join(' ')).indexOf(q)>-1;
   });
-  await new Promise(function(r){setTimeout(r,1100)});
+  await new Promise(function(r){setTimeout(r,1700)});
+  document.getElementById('jb-stage').classList.remove('jb-fast');
   if(out.length){
     jbSetItems(out.slice(0,7).map(function(l){var c=catOf(l.categoryId);return {icon:(c&&c.icon)||'📦',onclick:function(){openDetail(l.id,'jobs')}}}));
     stt.textContent=faDigits(out.length)+' آگهی مرتبط پیدا شد';
