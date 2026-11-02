@@ -1257,7 +1257,12 @@ if(statListings) statListings.textContent = faDigits(myListings.length); if(stat
 }
 async function openProfileSection(section){
   const u=DB.user;if(!u)return; const title=document.getElementById('profile-sub-title'); const body=document.getElementById('profile-sub-body');
-  if(section==='listings'){ title.textContent='📦 آگهی‌های من'; const list=DB.listings.filter(l=>l.sellerPhone===u.phone).sort((a,b)=>b.createdAt-a.createdAt); body.innerHTML=list.length?list.map(homeCard).join(''):'<div class="empty"><span class="emoji">📦</span>آگهی‌ای نداری</div>'; }
+  if(section==='listings'){ title.textContent='📦 آگهی‌های من'; var lr=null; try{lr=await api.getListings()}catch(e){}
+    var srv=(lr&&lr.listings)?lr.listings:[];
+    var local=DB.listings.filter(l=>l.sellerPhone===u.phone);
+    var list=srv.filter(l=>(l.seller_phone||l.sellerPhone)===u.phone).map(function(l){return { id:l.id, sellerPhone:l.seller_phone||l.sellerPhone, sellerName:l.seller_name||l.sellerName, categoryId:l.category_id||l.categoryId, title:l.title, qty:l.qty, qtyNum:l.qty_num||l.qtyNum, price:Number(l.price), oldPrice:(l.old_price||l.oldPrice)?Number(l.old_price||l.oldPrice):null, region:l.region, desc:l.description||l.desc, photos:l.photos||[], urgent:!!l.urgent, urgentReason:l.urgent_reason||l.urgentReason, productKey:l.product_key||l.productKey, createdAt:Number(l.created_at||l.createdAt)||0, location:l.location||null }});
+    if(!list.length) list=local;
+    list.sort((a,b)=>b.createdAt-a.createdAt); body.innerHTML=list.length?list.map(homeCard).join(''):'<div class="empty"><span class="emoji">📦</span>آگهی‌ای نداری</div>'; }
   else if(section==='favorites'){
 title.textContent='❤️ علاقه‌مندی‌ها';
 var favResult=null; try{favResult=await api.getFavorites(u.phone)}catch(e){}
@@ -1269,9 +1274,15 @@ if(!favList.length){ body.innerHTML='<div class="empty"><span class="emoji">❤�
 body.innerHTML=favList.map(function(l){ var normalized={ id:l.id, sellerPhone:l.seller_phone||l.sellerPhone, sellerName:l.seller_name||l.sellerName, categoryId:l.category_id||l.categoryId, title:l.title, qty:l.qty, qtyNum:l.qty_num||l.qtyNum, price:Number(l.price), oldPrice:l.old_price?Number(l.old_price):null, region:l.region, desc:l.description||l.desc, urgent:l.urgent, urgentReason:l.urgent_reason||l.urgentReason, productKey:l.product_key||l.productKey, photos:l.photos||[], location:(l.location_lat&&l.location_lng)?{lat:Number(l.location_lat),lng:Number(l.location_lng)}:null, createdAt:Number(l.created_at||l.createdAt) }; return homeCard(normalized); }).join('');
 }
   } else if(section==='bookings'){
-    title.textContent='📅 رزروهای من'; const list=DB.bookings.filter(b=>b.customerPhone===u.phone).sort((a,b)=>b.createdAt-a.createdAt);
+    title.textContent='📅 رزروهای من';
+    var br=null; try{br=await api.getBookings(u.phone)}catch(e){}
+    var cr=null; try{cr=await api.getCapacities()}catch(e){}
+    var srvCaps=(cr&&cr.capacities)||[];
+    var list=((br&&br.bookings)||[]).map(function(b){return {id:b.id,capacityId:b.capacity_id||b.capacityId,customerPhone:b.customer_phone||b.customerPhone,status:b.status,qty:b.qty,total:b.total,createdAt:Number(b.created_at||b.createdAt)||0}});
+    if(!list.length) list=DB.bookings.filter(b=>b.customerPhone===u.phone);
+    list.sort((a,b)=>b.createdAt-a.createdAt);
     if(!list.length){body.innerHTML='<div class="empty"><span class="emoji">📅</span>رزروی نداری</div>';return}
-    body.innerHTML=list.map(b=>{ const c=DB.capacities.find(x=>x.id===b.capacityId); return '<div class="booking-card"><div class="head"><b>'+esc(c?c.title:'ظرفیت حذف شده')+'</b><span class="status '+b.status+'">'+(b.status==='pending'?'در انتظار':b.status==='confirmed'?'تأیید':'تکمیل')+'</span></div><small>'+faDigits(b.qty)+' '+(c?c.unit:'')+' · '+faPrice(b.total)+' تومان<br>'+timeAgo(b.createdAt)+'</small></div>'; }).join('');
+    body.innerHTML=list.map(b=>{ const c=srvCaps.find(x=>x.id===b.capacityId)||DB.capacities.find(x=>x.id===b.capacityId); return '<div class="booking-card"><div class="head"><b>'+esc(c?c.title:'ظرفیت حذف شده')+'</b><span class="status '+b.status+'">'+(b.status==='pending'?'در انتظار':b.status==='confirmed'?'تأیید':'تکمیل')+'</span></div><small>'+faDigits(b.qty)+' '+(c?c.unit:'')+' · '+faPrice(b.total)+' تومان<br>'+timeAgo(b.createdAt)+'</small></div>'; }).join('');
   } else if(section==='requests'){
     title.textContent='📨 درخواست‌های خرید'; const list=DB.requests.filter(r=>r.buyerPhone===u.phone).sort((a,b)=>b.createdAt-a.createdAt);
     if(!list.length){body.innerHTML='<div class="empty"><span class="emoji">📨</span>درخواستی نداری</div>';return}
@@ -2192,9 +2203,22 @@ var api = {
   recoverPassword: async function(phone, answer, newPassword) { return this._fetch('/api/auth/recover', { method: 'POST', body: JSON.stringify({ phone: phone, answer: answer, newPassword: newPassword }) }); },
   getUser: async function(phone) { return this._fetch('/api/users/' + encodeURIComponent(phone)); },
   updateAvatar: async function(phone, avatar) { return this._fetch('/api/users/' + encodeURIComponent(phone) + '/avatar', { method: 'POST', body: JSON.stringify({ avatar: avatar }) }); },
-  getListings: async function() { return this._fetch('/api/listings'); },
-  createListing: async function(listing) { return this._fetch('/api/listings', { method: 'POST', body: JSON.stringify(listing) }); },
-  deleteListing: async function(id) { return this._fetch('/api/listings/' + encodeURIComponent(id), { method: 'DELETE' }); }, 
+  _lc: null,
+  getListings: async function() {
+    var self = this, P = '/api/listings';
+    var refresh = function(){
+      if (self._lcP) return self._lcP;
+      self._lcP = self._fetch(P, null, 0).then(function(r){ if (r && r.listings) { self._lc = r; try { localStorage.setItem('taraz.lc', JSON.stringify(r)); } catch(e){} } self._lcP = null; return r; }, function(){ self._lcP = null; return null; });
+      return self._lcP;
+    };
+    if (!self._lc) { try { self._lc = JSON.parse(localStorage.getItem('taraz.lc') || 'null'); } catch(e){} }
+    if (self._lc) { refresh(); return self._lc; }
+    var r = await refresh();
+    return r || self._fetch(P, null, 1);
+  },
+  invalidateListings: function(){ this._lc = null; try { localStorage.removeItem('taraz.lc'); } catch(e){} },
+  createListing: async function(listing) { this.invalidateListings(); return this._fetch('/api/listings', { method: 'POST', body: JSON.stringify(listing) }); },
+  deleteListing: async function(id) { this.invalidateListings(); return this._fetch('/api/listings/' + encodeURIComponent(id), { method: 'DELETE' }); }, 
   createCapacity: async function(cap){ return this._fetch('/api/capacities', { method: 'POST', body: JSON.stringify(cap) }); },
   getCapacities: async function(){ return this._fetch('/api/capacities'); },
   createBooking: async function(b){ return this._fetch('/api/bookings', { method: 'POST', body: JSON.stringify(b) }); },
@@ -2697,3 +2721,5 @@ function sessionExpiredAlarm(){
     '<button type="button" onclick="document.getElementById(\'sess-alarm\').remove();_sessAlarm=false;logout()" style="width:100%;padding:12px;border:0;border-radius:12px;background:#efb82e;color:#123d32;font-weight:800;font-size:15px">ورود دوباره</button></div>';
   document.body.appendChild(d);
 }
+
+try { api.getListings(); } catch(e) {}
