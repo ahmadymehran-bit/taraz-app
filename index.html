@@ -121,11 +121,10 @@
     <!-- صفحه اول: رادار -->
     <div class="rd-step rd-home" id="rd-s0">
       <div class="rd-tk"><div class="rd-tk-s"><small>نسبت به هفته قبل</small><b class="up" id="rd-tk-w">▲ +۱.۲٪</b></div><div class="rd-tk-m"><small id="rd-tk-n">قیمت روز دام نهاده</small><b id="rd-tk-p">۳,۵۲۰,۰۰۰</b><small id="rd-tk-u">تومان</small></div><div class="rd-tk-s"><small>نسبت به دیروز</small><b class="dn" id="rd-tk-d">▼ -۲.۸٪</b></div></div>
-      <div class="rd-scope rd-demo">
-        <div class="rd-ring r1"></div><div class="rd-ring r2"></div><div class="rd-ring r3"></div>
-        <div class="rd-cross"></div><div class="rd-sweep"></div><div class="rd-me"></div>
-        <i class="rd-pin" style="left:30%;top:30%"></i><i class="rd-pin" style="left:72%;top:36%"></i><i class="rd-pin" style="left:59%;top:62%"></i><i class="rd-pin" style="left:68%;top:78%"></i><i class="rd-pin" style="left:34%;top:78%"></i>
-      </div>
+      <form class="ob-search" onsubmit="obSearch(event)"><input id="ob-q" type="search" placeholder="جستجو در آگهی‌ها و خدمات..." autocomplete="off"><button type="submit" aria-label="جستجو">🔍</button></form>
+      <div class="ob-stage" id="ob-stage"><div class="ob-glow"></div><div class="ob-ring ob-r1"></div><div class="ob-ring ob-r2"></div><div class="ob-ring ob-r3"></div><div class="ob-core"><img src="logo-app.png" alt="تاراز"></div><div id="ob-items"></div></div>
+      <div class="ob-status" id="ob-status"></div>
+      <div id="ob-results"></div>
       <button type="button" class="rd-big" onclick="rdShow(1)">جستجوی نزدیک‌ترین آگهی <span class="rd-ic"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="#f3c969" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg></span></button>
     </div>
 

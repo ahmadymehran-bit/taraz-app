@@ -2139,3 +2139,23 @@ html, body, *, *::before, *::after { scrollbar-width: none !important; -ms-overf
 .conv-card.selected{outline:3px solid #f5c542;background:#fff8e1}
 .conv-chk{width:28px;height:28px;border-radius:50%;border:2px solid #f5c542;display:inline-flex;align-items:center;justify-content:center;font-weight:900;color:#c62828;background:#fff;flex-shrink:0;margin-inline-end:8px}
 #screen-chatlist .sub-header .chat-del-btn{margin-inline-start:auto}
+
+/* مدار سه‌بعدی */
+.ob-search{display:flex;gap:8px;margin:6px 0 0;background:rgba(255,255,255,.07);border:1.5px solid rgba(61,220,132,.4);border-radius:100px;padding:6px 14px}
+.ob-search input{flex:1;background:none;border:0;outline:0;color:#fff;font:inherit;font-size:15px}
+.ob-search input::placeholder{color:rgba(255,255,255,.55)}
+.ob-search button{background:none;border:0;font-size:18px;cursor:pointer}
+.ob-stage{position:relative;width:100%;max-width:420px;height:300px;margin:6px auto;perspective:900px}
+.ob-glow{position:absolute;left:50%;top:44%;width:60%;height:60%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(239,184,46,.45),rgba(61,220,132,.15) 55%,transparent 72%);filter:blur(10px)}
+.ob-ring{position:absolute;left:50%;top:58%;border:1.5px solid rgba(239,184,46,.55);border-radius:50%;transform:translate(-50%,-50%) rotateX(72deg);box-shadow:0 0 14px rgba(61,220,132,.35)}
+.ob-r1{width:72%;aspect-ratio:1}.ob-r2{width:86%;aspect-ratio:1;border-color:rgba(61,220,132,.5)}.ob-r3{width:98%;aspect-ratio:1;border-color:rgba(239,184,46,.3)}
+.ob-core{position:absolute;left:50%;top:34%;width:30%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:24%;overflow:hidden;box-shadow:0 0 30px rgba(239,184,46,.8);z-index:6;animation:obfloat 3s ease-in-out infinite}
+.ob-core img{width:100%;height:100%;object-fit:cover;display:block}
+@keyframes obfloat{50%{transform:translate(-50%,-56%)}}
+#ob-items{position:absolute;left:50%;top:50%;width:0;height:0}
+.ob-it{position:absolute;left:-23px;top:-23px;width:46px;height:46px;border-radius:50%;border:1.5px solid rgba(239,184,46,.7);background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.3),rgba(14,107,63,.7));font-size:24px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 14px rgba(239,184,46,.5);cursor:pointer;padding:0;will-change:transform}
+@keyframes obpop{from{filter:brightness(3);scale:0}to{filter:none;scale:1}}
+.ob-status{text-align:center;color:#fff;font-weight:800;margin:4px 0 10px}
+#ob-results{background:#f6f8f6;border-radius:16px;padding:0}
+#ob-results:empty{display:none}
+@media(prefers-reduced-motion:reduce){.ob-core{animation:none}}
