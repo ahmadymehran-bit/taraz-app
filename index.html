@@ -187,12 +187,20 @@
 
 <!-- ============ MISSION (Snap & Digikala Style) ============ -->
 <section class="screen" id="screen-jobs" style="padding-bottom:110px;">
-  <div class="jb-hero"><img src="image/jobs-hero.webp" alt="مشاغل"><div class="jb-ttl">مشاغل</div></div>
-  <div class="jb-wrap">
-    <input id="jb-q" class="jb-q" type="search" placeholder="جستجو در مشاغل و خدمات..." oninput="renderJobs()">
-    <div class="jb-chips" id="jb-chips"></div>
-    <div id="jb-list"></div>
+  <div class="jb-stage" id="jb-stage">
+    <div class="jb-sky"></div>
+    <div class="jb-ttl">مشاغل</div>
+    <div class="jb-ring" id="jb-r0"></div><div class="jb-ring" id="jb-r1"></div><div class="jb-ring" id="jb-r2"></div>
+    <div class="jb-glow"></div>
+    <div class="jb-core"><img src="logo-app.png" alt="تاراز"></div>
+    <div id="jb-items"></div>
   </div>
+  <form class="jb-search" onsubmit="jbSearch(event)">
+    <input id="jb-q" type="search" placeholder="جستجو در خدمات و مشاغل..." autocomplete="off">
+    <button type="submit" aria-label="جستجو">🔍</button>
+  </form>
+  <div class="jb-status" id="jb-status">خدمات را روی مدار ببینید یا جستجو کنید</div>
+  <div class="jb-wrap"><div id="jb-list"></div></div>
 </section>
 
 <section class="screen" id="screen-favorites" style="padding-bottom:110px;">
