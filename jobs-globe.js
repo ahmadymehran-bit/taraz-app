@@ -63,4 +63,27 @@
   window.addEventListener('resize',kick);
   new MutationObserver(kick).observe(sc,{attributes:true,attributeFilter:['class']});
   kick();
+  /* آیکون‌های توپر SVG به‌جای ایموجی (script.js دست‌نخورده) */
+  var IC={
+    '🚛':'<path d="M2 6h12v9H2zM15 9h4l3 3v3h-7z"/><circle cx="6" cy="17" r="2"/><circle cx="18" cy="17" r="2"/>',
+    '🚜':'<circle cx="7" cy="16" r="4"/><circle cx="18" cy="18" r="2.5"/><path d="M4 4h7v7H9l-2 2H4z"/><path d="M13 8h6l2 4v4h-8z"/>',
+    '🥩':'<path d="M12 3l9 5v8l-9 5-9-5V8z"/>',
+    '🐔':'<ellipse cx="12" cy="13" rx="7" ry="8"/>',
+    '🔧':'<path d="M14.7 3a5 5 0 0 0-4.6 6.8L3 18.9 5.1 21l9.1-7.1A5 5 0 0 0 21 9.3l-2.6 2.6-3-.6-.6-3 2.6-2.6A5 5 0 0 0 14.7 3z"/>',
+    '🩺':'<path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/>',
+    '👷':'<circle cx="12" cy="7" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7z"/>'
+  };
+  var DEF='<rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/>';
+  function fixIcons(){
+    var ji=document.getElementById('jb-items');if(!ji)return;
+    ji.querySelectorAll('.jb-ico').forEach(function(el){
+      if(el.getAttribute('data-svg'))return;
+      var t=(el.textContent||'').replace(/\uFE0F/g,'').trim();
+      var k=Object.keys(IC).filter(function(e){return t.indexOf(e.replace(/\uFE0F/g,''))===0})[0];
+      el.setAttribute('data-svg','1');
+      el.innerHTML='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">'+(k?IC[k]:DEF)+'</svg>';
+    });
+  }
+  var ji0=document.getElementById('jb-items');
+  if(ji0)new MutationObserver(fixIcons).observe(ji0,{childList:true,subtree:true});
 })();
