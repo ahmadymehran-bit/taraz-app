@@ -161,6 +161,7 @@
   /* کلید دو حالته لایک / دیس‌لایک */
   function paintSw(){
     var on=!!prof().is_ready;
+    try{if(typeof _isReady==='boolean'&&document.getElementById('ready-status-text').textContent.indexOf('آماده به کار هستید')>=0)on=true;else if(document.getElementById('ready-status-text').textContent.indexOf('استراحت')>=0)on=false;}catch(e){}
     document.querySelectorAll('#rp-sw button').forEach(function(b){b.classList.toggle('on',(b.dataset.v==='1')===on);});
   }
   function setReady(v){
@@ -168,7 +169,7 @@
     var p=prof();p.is_ready=v;DB._set(KEY(u.phone),p);
     try{_isReady=v;}catch(e){}
     try{renderReadyProfile();}catch(e){}
-    paintSw();toast(v?'👍 شما آماده به کار هستید':'👎 شما غیرفعال هستید');
+    setTimeout(paintSw,50);toast(v?'👍 شما آماده به کار هستید':'👎 شما غیرفعال هستید');
     if(p.service_type){fetch(API_BASE+'/api/ready',{method:'POST',headers:authHeaders(),body:JSON.stringify(p)}).catch(function(){});}
     else toast('بعد از تکمیل مراحل، اطلاعات ذخیره می‌شود');
   }
@@ -205,6 +206,8 @@
    +'.rp-sw button[data-v="0"].on{opacity:1;border-color:#e63946;background:rgba(230,57,70,.15)}';
   document.head.appendChild(css);
 
+  var _rr=window.renderReadyProfile;
+  if(typeof _rr==='function'){window.renderReadyProfile=async function(){var r=await _rr.apply(this,arguments);paintSw();return r;};}
   var _go=window.go;
   function init(){
     build();
