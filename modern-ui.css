@@ -2216,3 +2216,11 @@ html, body, *, *::before, *::after { scrollbar-width: none !important; -ms-overf
 #screen-jobs .jb-search,#screen-jobs .jb-chips,#screen-jobs .jb-status,#screen-jobs .jb-wrap{position:relative;z-index:2}
 #screen-jobs .jb-search{margin-top:calc(62vh)!important;background:rgba(7,32,15,.55)!important;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 #screen-jobs .jb-chips{margin-top:12px!important}
+
+/* ===== دایره‌های توپر با آیکون داخلی ===== */
+.jb-it{width:64px!important;height:64px!important;border:0!important;
+  background:radial-gradient(circle at 34% 28%,#ffe27a 0,#f3c33c 42%,#b8861c 100%)!important;
+  box-shadow:0 0 0 3px rgba(57,255,20,.35),0 0 18px rgba(57,255,20,.45),inset 0 -4px 8px rgba(0,0,0,.25)!important;
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+.jb-it .jb-ico{color:#0a3320}
+.jb-ico svg{color:#0a3320!important}
