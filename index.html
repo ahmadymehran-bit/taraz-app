@@ -415,26 +415,7 @@
       <button type="button" id="toggle-ready-btn" class="btn-green" onclick="toggleReadyStatus()" style="min-height:60px; font-size:18px; border-radius:100px;">تغییر وضعیت</button>
     </div>
 
-    <div class="field" style="margin:16px;">
-      <label>نوع خدمت شما</label>
-      <select id="ready-service-type">
-        <option value="transport">🚛 راننده / حمل و نقل</option>
-        <option value="vet">🩺 دامپزشک</option>
-        <option value="butcher">🔪 قصاب</option>
-        <option value="shepherd">🐑 چوپان</option>
-        <option value="labor">👷 کارگر کشاورزی</option>
-      </select>
-    </div>
-
-    <div class="field" style="margin:16px;">
-      <label>محدوده فعالیت (شهر یا استان)</label>
-      <input id="ready-region" placeholder="مثلاً: خوزستان یا اهواز">
-    </div>
-
-    <div class="field" style="margin:16px;">
-      <label>توضیحات یا درخواست شرطی (اختیاری)</label>
-      <textarea id="ready-notes" placeholder="مثلاً: اگر باری از اصفهان به اهواز بود و از ایذه می‌گذشت، من را خبر کن. ظرفیت یک گاو اضافه دارم." style="min-height:100px;"></textarea>
-    </div>
+    <div id="ready-pro"></div>
 <div class="card" style="margin:16px; background:#fff8e6; border-color:#f0b429;">
   <h3 style="font-size:16px; color:#8a6400; margin-bottom:8px;">⏰ درخواست شرطی (Watch)</h3>
   <p style="font-size:12px; color:#8a6400; margin-bottom:12px;">اینجا مشخص کن چه نوع بار یا مسیری رو دنبال می‌کنی تا در صورت ثبت، بهت خبر بدیم.</p>
@@ -692,6 +673,7 @@
 <script src="script.js"></script>
 <script src="jobs-globe.js"></script>
 <script src="availability.js?v=70"></script>
+<script src="ready-pro.js?v=1"></script>
 <script>
 /* swipe navigation */
 (function(){
