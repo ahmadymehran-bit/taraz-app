@@ -2224,3 +2224,18 @@ html, body, *, *::before, *::after { scrollbar-width: none !important; -ms-overf
   -webkit-backdrop-filter:none!important;backdrop-filter:none!important}
 .jb-it .jb-ico{color:#0a3320}
 .jb-ico svg{color:#0a3320!important}
+
+/* ===== برند بالای صفحه مشاغل + جستجوی مدرن‌تر ===== */
+.jb-brand{position:absolute;top:calc(env(safe-area-inset-top,0px) + 34px);left:0;right:0;text-align:center;z-index:10;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none}
+.jb-brand b{font-size:34px;font-weight:900;letter-spacing:.5px;color:#f7e7b0;text-shadow:0 0 14px rgba(255,200,80,.55),0 0 28px rgba(57,255,20,.25)}
+.jb-brand span{font-size:13px;font-weight:600;color:rgba(243,239,227,.75);letter-spacing:.3px}
+#screen-jobs .jb-search{
+  margin:calc(62vh - 36px) 18px 0!important;padding:5px 6px 5px 8px!important;gap:10px!important;
+  background:linear-gradient(135deg,rgba(255,255,255,.14),rgba(255,255,255,.04))!important;
+  border:1px solid rgba(57,255,20,.35)!important;border-radius:22px!important;
+  box-shadow:0 10px 30px rgba(0,0,0,.35),0 0 18px rgba(57,255,20,.15),inset 0 1px 0 rgba(255,255,255,.12)!important;
+  transition:box-shadow .25s,border-color .25s}
+#screen-jobs .jb-search:focus-within{border-color:#39ff14!important;box-shadow:0 10px 30px rgba(0,0,0,.35),0 0 24px rgba(57,255,20,.45)!important}
+#screen-jobs .jb-search svg{flex:0 0 auto;width:40px;height:40px;padding:10px;box-sizing:border-box;border-radius:50%;background:rgba(57,255,20,.12);color:#39ff14;stroke-width:2;order:0}
+#screen-jobs .jb-search input{padding:10px 4px;font-size:15px;order:1}
+#screen-jobs .jb-search input::placeholder{color:rgba(243,239,227,.5)}
