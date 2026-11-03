@@ -2207,3 +2207,12 @@ html, body, *, *::before, *::after { scrollbar-width: none !important; -ms-overf
   box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 6px 18px rgba(0,0,0,.45),0 0 16px rgba(57,255,20,.25)!important}
 .jb-ico{font-size:0!important;line-height:0;color:#f3c33c;filter:drop-shadow(0 0 6px rgba(243,195,60,.55))}
 .jb-ico svg{width:28px;height:28px;display:block}
+
+/* ===== jobs: کره‌ی تمام‌صفحه؛ در بالا ثابت، کلیدها و جستجو روی آن ===== */
+#screen-jobs{position:relative}
+#screen-jobs .jb-stage{position:sticky!important;top:0;left:auto;right:auto;width:100%!important;
+  height:100vh!important;aspect-ratio:auto!important;margin:0 0 -100vh!important;border-radius:0!important;z-index:0;overflow:hidden}
+#screen-jobs .jb-stage::after{display:none!important}
+#screen-jobs .jb-search,#screen-jobs .jb-chips,#screen-jobs .jb-status,#screen-jobs .jb-wrap{position:relative;z-index:2}
+#screen-jobs .jb-search{margin-top:calc(62vh)!important;background:rgba(7,32,15,.55)!important;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+#screen-jobs .jb-chips{margin-top:12px!important}
