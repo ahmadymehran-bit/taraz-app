@@ -2281,3 +2281,9 @@ html, body, *, *::before, *::after { scrollbar-width: none !important; -ms-overf
   box-shadow:none!important;font-weight:800!important}
 #screen-jobs .jb-chip.active::before{box-shadow:0 0 0 3px #fff,0 0 0 5px #0f4d3a!important;border-color:#e7b93a}
 #screen-jobs .jb-chip.active svg{filter:drop-shadow(0 0 6px rgba(240,200,100,.9))}
+
+/* محو کادر داخلی نوار جستجو و حذف زیرعنوان برند */
+#screen-jobs .jb-search input,
+#screen-jobs .jb-search input:focus,
+#screen-jobs .jb-search input:focus-visible{background:transparent!important;border:0!important;box-shadow:none!important;outline:none!important}
+#screen-jobs .jb-brand span{display:none!important}
