@@ -25,7 +25,7 @@
   }
   function draw(){
     ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);
-    var cx=W/2,cy=H*.362,R=W*.2;
+    var cx=W/2,cy=H*.362,R=W*.235;
     /* هاله */
     var g=ctx.createRadialGradient(cx,cy,R*.6,cx,cy,R*2);
     g.addColorStop(0,'rgba(57,255,20,.22)');g.addColorStop(.5,'rgba(30,160,70,.10)');g.addColorStop(1,'rgba(0,0,0,0)');

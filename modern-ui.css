@@ -2199,3 +2199,11 @@ html, body, *, *::before, *::after { scrollbar-width: none !important; -ms-overf
 #jb-globe{position:absolute;left:0;top:0;z-index:2;pointer-events:none}
 .jb-core{display:none!important}
 .jb-it{border-color:rgba(57,255,20,.55)!important;box-shadow:0 0 14px rgba(57,255,20,.35)}
+
+/* ===== jobs: تمام‌صفحه + آیکون‌های تو‌پر ===== */
+.jb-stage{aspect-ratio:1/1.12!important}
+.jb-it{width:64px!important;height:64px!important;border:0!important;
+  background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.28),rgba(20,110,55,.55) 55%,rgba(6,50,25,.8) 100%)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 6px 18px rgba(0,0,0,.45),0 0 16px rgba(57,255,20,.25)!important}
+.jb-ico{font-size:0!important;line-height:0;color:#f3c33c;filter:drop-shadow(0 0 6px rgba(243,195,60,.55))}
+.jb-ico svg{width:28px;height:28px;display:block}
