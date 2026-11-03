@@ -412,31 +412,12 @@
     <div class="card" style="margin:16px; text-align:center; background: #eef8f3; border-color: #cfe5da;">
       <h3 style="font-size:18px; color:var(--forest); margin-bottom:8px;">وضعیت شما</h3>
       <div id="ready-status-text" style="font-size:15px; font-weight:800; margin-bottom:16px;">در حال بارگذاری...</div>
-      <button type="button" id="toggle-ready-btn" class="btn-green" onclick="toggleReadyStatus()" style="min-height:60px; font-size:18px; border-radius:100px;">تغییر وضعیت</button>
+      <button type="button" id="toggle-ready-btn" style="display:none"></button>
+      <div class="rp-sw" id="rp-sw"><button type="button" data-v="1" aria-label="آماده">👍<span>آماده‌ام</span></button><button type="button" data-v="0" aria-label="غیرفعال">👎<span>غیرفعال</span></button></div>
     </div>
 
     <div id="ready-pro"></div>
-<div class="card" style="margin:16px; background:#fff8e6; border-color:#f0b429;">
-  <h3 style="font-size:16px; color:#8a6400; margin-bottom:8px;">⏰ درخواست شرطی (Watch)</h3>
-  <p style="font-size:12px; color:#8a6400; margin-bottom:12px;">اینجا مشخص کن چه نوع بار یا مسیری رو دنبال می‌کنی تا در صورت ثبت، بهت خبر بدیم.</p>
-  
-  <div class="field" style="margin-top:0;">
-    <label>از کجا؟</label>
-    <input id="watch-from" placeholder="مثلاً: اصفهان">
-  </div>
-  <div class="field">
-    <label>به کجا؟</label>
-    <input id="watch-to" placeholder="مثلاً: اهواز">
-  </div>
-  <div class="field">
-    <label>نوع بار/شرایط</label>
-    <input id="watch-notes" placeholder="مثلاً: فقط دام زنده، وزن بالای ۵۰ کیلو">
-  </div>
-  <button type="button" class="btn-gold" onclick="addWatchCondition()" style="min-height:50px; font-size:14px; margin-top:12px;">🔔 ثبت این درخواست</button>
 </div>
-
-    <button type="button" class="btn-primary" onclick="saveReadyProfile()" style="margin:16px; min-height:64px; font-size:18px;">💾 ذخیره اطلاعات</button>
-  </div>
 </section>
 
   <!-- ============ SETTINGS ============ -->
@@ -673,7 +654,7 @@
 <script src="script.js"></script>
 <script src="jobs-globe.js"></script>
 <script src="availability.js?v=70"></script>
-<script src="ready-pro.js?v=1"></script>
+<script src="ready-pro.js?v=2"></script>
 <script>
 /* swipe navigation */
 (function(){
