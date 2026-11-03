@@ -7,7 +7,7 @@
   function blocked(el){
     while(el&&el!==document.body){
       if(el.matches&&el.matches('input,textarea,select,canvas,#jb-stage,.modal-overlay,[data-noswipe]'))return true;
-      if(el.scrollWidth>el.clientWidth+4){var ox=getComputedStyle(el).overflowX;if(ox==='auto'||ox==='scroll')return true;}
+      if(!(el.classList&&el.classList.contains('screen'))&&el.scrollWidth>el.clientWidth+8){var ox=getComputedStyle(el).overflowX;if(ox==='auto'||ox==='scroll')return true;}
       el=el.parentNode;
     }
     return false;
@@ -19,7 +19,7 @@
   document.addEventListener('touchend',function(e){
     if(!ok)return;ok=false;
     var t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;
-    if(Math.abs(dx)<70||Math.abs(dx)<Math.abs(dy)*1.6||Date.now()-st>700)return;
+    if(Math.abs(dx)<50||Math.abs(dx)<Math.abs(dy)*1.2||Date.now()-st>700)return;
     if(typeof currentScreen==='undefined'||typeof go!=='function')return;
     var i=ORDER.indexOf(currentScreen);if(i<0)return;
     /* RTL: finger moves left -> next screen */
@@ -80,4 +80,5 @@
    +'#screen-jobs.active .av-toggle,#screen-services.active .av-toggle{display:flex}'
    +'.av-toggle.on{color:#39ff14;border-color:#39ff14}.av-toggle.off{color:#ff5252;border-color:#ff5252}';
   document.head.appendChild(css);
+  var ts=document.createElement('style');ts.textContent='.screen{touch-action:pan-y}';document.head.appendChild(ts);
 })();
