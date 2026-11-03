@@ -691,6 +691,37 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="script.js"></script>
 <script src="jobs-globe.js"></script>
+<script src="availability.js"></script>
+<script>
+/* swipe navigation */
+(function(){
+  var ORDER=['home','browse','jobs','chatlist','profile'];
+  var sx=0,sy=0,st=0,ok=false;
+  function blocked(el){
+    while(el&&el!==document.body&&el.nodeType===1){
+      if(el.matches('input,textarea,select,canvas,#jb-stage,.modal-overlay,[data-noswipe]'))return true;
+      if(el.scrollWidth>el.clientWidth+8&&el.clientHeight<window.innerHeight*0.5){
+        var ox=getComputedStyle(el).overflowX;if(ox==='auto'||ox==='scroll')return true;}
+      el=el.parentNode;
+    }
+    return false;
+  }
+  document.addEventListener('touchstart',function(e){
+    if(e.touches.length!==1){ok=false;return;}
+    var t=e.touches[0];sx=t.clientX;sy=t.clientY;st=Date.now();ok=!blocked(e.target);
+  },{passive:true,capture:true});
+  document.addEventListener('touchend',function(e){
+    if(!ok)return;ok=false;
+    var t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;
+    if(Math.abs(dx)<50||Math.abs(dx)<Math.abs(dy)*1.2||Date.now()-st>800)return;
+    var cur=(document.querySelector('.screen.active')||{}).id;cur=cur?cur.replace('screen-',''):'';
+    var i=ORDER.indexOf(cur);if(i<0)return;
+    var n=dx<0?i+1:i-1;
+    if(n<0||n>=ORDER.length)return;
+    go(ORDER[n]);
+  },{passive:true,capture:true});
+})();
+</script>
 <script>
 (function(){
   function lum(c){var m=c.match(/[\d.]+/g);if(!m||m.length<3)return null;var a=m.length>3?+m[3]:1;if(a<0.5)return null;

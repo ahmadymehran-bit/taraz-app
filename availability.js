@@ -2,32 +2,6 @@
 (function(){
   var ORDER=['home','browse','jobs','chatlist','profile'];
 
-  /* ---------- swipe ---------- */
-  var sx=0,sy=0,st=0,ok=false;
-  function blocked(el){
-    while(el&&el!==document.body){
-      if(el.matches&&el.matches('input,textarea,select,canvas,#jb-stage,.modal-overlay,[data-noswipe]'))return true;
-      if(!(el.classList&&el.classList.contains('screen'))&&el.scrollWidth>el.clientWidth+8){var ox=getComputedStyle(el).overflowX;if(ox==='auto'||ox==='scroll')return true;}
-      el=el.parentNode;
-    }
-    return false;
-  }
-  document.addEventListener('touchstart',function(e){
-    if(e.touches.length!==1){ok=false;return;}
-    var t=e.touches[0];sx=t.clientX;sy=t.clientY;st=Date.now();ok=!blocked(e.target);
-  },{passive:true});
-  document.addEventListener('touchend',function(e){
-    if(!ok)return;ok=false;
-    var t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;
-    if(Math.abs(dx)<50||Math.abs(dx)<Math.abs(dy)*1.2||Date.now()-st>700)return;
-    if(typeof currentScreen==='undefined'||typeof go!=='function')return;
-    var i=ORDER.indexOf(currentScreen);if(i<0)return;
-    /* RTL: finger moves left -> next screen */
-    var n=dx<0?i+1:i-1;
-    if(n<0||n>=ORDER.length)return;
-    go(ORDER[n]);
-  },{passive:true});
-
   /* ---------- availability toggle ---------- */
   var KEY=function(p){return 'ready_profile_'+p;};
   var ICON_ON='<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M2 21h4V9H2v12zm20-11a2 2 0 0 0-2-2h-6.3l1-4.6v-.3a1.5 1.5 0 0 0-.4-1L13.2 1 7.6 6.6A2 2 0 0 0 7 8v11a2 2 0 0 0 2 2h9a2 2 0 0 0 1.8-1.2l3-7A2 2 0 0 0 23 12v-2z"/></svg>';
@@ -80,5 +54,5 @@
    +'#screen-jobs.active .av-toggle,#screen-services.active .av-toggle{display:flex}'
    +'.av-toggle.on{color:#39ff14;border-color:#39ff14}.av-toggle.off{color:#ff5252;border-color:#ff5252}';
   document.head.appendChild(css);
-  var ts=document.createElement('style');ts.textContent='.screen{touch-action:pan-y}';document.head.appendChild(ts);
+  
 })();
