@@ -691,7 +691,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="script.js"></script>
 <script src="jobs-globe.js"></script>
-<script src="availability.js"></script>
+<script src="availability.js?v=70"></script>
 <script>
 /* swipe navigation */
 (function(){
@@ -718,7 +718,11 @@
     var i=ORDER.indexOf(cur);if(i<0)return;
     var n=dx<0?i+1:i-1;
     if(n<0||n>=ORDER.length)return;
+    var now=Date.now();if(now-(window.__swLast||0)<500)return;window.__swLast=now;
+    e.stopPropagation();
     go(ORDER[n]);
+    var el=document.getElementById('screen-'+ORDER[n]);
+    if(el&&el.animate)el.animate([{transform:'translateX('+(dx<0?'-':'')+'40px)',opacity:.4},{transform:'none',opacity:1}],{duration:220,easing:'ease-out'});
   },{passive:true,capture:true});
 })();
 </script>
