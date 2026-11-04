@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>تاراز</title>
+<link rel="preload" href="fonts/Vazirmatn-Regular.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="fonts.css?v=1">
+<style>
+:root{
+  --bg:#07200f; --neon:#39ff14; --glass:rgba(255,255,255,.1);
+  --card:rgba(20,92,45,.45); --text:#eafbe9; --muted:#9fc3a6; --gold:#f3c33c;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--text);font-family:'Vazirmatn',Tahoma,sans-serif;min-height:100%}
+.app{position:relative;max-width:480px;margin:0 auto;min-height:100vh;padding-bottom:120px;overflow:hidden;
+  background:radial-gradient(120% 60% at 50% 40%,#0d4a22 0%,var(--bg) 70%)}
+
+/* ---------- Header ---------- */
+.hero{position:relative;width:100%;aspect-ratio:1024/692;background:url(image/header-bg-top.webp) center/cover no-repeat}
+.hero::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:28%;
+  background:linear-gradient(to bottom,rgba(7,32,15,0),var(--bg))}
+/* orbits: three floating icons rotating on elliptical paths */
+.orbit{position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);pointer-events:none;z-index:2}
+.tilt{width:100%;height:100%;transform:scaleY(var(--sy))}
+.spin{position:relative;width:100%;height:100%;animation:rot var(--t) linear infinite;animation-delay:var(--d,0s)}
+.orb{position:absolute;left:50%;top:0;width:var(--s);height:var(--s);margin:calc(var(--s) / -2) 0 0 calc(var(--s) / -2);
+  border-radius:50%;display:grid;place-items:center;
+  background:radial-gradient(circle at 35% 30%,rgba(120,255,140,.35),rgba(20,110,50,.45) 60%,rgba(7,50,25,.5));
+  border:1.5px solid rgba(160,255,170,.45);box-shadow:0 0 18px rgba(57,255,20,.35),inset 0 0 14px rgba(255,255,255,.12);
+  backdrop-filter:blur(2px);
+  animation:counter var(--t) linear infinite;animation-delay:var(--d,0s)}
+.orb svg{width:58%;height:58%}
+.o1{width:92%;aspect-ratio:2.7;--sy:.37;--t:18s;--s:23%}
+.o2{width:74%;aspect-ratio:2.7;--sy:.37;--t:24s;--d:-8s;--s:19%;top:50%}
+.o3{width:56%;aspect-ratio:2.7;--sy:.37;--t:14s;--d:-5s;--s:17%;top:53%}
+@keyframes rot{to{transform:rotate(360deg)}}
+/* cancel rotation + the ellipse's vertical squash so the icon stays upright and round */
+@keyframes counter{from{transform:scaleY(calc(1 / var(--sy))) rotate(0)}to{transform:scaleY(calc(1 / var(--sy))) rotate(-360deg)}}
+
+/* ---------- Content ---------- */
+.content{position:relative;z-index:3;padding:0 18px;margin-top:-6px}
+.search{display:flex;align-items:center;gap:12px;height:58px;padding:0 20px;border-radius:30px;
+  background:linear-gradient(180deg,rgba(26,110,52,.55),rgba(14,70,33,.55));
+  border:1px solid var(--glass);box-shadow:0 8px 26px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.12)}
+.search input{flex:1;min-width:0;background:none;border:0;outline:0;color:var(--text);font:500 16px 'Vazirmatn';text-align:right}
+.search input::placeholder{color:#a9c9ae}
+.search svg{width:28px;height:28px;color:#4fd68a;flex:none}
+
+.chips{display:flex;gap:10px;margin-top:22px;overflow-x:auto;scrollbar-width:none;padding:6px 2px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;display:flex;align-items:center;gap:8px;height:44px;padding:0 18px;border-radius:24px;cursor:pointer;
+  color:var(--text);font:500 14px 'Vazirmatn';background:rgba(14,70,33,.55);border:1px solid var(--glass)}
+.chip svg{width:20px;height:20px}
+.chip.active{font-weight:800;border:1.5px solid var(--neon);background:rgba(30,120,50,.45);
+  box-shadow:0 0 14px rgba(57,255,20,.55),inset 0 0 10px rgba(57,255,20,.2)}
+
+.card{display:flex;align-items:center;gap:14px;margin-top:22px;padding:14px;border-radius:26px;cursor:pointer;
+  background:linear-gradient(180deg,rgba(26,110,52,.5),rgba(12,64,30,.55));border:1px solid var(--glass);
+  box-shadow:0 10px 28px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.1)}
+.card img{width:112px;height:112px;border-radius:20px;object-fit:cover;flex:none;box-shadow:0 4px 14px rgba(0,0,0,.4)}
+.card .info{flex:1;min-width:0}
+.card h3{font:800 17px/1.5 'Vazirmatn'}
+.card p{margin-top:6px;font:400 13px/1.8 'Vazirmatn';color:var(--muted)}
+.meta{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:12px;color:var(--muted)}
+.meta .rate{display:flex;align-items:center;gap:4px;color:#fff;font-weight:700;font-size:16px}
+.meta .rate svg{width:18px;height:18px;color:var(--gold)}
+.meta .sep{width:1px;height:18px;background:var(--glass)}
+.meta .req{display:flex;align-items:center;gap:5px}
+.go{flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.1);color:#fff}
+.go svg{width:20px;height:20px;transform:scaleX(-1)}
+
+/* ---------- Bottom nav (glass) ---------- */
+.nav{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:20;
+  width:min(calc(100% - 28px),452px);height:84px;display:flex;justify-content:space-around;align-items:center;
+  border-radius:42px;background:rgba(18,84,40,.38);border:1px solid var(--glass);
+  -webkit-backdrop-filter:blur(18px) saturate(140%);backdrop-filter:blur(18px) saturate(140%);
+  box-shadow:0 10px 30px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.15)}
+.nav a{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;color:#b8cdbb;
+  text-decoration:none;font:500 14px 'Vazirmatn';padding:8px 0}
+.nav a svg{width:34px;height:34px}
+.nav a.active{color:var(--neon);font-weight:800}
+.nav a.active svg{filter:drop-shadow(0 0 8px rgba(57,255,20,.7))}
+.nav a.active::after{content:"";position:absolute;bottom:-14px;width:80px;height:4px;border-radius:4px;background:var(--neon);box-shadow:0 0 10px var(--neon)}
+
+@media (prefers-reduced-motion:reduce){.spin,.orb{animation:none}}
+</style>
+</head>
+<body>
+<main class="app">
+
+  <section class="hero" aria-label="تاراز">
+    <!-- مدار ۱: تراکتور -->
+    <div class="orbit o1"><div class="tilt"><div class="spin">
+      <div class="orb"><svg viewBox="0 0 64 64" fill="none" stroke="#f3c33c" stroke-width="3" stroke-linejoin="round"><path d="M8 40V22h16l6 10h14V18h6v22"/><circle cx="18" cy="44" r="9" fill="#f3c33c" fill-opacity=".25"/><circle cx="48" cy="46" r="6"/></svg></div>
+    </div></div></div>
+    <!-- مدار ۲: گوشی پزشکی -->
+    <div class="orbit o2"><div class="tilt"><div class="spin">
+      <div class="orb"><svg viewBox="0 0 64 64" fill="none" stroke="#f3c33c" stroke-width="3.5" stroke-linecap="round"><path d="M18 8v18a10 10 0 0 0 20 0V8"/><path d="M28 36v8a10 10 0 0 0 20 0v-6"/><circle cx="48" cy="32" r="5"/></svg></div>
+    </div></div></div>
+    <!-- مدار ۳: گندم -->
+    <div class="orbit o3"><div class="tilt"><div class="spin">
+      <div class="orb"><svg viewBox="0 0 64 64" fill="#f3c33c"><path d="M32 58V24" stroke="#f3c33c" stroke-width="3"/><path d="M32 8c5 5 5 10 0 15-5-5-5-10 0-15zM32 24c8 0 12-4 12-10-8 0-12 4-12 10zM32 24c-8 0-12-4-12-10 8 0 12 4 12 10zM32 38c8 0 12-4 12-10-8 0-12 4-12 10zM32 38c-8 0-12-4-12-10 8 0 12 4 12 10z"/></svg></div>
+    </div></div></div>
+  </section>
+
+  <div class="content">
+    <label class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+      <input type="search" placeholder="جستجو در خدمات..." aria-label="جستجو">
+    </label>
+
+    <div class="chips" role="tablist">
+      <button class="chip active" role="tab"><svg viewBox="0 0 24 24" fill="none" stroke="#39ff14" stroke-width="1.8" stroke-linecap="round"><path d="M5 19c0-8 5-14 14-14 0 9-6 14-14 14zM5 19c3-5 6-8 10-10"/></svg>همه</button>
+      <button class="chip" role="tab"><svg viewBox="0 0 24 24" fill="#f3c33c"><path d="M12 22V9M12 2c2 2 2 4 0 6-2-2-2-4 0-6zM12 9c3 0 5-2 5-4-3 0-5 2-5 4zM12 9c-3 0-5-2-5-4 3 0 5 2 5 4zM12 15c3 0 5-2 5-4-3 0-5 2-5 4zM12 15c-3 0-5-2-5-4 3 0 5 2 5 4z"/></svg>کشاورزی</button>
+      <button class="chip" role="tab"><svg viewBox="0 0 24 24" fill="none" stroke="#39d98a" stroke-width="1.8" stroke-linecap="round"><path d="M6 3v6a4 4 0 0 0 8 0V3M10 13v2a5 5 0 0 0 10 0v-2"/><circle cx="20" cy="11" r="2"/></svg>دامپزشکی</button>
+      <button class="chip" role="tab"><svg viewBox="0 0 24 24" fill="none" stroke="#b8cdbb" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>خدمات دیگر</button>
+    </div>
+
+    <article class="card">
+      <img src="image/service-tractor.webp" alt="تراکتور در مزرعه">
+      <div class="info">
+        <h3>خدمات کشاورزی و دامپزشکی</h3>
+        <p>مشاوره، خدمات و پشتیبانی تخصصی برای کشاورزان و دامداران</p>
+        <div class="meta">
+          <span class="rate"><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.5 7 .8-5.2 4.8 1.5 7L12 17.600 5.700 21.100l1.500-7L2 9.300l7-.8z"/></svg>4.8</span>
+          <span class="sep"></span>
+          <span class="req"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="8" r="3.500"/><circle cx="17" cy="9" r="2.500"/><path d="M2 20c0-4 3-6 7-6s7 2 7 6zM16 14c3 0 6 1.500 6 5h-4"/></svg>بیش از هزار درخواست</span>
+        </div>
+      </div>
+      <span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"/></svg></span>
+    </article>
+  </div>
+
+  <nav class="nav" aria-label="ناوبری">
+    <a href="#" class="active"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3 2 12h3v8h5v-5h4v5h5v-8h3z"/></svg>خانه</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.600"><rect x="3" y="3" width="7.500" height="7.500" rx="2"/><rect x="13.500" y="3" width="7.500" height="7.500" rx="2"/><rect x="3" y="13.500" width="7.500" height="7.500" rx="2"/><rect x="13.500" y="13.500" width="7.500" height="7.500" rx="2"/></svg>خدمات</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.600" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 1 1 12 0c0 6 2.500 8 2.500 8h-17S6 15 6 9M10 21a2 2 0 0 0 4 0"/></svg>اطلاعیه‌ها</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.600" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.500 3.500-7 8-7s8 2.500 8 7"/></svg>پروفایل</a>
+  </nav>
+</main>
+</body>
+</html>
