@@ -170,17 +170,24 @@
   /* کلید دو حالته لایک / دیس‌لایک */
   function paintSw(){
     var on=!!prof().is_ready;
-    try{if(typeof _isReady==='boolean'&&document.getElementById('ready-status-text').textContent.indexOf('آماده به کار هستید')>=0)on=true;else if(document.getElementById('ready-status-text').textContent.indexOf('استراحت')>=0)on=false;}catch(e){}
     document.querySelectorAll('#rp-sw button').forEach(function(b){b.classList.toggle('on',(b.dataset.v==='1')===on);});
+    var t=document.getElementById('ready-status-text');
+    if(t)t.textContent=on?'شما آماده به کار هستید':'شما در حالت استراحت هستید';
   }
   function setReady(v){
     var u=DB.user;if(!u){go('auth');return;}
-    var p=prof();p.is_ready=v;p._off=!v;DB._set(KEY(u.phone),p);
+    var p=prof();
+    if(!p.service_type){toast('ابتدا مراحل را تکمیل و ذخیره کنید');return;}
+    p.is_ready=v;p._off=!v;p.phone=u.phone;p.name=p.name||u.name;
+    DB._set(KEY(u.phone),p);
     try{_isReady=v;}catch(e){}
-    try{renderReadyProfile();}catch(e){}
-    setTimeout(paintSw,50);toast(v?'👍 شما آماده به کار هستید':'👎 شما غیرفعال هستید');
-    if(p.service_type){fetch(API_BASE+'/api/ready',{method:'POST',headers:authHeaders(),body:JSON.stringify(p)}).catch(function(){});}
-    else toast('بعد از تکمیل مراحل، اطلاعات ذخیره می‌شود');
+    paintSw();
+    try{window.refreshAv&&window.refreshAv();}catch(e){}
+    fetch(API_BASE+'/api/ready',{method:'POST',headers:authHeaders(),body:JSON.stringify(p)}).then(function(r){
+      if(r.status===401)toast('⚠ نشست منقضی شده؛ دوباره وارد شوید');
+      else if(!r.ok)toast('⚠ ذخیره روی سرور انجام نشد ('+r.status+')');
+      else toast(v?'👍 شما آماده به کار هستید':'👎 شما غیرفعال هستید');
+    }).catch(function(){toast('⚠ اتصال به سرور برقرار نشد');});
   }
 
   function fill(){
