@@ -482,7 +482,7 @@ if(!/^09\d{9}$/.test(phone)){ toast('شماره معتبر وارد کن'); retu
 if(!password || password.length < 6){ toast('پسورد حداقل ۶ کاراکتر'); return; }
 var result = null; try { result = await api.loginWithPassword(phone, password); } catch(e){}
 if(result && result.ok && result.user){
-if(result.token){ try{ localStorage.setItem('taraz.token', result.token); }catch(e){} }
+try{ localStorage.removeItem('taraz.token'); }catch(e){} if(result.token){ try{ localStorage.setItem('taraz.token', result.token); }catch(e){} }
 DB.user = { phone: result.user.phone, name: result.user.name, role: result.user.role, avatar: result.user.avatar || null, joinedAt: Number(result.user.joined_at) || Date.now() };
 if(result.user.avatar && result.user.avatar.length < 100000){ DB.user.avatar = result.user.avatar; }
 toast('✓ خوش آمدید ' + result.user.name); go('home');
@@ -497,7 +497,7 @@ if(!password || password.length < 6){ toast('پسورد حداقل ۶ کاراک
 if(password !== password2){ toast('پسوردها یکسان نیستند'); return; }
 var result = null; try { result = await api.register(phone, name, role, password); } catch(e){}
 if(result && result.ok && result.user){
-if(result.token){ try{ localStorage.setItem('taraz.token', result.token); }catch(e){} }
+try{ localStorage.removeItem('taraz.token'); }catch(e){} if(result.token){ try{ localStorage.setItem('taraz.token', result.token); }catch(e){} }
 DB.user = { phone: result.user.phone, name: result.user.name, role: result.user.role, avatar: result.user.avatar || null, joinedAt: Number(result.user.joined_at) || Date.now() };
 var roles = DB.userRoles; if(!roles[phone]) roles[phone] = []; if(roles[phone].indexOf(role) < 0) roles[phone].push(role); DB.userRoles = roles;
 toast('✓ ثبت‌نام موفق'); go('home');
@@ -584,6 +584,8 @@ async function executeDeleteAccount() {
   }
 }
 
+function tokenPhone(){try{var t=localStorage.getItem('taraz.token');if(!t)return null;var b=t.split('.')[0].replace(/-/g,'+').replace(/_/g,'/');while(b.length%4)b+='=';return JSON.parse(atob(b)).p||null;}catch(e){return null;}}
+function tokenMatchesUser(){var p=tokenPhone();return !!(DB.user&&p&&p===DB.user.phone);}
 function authHeaders(){var h={'Content-Type':'application/json'};try{var t=localStorage.getItem('taraz.token');if(t)h['Authorization']='Bearer '+t;}catch(e){}return h;}
 function logout(){try{localStorage.removeItem('taraz.token')}catch(e){}DB.user=null;currentConvId=null;try{closeChatChannel()}catch(e){}currentCapacityId=null;go('auth')}
 var _mapPicker = null; var _mapMarker = null; var _tempListingLocation = null;
@@ -1240,7 +1242,7 @@ var cFav = document.getElementById('cnt-favorites'); if(cFav) cFav.textContent =
 renderProfileStats();
 }
 async function renderProfileStats(){
-if(!DB.user || !localStorage.getItem('taraz.token')) return;
+if(!DB.user || !tokenMatchesUser()) return;
 var u = DB.user; if(!u) return;
 var listingsResult = null; try { listingsResult = await api.getListings(); } catch(e) {}
 var allListings = (listingsResult && listingsResult.listings) ? listingsResult.listings : [];
@@ -2224,7 +2226,7 @@ var api = {
   createCapacity: async function(cap){ return this._fetch('/api/capacities', { method: 'POST', body: JSON.stringify(cap) }); },
   getCapacities: async function(){ return this._fetch('/api/capacities'); },
   createBooking: async function(b){ return this._fetch('/api/bookings', { method: 'POST', body: JSON.stringify(b) }); },
-  getBookings: async function(phone){ if(!localStorage.getItem('taraz.token')) return null; return this._fetch('/api/bookings/' + encodeURIComponent(phone)); },
+  getBookings: async function(phone){ if(!tokenMatchesUser()) return null; return this._fetch('/api/bookings/' + encodeURIComponent(phone)); },
   createConversation: async function(c){ return this._fetch('/api/conversations', { method: 'POST', body: JSON.stringify(c) }); },
   getConversations: async function(phone){ return this._fetch('/api/conversations/' + encodeURIComponent(phone)); },
   createMessage: async function(m){ return this._sendRaw('/api/messages', { method: 'POST', body: JSON.stringify(m) }); },
@@ -2253,7 +2255,7 @@ var api = {
   },
   getRatings: async function(phone){ return this._fetch('/api/ratings/' + encodeURIComponent(phone)); },
   createMission: async function(m){ return this._fetch('/api/missions', { method: 'POST', body: JSON.stringify(m) }); },
-  getMissions: async function(phone){ if(!localStorage.getItem('taraz.token')) return null; return this._fetch('/api/missions/' + encodeURIComponent(phone)); },
+  getMissions: async function(phone){ if(!tokenMatchesUser()) return null; return this._fetch('/api/missions/' + encodeURIComponent(phone)); },
   createNotification: async function(n){ return this._fetch('/api/notifications', { method: 'POST', body: JSON.stringify(n) }); },
   getNotifications: async function(phone){ return this._fetch('/api/notifications/' + encodeURIComponent(phone)); },
   clearNotifs: async function(phone, ids){ return this._fetch('/api/notifications/clear', { method: 'POST', body: JSON.stringify({ phone: phone, ids: ids }) }); },
@@ -2463,7 +2465,7 @@ async function submitSellSub(){
 window.addEventListener('load', function () {
   setTimeout(function () {
     try {
-      if (DB.user && !localStorage.getItem('taraz.token')) { toast('برای امنیت بیشتر دوباره وارد شو'); logout(); }
+      if (DB.user && !tokenMatchesUser()) { toast('برای امنیت بیشتر دوباره وارد شو'); logout(); }
     } catch (e) {}
   }, 800);
 });
