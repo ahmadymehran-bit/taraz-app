@@ -45,7 +45,7 @@
     _jb.target=.003;
     var all=await fetching;
     var out=all.filter(function(x){
-      if(!q)return false;
+      if(!q)return true;
       var d=x.p.details||{};
       return norm([x.p.name,label(x),x.p.region,x.p.notes,d.profession,d.work_area].join(' ')).indexOf(q)>-1;
     });
@@ -57,8 +57,13 @@
       list.innerHTML=out.map(card).join('');
     }else{
       jbIdleItems();
-      stt.textContent=qRaw?'فرد آماده‌ای برای «'+qRaw+'» پیدا نشد':'عبارتی برای جستجو وارد کنید';
+      stt.textContent=qRaw?'فرد آماده‌ای برای «'+qRaw+'» پیدا نشد':'فعلاً کسی آماده به کار نیست';
     }
     _jb.busy=false;
   };
+  var _go=window.go;
+  if(typeof _go==='function'&&!window.__jsWrapped){window.__jsWrapped=1;
+    window.go=function(s){var r=_go.apply(this,arguments);
+      if(s==='jobs')setTimeout(function(){var q=document.getElementById('jb-q');if(q&&!q.value.trim())window.jbSearch(null);},300);
+      return r;};}
 })();
