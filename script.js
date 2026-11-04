@@ -1240,6 +1240,7 @@ var cFav = document.getElementById('cnt-favorites'); if(cFav) cFav.textContent =
 renderProfileStats();
 }
 async function renderProfileStats(){
+if(!DB.user || !localStorage.getItem('taraz.token')) return;
 var u = DB.user; if(!u) return;
 var listingsResult = null; try { listingsResult = await api.getListings(); } catch(e) {}
 var allListings = (listingsResult && listingsResult.listings) ? listingsResult.listings : [];
@@ -2223,7 +2224,7 @@ var api = {
   createCapacity: async function(cap){ return this._fetch('/api/capacities', { method: 'POST', body: JSON.stringify(cap) }); },
   getCapacities: async function(){ return this._fetch('/api/capacities'); },
   createBooking: async function(b){ return this._fetch('/api/bookings', { method: 'POST', body: JSON.stringify(b) }); },
-  getBookings: async function(phone){ return this._fetch('/api/bookings/' + encodeURIComponent(phone)); },
+  getBookings: async function(phone){ if(!localStorage.getItem('taraz.token')) return null; return this._fetch('/api/bookings/' + encodeURIComponent(phone)); },
   createConversation: async function(c){ return this._fetch('/api/conversations', { method: 'POST', body: JSON.stringify(c) }); },
   getConversations: async function(phone){ return this._fetch('/api/conversations/' + encodeURIComponent(phone)); },
   createMessage: async function(m){ return this._sendRaw('/api/messages', { method: 'POST', body: JSON.stringify(m) }); },
@@ -2252,7 +2253,7 @@ var api = {
   },
   getRatings: async function(phone){ return this._fetch('/api/ratings/' + encodeURIComponent(phone)); },
   createMission: async function(m){ return this._fetch('/api/missions', { method: 'POST', body: JSON.stringify(m) }); },
-  getMissions: async function(phone){ return this._fetch('/api/missions/' + encodeURIComponent(phone)); },
+  getMissions: async function(phone){ if(!localStorage.getItem('taraz.token')) return null; return this._fetch('/api/missions/' + encodeURIComponent(phone)); },
   createNotification: async function(n){ return this._fetch('/api/notifications', { method: 'POST', body: JSON.stringify(n) }); },
   getNotifications: async function(phone){ return this._fetch('/api/notifications/' + encodeURIComponent(phone)); },
   clearNotifs: async function(phone, ids){ return this._fetch('/api/notifications/clear', { method: 'POST', body: JSON.stringify({ phone: phone, ids: ids }) }); },
