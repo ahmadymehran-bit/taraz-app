@@ -159,7 +159,7 @@
     var ok=false;
     try{
       var r=await fetch(API_BASE+'/api/ready',{method:'POST',headers:authHeaders(),body:JSON.stringify(p)});
-      ok=r.ok;toast(r.ok?'✓ اطلاعات ذخیره شد':'⚠ فقط محلی ذخیره شد');
+      ok=r.ok;if(r.status===401){toast('⚠ نشست شما منقضی شده؛ دوباره وارد شوید تا آگهی برای دیگران نمایش داده شود');setTimeout(function(){try{logout();}catch(e){go('auth');}},1800);return;}toast(r.ok?'✓ اطلاعات ذخیره شد':'⚠ ذخیره روی سرور انجام نشد ('+r.status+')');
     }catch(e){toast('⚠ فقط محلی ذخیره شد');}
     try{_isReady=p.is_ready;renderReadyProfile();}catch(x){}setTimeout(paintSw,50);
     st.editing=false;try{fill();}catch(e){}
