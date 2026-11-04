@@ -21,6 +21,10 @@
       b.addEventListener('click',toggle);
       scr.appendChild(b);
     }
+    if(!scr.querySelector('.av-gear')){
+      var g=document.createElement('button');g.type='button';g.className='av-gear';g.textContent='⚙️';g.setAttribute('aria-label','تنظیمات آمادگی');
+      g.addEventListener('click',function(){go('ready');});scr.appendChild(g);
+    }
     return b;
   }
   function refresh(){['screen-jobs','screen-services'].forEach(function(id){var b=ensure(id);if(b)paint(b);});}
@@ -31,7 +35,7 @@
       toast('ابتدا نوع خدمت خود را در «اعلام آمادگی» ثبت کنید');
       go('ready');return;
     }
-    p.is_ready=!p.is_ready;
+    p.is_ready=!p.is_ready;p._off=!p.is_ready;try{_isReady=p.is_ready;}catch(e){}
     DB._set(KEY(u.phone),p);
     refresh();
     toast(p.is_ready?'👍 شما آماده به کار هستید':'👎 شما در حال حاضر غیرفعال هستید');
@@ -50,7 +54,7 @@
   setTimeout(refresh,500);
 
   var css=document.createElement('style');
-  css.textContent='.av-toggle{position:fixed;left:14px;top:calc(env(safe-area-inset-top,0px) + 12px);z-index:30;display:none;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.15);background:rgba(7,32,15,.85);backdrop-filter:blur(8px);font:700 12px Vazirmatn,Tahoma,sans-serif}'
+  css.textContent='.av-gear{position:fixed;left:14px;top:calc(env(safe-area-inset-top,0px) + 58px);z-index:30;display:none;width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.15);background:rgba(0,0,0,.4);align-items:center;justify-content:center;font-size:18px}#screen-jobs.active .av-gear,#screen-services.active .av-gear{display:flex}.av-toggle{position:fixed;left:14px;top:calc(env(safe-area-inset-top,0px) + 12px);z-index:30;display:none;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.15);background:rgba(7,32,15,.85);backdrop-filter:blur(8px);font:700 12px Vazirmatn,Tahoma,sans-serif}'
    +'#screen-jobs.active .av-toggle,#screen-services.active .av-toggle{display:flex}'
    +'.av-toggle.on{color:#39ff14;border-color:#39ff14}.av-toggle.off{color:#ff5252;border-color:#ff5252}';
   document.head.appendChild(css);
