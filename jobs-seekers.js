@@ -3,7 +3,7 @@
 (function(){
   function allTypes(){
     var out=[];
-    (window.SERVICES||[]).forEach(function(g){(g.types||[]).forEach(function(t){out.push({sv:g,t:t})})});
+    (typeof SERVICES!=='undefined'?SERVICES:[]).forEach(function(g){(g.types||[]).forEach(function(t){out.push({sv:g,t:t})})});
     return out;
   }
   function norm(s){ return (typeof rdNorm==='function'?rdNorm(String(s||'')):String(s||'')).toLowerCase(); }
