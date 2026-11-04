@@ -133,7 +133,13 @@
     save();
   }
 
+  var saving=false;
   async function save(){
+    if(saving)return;saving=true;
+    try{await save0();}catch(e){toast('⚠ خطا در ذخیره: '+(e&&e.message||e));}
+    saving=false;
+  }
+  async function save0(){
     var u=DB.user;if(!u){go('auth');return;}
     var type=$('ready-service-type').value;
     var d={scope:st.scope,auto:st.auto,lat:st.lat,lng:st.lng,slots:st.slots,cancel:{free_hours:24},photo:st.photo,
@@ -149,13 +155,15 @@
     var region=st.scope==='country'?'کل کشور':(st.auto&&!d.province?'موقعیت خودکار':[d.village,d.county,d.province].filter(Boolean).join('، '));
     var old=prof();
     var p={phone:u.phone,name:u.name,is_ready:old._off?false:true,_off:!!old._off,done:true,service_type:type,region:region,notes:$('ready-notes').value.trim(),details:d};
-    DB._set(KEY(u.phone),p);
+    try{DB._set(KEY(u.phone),p);}catch(e){}
+    var ok=false;
     try{
       var r=await fetch(API_BASE+'/api/ready',{method:'POST',headers:authHeaders(),body:JSON.stringify(p)});
-      toast(r.ok?'✓ اطلاعات ذخیره شد':'⚠ فقط محلی ذخیره شد');
+      ok=r.ok;toast(r.ok?'✓ اطلاعات ذخیره شد':'⚠ فقط محلی ذخیره شد');
     }catch(e){toast('⚠ فقط محلی ذخیره شد');}
     try{_isReady=p.is_ready;renderReadyProfile();}catch(x){}setTimeout(paintSw,50);
-    st.editing=false;fill();
+    st.editing=false;try{fill();}catch(e){}
+    setTimeout(function(){go('jobs');},700);
   }
   window.saveReadyProfile=save;
 
