@@ -21,10 +21,7 @@
       b.addEventListener('click',toggle);
       scr.appendChild(b);
     }
-    if(!scr.querySelector('.av-gear')){
-      var g=document.createElement('button');g.type='button';g.className='av-gear';g.textContent='⚙️';g.setAttribute('aria-label','تنظیمات آمادگی');
-      g.addEventListener('click',function(){go('ready');});scr.appendChild(g);
-    }
+
     return b;
   }
   function refresh(){['screen-jobs','screen-services'].forEach(function(id){var b=ensure(id);if(b)paint(b);});}
@@ -32,8 +29,7 @@
     var u=DB.user;if(!u)return;
     var p=prof();
     if(!p||!p.service_type){
-      toast('ابتدا نوع خدمت خود را در «اعلام آمادگی» ثبت کنید');
-      go('ready');return;
+      toast('ابتدا از «پروفایل ← اعلام آمادگی» تنظیمات را یک بار ثبت کنید');return;
     }
     p.is_ready=!p.is_ready;p._off=!p.is_ready;try{_isReady=p.is_ready;}catch(e){}
     DB._set(KEY(u.phone),p);
