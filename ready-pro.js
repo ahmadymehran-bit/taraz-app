@@ -148,13 +148,14 @@
     if(amt)d.rate={amount:amt,mode:st.rateMode,unit:unitOf(type)};
     var region=st.scope==='country'?'کل کشور':(st.auto&&!d.province?'موقعیت خودکار':[d.village,d.county,d.province].filter(Boolean).join('، '));
     var old=prof();
-    var p={phone:u.phone,name:u.name,is_ready:!!old.is_ready,service_type:type,region:region,notes:$('ready-notes').value.trim(),details:d};
+    var p={phone:u.phone,name:u.name,is_ready:old._off?false:true,_off:!!old._off,done:true,service_type:type,region:region,notes:$('ready-notes').value.trim(),details:d};
     DB._set(KEY(u.phone),p);
     try{
       var r=await fetch(API_BASE+'/api/ready',{method:'POST',headers:authHeaders(),body:JSON.stringify(p)});
       toast(r.ok?'✓ اطلاعات ذخیره شد':'⚠ فقط محلی ذخیره شد');
     }catch(e){toast('⚠ فقط محلی ذخیره شد');}
-    if(!p.is_ready)toast('برای دریافت کار، کلید 👍 را روشن کنید');
+    try{_isReady=p.is_ready;renderReadyProfile();}catch(x){}setTimeout(paintSw,50);
+    st.editing=false;fill();
   }
   window.saveReadyProfile=save;
 
@@ -166,7 +167,7 @@
   }
   function setReady(v){
     var u=DB.user;if(!u){go('auth');return;}
-    var p=prof();p.is_ready=v;DB._set(KEY(u.phone),p);
+    var p=prof();p.is_ready=v;p._off=!v;DB._set(KEY(u.phone),p);
     try{_isReady=v;}catch(e){}
     try{renderReadyProfile();}catch(e){}
     setTimeout(paintSw,50);toast(v?'👍 شما آماده به کار هستید':'👎 شما غیرفعال هستید');
@@ -184,6 +185,22 @@
     $('ready-notes').value=p.notes||'';
     $('rp-geo-out').textContent=st.auto?('✓ موقعیت ثبت‌شده ('+st.lat+', '+st.lng+')'):'';
     paint();
+    summary();
+  }
+
+  function summary(){
+    var host=$('ready-pro');if(!host)return;
+    var p=prof(),box=$('rp-sum');
+    if(!box){box=document.createElement('div');box.id='rp-sum';host.parentNode.insertBefore(box,host);
+      box.onclick=function(e){if(e.target.closest('#rp-edit')){st.editing=true;summary();}};}
+    var show=!!p.done&&!st.editing;
+    host.style.display=show?'none':'';box.style.display=show?'':'none';
+    if(!show)return;
+    var d=p.details||{},t=$('ready-service-type'),nm=t&&t.options[t.selectedIndex]?t.options[t.selectedIndex].text:'';
+    box.innerHTML='<div class="card rp-card" style="margin:0 16px!important"><h3>✅ اطلاعات شما ثبت شده</h3>'
+      +'<div class="rp-small">'+esc(nm)+(p.region?' — '+esc(p.region):'')+'</div>'
+      +'<div class="rp-small">برای شروع یا توقف دریافت کار، فقط از کلید 👍 / 👎 بالا استفاده کنید.</div>'
+      +'<button type="button" class="btn-outline" id="rp-edit" style="min-height:46px">✏️ ویرایش اطلاعات</button></div>';
   }
 
   var css=document.createElement('style');
