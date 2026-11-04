@@ -27,11 +27,12 @@
   function card(x){
     var p=x.p, d=p.details||{};
     var region=p.region||[d.province,d.county,d.village].filter(Boolean).join('، ');
-    return '<div class="seeker-card" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:12px;margin:8px 0;color:#fff">'
+    var img=(typeof d.photo==='string'&&d.photo.indexOf('data:image/')===0)?'<img src="'+d.photo+'" alt="" style="width:56px;height:56px;border-radius:14px;object-fit:cover;flex:none;border:1px solid rgba(255,255,255,.15)">':'<div style="width:56px;height:56px;border-radius:14px;flex:none;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:26px">'+esc(x.t.icon||x.sv.icon||'👤')+'</div>';
+    return '<div class="seeker-card" style="display:flex;gap:12px;align-items:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:12px;margin:8px 0;color:#fff">'+img+'<div style="flex:1;min-width:0">'
       +'<div style="font-weight:700;color:#39ff14">'+esc(p.name||'بدون نام')+'</div>'
       +'<div style="font-size:13px;margin-top:4px">'+esc(label(x))+'</div>'
       +(region?'<div style="font-size:12px;opacity:.7;margin-top:4px">📍 '+esc(region)+'</div>':'')
-      +'</div>';
+      +'</div></div>';
   }
   window.jbSearch=async function(e,fromChip){
     if(e&&e.preventDefault)e.preventDefault();
