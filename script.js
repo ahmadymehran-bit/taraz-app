@@ -2392,15 +2392,37 @@ async function submitPostForm(){
 
 // ===== زیر صفحه فروش: ثبت آگهی ساده دام =====
 var SELL_SUB_LBL='color:#f3f1e6;font-weight:700;display:block;margin-bottom:6px;opacity:1';
+var SS_GROUPS={
+ 'دامدار':['گاو','گوساله','گوسفند','میش / قوچ','بره','بز','بزغاله','سایر دام'],
+ 'باغدار':['سیب','پرتقال','انگور','پسته','گردو','بادام','خرما','سایر میوه'],
+ 'کشاورز':['گندم','جو','برنج','ذرت','یونجه','سیب‌زمینی','پیاز','سایر محصولات'],
+ 'شرکت':['خوراک دام','کود و سم','ماشین‌آلات','سایر تجهیزات'],
+ 'دامپزشک':['ویزیت دام','تزریق و واکسیناسیون','داروی دامی','سایر خدمات']
+};
+var SS_SPEC_HINT={
+ 'دامدار':'نژاد، سن، وزن، وضعیت واکسن و سلامت',
+ 'باغدار':'رقم میوه، سن باغ، میزان برداشت، روش کشت',
+ 'کشاورز':'رقم یا گونه، کیفیت، میزان تولید، زمان برداشت',
+ 'شرکت':'مشخصات محصول، استاندارد، ظرفیت تامین',
+ 'دامپزشک':'تخصص، نوع خدمت، سابقه کاری، محل ارائه خدمات',
+ 'سایر':'توضیح کامل محصول یا خدمت'
+};
+function ssCatChange(sel){
+  var g=(sel.options[sel.selectedIndex].parentNode.label)||'سایر';
+  var lbl=document.getElementById('ss-lbl-1'), inp=document.getElementById('ss-1');
+  if(lbl) lbl.textContent='توضیح تخصصی (ضروری)';
+  if(inp) inp.placeholder='مثلاً: '+(SS_SPEC_HINT[g]||SS_SPEC_HINT['سایر']);
+}
 var SELL_SUB_FIELDS=[
- ['نوع دام','sel',['بز','بزغاله','گوسفند','میش / قوچ','بره','گوساله','گاو','سایر']],
- ['نژاد','txt','مثلاً: زل، لری، سانن'],
+ ['آنچه می‌خواهید بفروشید','txt','مثلاً: گاو شیری، سیب زرد، گندم'],
+ ['توضیح تخصصی (ضروری)','txt','مثلاً: نژاد، سن، وزن، وضعیت واکسن'],
  ['تعداد (رأس)','tel','مثلاً: ۱۰'],
  ['وزن تقریبی (کیلو)','tel','مثلاً: ۴۵'],
  ['سن (ماه)','tel','مثلاً: ۱۲'],
  ['قیمت هر رأس (تومان)','tel','مثلاً: ۸۰۰۰۰۰۰'],
  ['گواهی سلامت / واکسن','sel',['دارم','ندارم']],
- ['منطقه / شهر','txt','مثلاً: اصفهان']
+ ['منطقه / شهر','txt','مثلاً: اصفهان'],
+ ['نوع آگهی‌دهنده','grp']
 ];
 var ssStep=1;
 var SS_TITLES=['عکس و نوع دام','مشخصات دام','قیمت و محل'];
@@ -2416,12 +2438,13 @@ function renderSellSub(){
     var x=SELL_SUB_FIELDS[i], id='ss-'+i, inp;
     if(x[1]==='sel') inp='<select id="'+id+'">'+x[2].map(function(o){return '<option>'+o+'</option>'}).join('')+'</select>';
     else if(x[1]==='tel') inp='<input id="'+id+'" type="tel" inputmode="numeric" placeholder="'+x[2]+'" style="direction:ltr;text-align:left">';
+    else if(x[1]==='grp') inp='<select id="'+id+'" onchange="ssCatChange(this)">'+Object.keys(SS_GROUPS).map(function(g){return '<optgroup label="'+g+'">'+SS_GROUPS[g].map(function(o){return '<option>'+o+'</option>'}).join('')+'</optgroup>'}).join('')+'</select>';
     else inp='<input id="'+id+'" placeholder="'+x[2]+'">';
-    return '<div class="field"><label style="'+SELL_SUB_LBL+'">'+x[0]+'</label>'+inp+'</div>';
+    return '<div class="field"><label id="ss-lbl-'+i+'" style="'+SELL_SUB_LBL+'">'+x[0]+'</label>'+inp+'</div>';
   };
   var note='<div class="field"><label style="'+SELL_SUB_LBL+'">توضیحات (اختیاری)</label><input id="ss-note" placeholder="مثلاً: تازه واکسن خورده، شیرده"></div>';
   var steps=[
-    photoBlockHTML()+fld(0)+fld(1),
+    photoBlockHTML()+fld(0)+fld(8)+fld(1),
     fld(2)+fld(3)+fld(4)+fld(6),
     fld(5)+fld(7)+note
   ];
@@ -2451,9 +2474,11 @@ async function submitSellSub(){
   if(!v[2]){ssStep=2;ssShow();toast('تعداد را وارد کن');return}
   if(!num(v[5])){ssStep=3;ssShow();toast('قیمت را وارد کن');return}
   if(!v[7]){ssStep=3;ssShow();toast('منطقه را وارد کن');return}
-  var title=v[0]+(v[1]?' '+v[1]:'');
+  if(!v[0]){ssStep=1;ssShow();toast('آنچه می‌خواهید بفروشید را بنویسید');return}
+  if(!v[1]){ssStep=1;ssShow();toast('توضیح تخصصی را وارد کن');return}
+  var title=v[0];
   var item={ id:'L'+Date.now(), sellerName:u.name, sellerPhone:u.phone, categoryId:'livestock', title:title,
-    qty:v[2]+' رأس', qtyNum:num(v[2]), price:num(v[5]), region:v[7], desc:[v[1]?'نژاد: '+v[1]:'',num(v[3])?'وزن تقریبی: '+num(v[3])+' کیلو':'',num(v[4])?'سن: '+num(v[4])+' ماه':'',v[6]?'گواهی سلامت/واکسن: '+v[6]:'',document.getElementById('ss-note').value.trim()?'توضیحات: '+document.getElementById('ss-note').value.trim():''].filter(Boolean).join('\n'),
+    qty:v[2]+' رأس', qtyNum:num(v[2]), price:num(v[5]), region:v[7], desc:['دسته: '+v[8],'توضیح: '+v[1],num(v[3])?'وزن تقریبی: '+num(v[3])+' کیلو':'',num(v[4])?'سن: '+num(v[4])+' ماه':'',v[6]?'گواهی سلامت/واکسن: '+v[6]:'',document.getElementById('ss-note').value.trim()?'توضیحات: '+document.getElementById('ss-note').value.trim():''].filter(Boolean).join('\n'),
     breed:v[1], weight:num(v[3])||null, age:num(v[4])||null, vaccine:v[6], photos:(window._tempListingPhotos||[]).slice(), location:null, productKey:productKey(title), createdAt:Date.now() };
   var all=DB.listings; all.push(item); DB.listings=all;
   window._tempListingPhotos=[];
