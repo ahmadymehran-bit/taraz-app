@@ -2407,11 +2407,51 @@ var SS_SPEC_HINT={
  'دامپزشک':'تخصص، نوع خدمت، سابقه کاری، محل ارائه خدمات',
  'سایر':'توضیح کامل محصول یا خدمت'
 };
+var SS_YN=['دارم','ندارم'];
+function ssCfg(g,o){
+  if(g==='دامدار') return {t:'مشخصات دام',price:'قیمت هر رأس (تومان)',unit:' رأس',note:'مثلاً: تازه واکسن خورده، شیرده',f:[
+    ['qty','تعداد (رأس)','tel','مثلاً: ۱۰',1],['weight','وزن تقریبی (کیلو)','tel','مثلاً: ۴۵'],['age','سن (ماه)','tel','مثلاً: ۱۲'],['health','گواهی سلامت / واکسن','sel',SS_YN]]};
+  if(g==='باغدار') return {t:'مشخصات محصول باغی',price:'قیمت هر کیلو (تومان)',unit:' کیلو',note:'مثلاً: برداشت امسال، بسته‌بندی صادراتی',f:[
+    ['qty','مقدار موجود (کیلو)','tel','مثلاً: ۵۰۰۰',1],['grade','درجه کیفیت','sel',['درجه ۱','درجه ۲','درجه ۳']],['harvest','زمان برداشت','txt','مثلاً: مهر ۱۴۰۵'],['organic','نوع کشت','sel',['معمولی','ارگانیک']]]};
+  if(g==='کشاورز') return {t:'مشخصات محصول کشاورزی',price:'قیمت هر کیلو (تومان)',unit:' کیلو',note:'مثلاً: رطوبت پایین، تحویل در مزرعه',f:[
+    ['qty','مقدار موجود (کیلو)','tel','مثلاً: ۱۰۰۰۰',1],['grade','درجه کیفیت','sel',['درجه ۱','درجه ۲','درجه ۳']],['harvest','زمان برداشت','txt','مثلاً: شهریور ۱۴۰۵'],['organic','نوع کشت','sel',['معمولی','ارگانیک']]]};
+  if(g==='شرکت') return {t:'مشخصات محصول',price:'قیمت هر واحد (تومان)',unit:' واحد',note:'مثلاً: ارسال به سراسر کشور',f:[
+    ['qty','موجودی (تعداد / بسته)','tel','مثلاً: ۲۰۰',1],['brand','برند / سازنده','txt','مثلاً: نام شرکت سازنده',1],['license','مجوز / استاندارد','sel',SS_YN],['warranty','گارانتی / ضمانت','sel',['دارم','ندارم']]]};
+  if(g==='دامپزشک' && o==='داروی دامی') return {t:'مشخصات دارو',price:'قیمت هر عدد (تومان)',unit:' عدد',note:'مثلاً: نگهداری در یخچال',f:[
+    ['drug','نام دارو / ماده مؤثره','txt','مثلاً: اکسی‌تتراسایکلین',1],['qty','تعداد موجود','tel','مثلاً: ۵۰',1],['exp','تاریخ انقضا','txt','مثلاً: ۱۴۰۶/۰۳',1],['license','مجوز سازمان دامپزشکی','sel',SS_YN]]};
+  if(g==='دامپزشک') return {t:'مشخصات خدمت',price:'هزینه خدمت (تومان)',unit:'',note:'مثلاً: ویزیت در محل، ۲۴ ساعته',f:[
+    ['svc','نوع دام / تخصص','txt','مثلاً: گاو شیری، نشخوارکنندگان',1],['exp','سابقه کار (سال)','tel','مثلاً: ۸'],['nezam','شماره نظام دامپزشکی','txt','مثلاً: ۱۲۳۴۵',1],['area','محدوده خدمات‌رسانی','txt','مثلاً: اصفهان و اطراف']]};
+  return {t:'مشخصات',price:'قیمت (تومان)',unit:'',note:'توضیحات بیشتر',f:[['qty','تعداد','tel','مثلاً: ۱',1]]};
+}
+var _ssVals={};
+function ssFieldHTML(x){
+  var id='ssf-'+x[0], inp;
+  if(x[2]==='sel') inp='<select id="'+id+'">'+x[3].map(function(o){return '<option>'+o+'</option>'}).join('')+'</select>';
+  else if(x[2]==='tel') inp='<input id="'+id+'" type="tel" inputmode="numeric" placeholder="'+x[3]+'" style="direction:ltr;text-align:left">';
+  else inp='<input id="'+id+'" placeholder="'+x[3]+'">';
+  return '<div class="field"><label style="'+SELL_SUB_LBL+'">'+x[1]+(x[4]?' *':'')+'</label>'+inp+'</div>';
+}
+function ssCur(){
+  var sel=document.getElementById('ss-8'); if(!sel) return ssCfg('دامدار','');
+  var o=sel.options[sel.selectedIndex];
+  return ssCfg((o.parentNode.label)||'سایر',o.value);
+}
+function ssBuild(){
+  var c=ssCur(), s2=document.getElementById('ss-step-2'), s3=document.getElementById('ss-step-3');
+  if(!s2||!s3) return;
+  SS_TITLES[1]=c.t;
+  s2.innerHTML=c.f.map(ssFieldHTML).join('');
+  s3.innerHTML='<div class="field"><label style="'+SELL_SUB_LBL+'">'+c.price+' *</label><input id="ss-price" type="tel" inputmode="numeric" placeholder="مثلاً: ۸۰۰۰۰۰۰" style="direction:ltr;text-align:left"></div>'+
+   '<div class="field"><label style="'+SELL_SUB_LBL+'">منطقه / شهر *</label><input id="ss-region" placeholder="مثلاً: اصفهان"></div>'+
+   '<div class="field"><label style="'+SELL_SUB_LBL+'">توضیحات (اختیاری)</label><input id="ss-note" placeholder="'+c.note+'"></div>';
+  ssShow();
+}
 function ssCatChange(sel){
   var g=(sel.options[sel.selectedIndex].parentNode.label)||'سایر';
   var lbl=document.getElementById('ss-lbl-1'), inp=document.getElementById('ss-1');
   if(lbl) lbl.textContent='توضیح تخصصی (ضروری)';
   if(inp) inp.placeholder='مثلاً: '+(SS_SPEC_HINT[g]||SS_SPEC_HINT['سایر']);
+  ssBuild();
 }
 var SELL_SUB_FIELDS=[
  ['آنچه می‌خواهید بفروشید','txt','مثلاً: گاو شیری، سیب زرد، گندم'],
@@ -2425,7 +2465,7 @@ var SELL_SUB_FIELDS=[
  ['نوع آگهی‌دهنده','grp']
 ];
 var ssStep=1;
-var SS_TITLES=['عکس و نوع دام','مشخصات دام','قیمت و محل'];
+var SS_TITLES=['عکس و نوع آگهی','مشخصات','قیمت و محل'];
 function photoBlockHTML(){
   return '<div class="field"><label style="'+SELL_SUB_LBL+'">📷 عکس آگهی (حداکثر ۳ عکس)</label>'+
   '<button type="button" class="btn-green" onclick="pickListingPhotos()" style="min-height:48px;font-size:15px;background:#2b4a33">➕ افزودن عکس</button>'+
@@ -2445,14 +2485,14 @@ function renderSellSub(){
   var note='<div class="field"><label style="'+SELL_SUB_LBL+'">توضیحات (اختیاری)</label><input id="ss-note" placeholder="مثلاً: تازه واکسن خورده، شیرده"></div>';
   var steps=[
     photoBlockHTML()+fld(0)+fld(8)+fld(1),
-    fld(2)+fld(3)+fld(4)+fld(6),
-    fld(5)+fld(7)+note
+    '',
+    ''
   ];
   var h='<div id="ss-bar" style="margin-bottom:14px"></div>';
   steps.forEach(function(s,k){ h+='<div class="ss-step" id="ss-step-'+(k+1)+'">'+s+'</div>'; });
   h+='<div style="display:flex;gap:10px;margin-top:6px"><button type="button" id="ss-prev" onclick="ssMove(-1)" style="flex:1;min-height:56px;border-radius:14px;border:1px solid #e0b04a;background:transparent;color:#f3f1e6;font-weight:700">‹ قبلی</button><button type="button" id="ss-next" class="btn-green" onclick="ssMove(1)" style="flex:1;min-height:56px;font-size:16px"></button></div>';
   document.getElementById('sell-sub-body').innerHTML=h;
-  ssShow();
+  ssBuild();
 }
 function ssShow(){
   for(var k=1;k<=3;k++){ var el=document.getElementById('ss-step-'+k); if(el) el.style.display=(k===ssStep?'block':'none'); }
@@ -2464,22 +2504,27 @@ function ssShow(){
 }
 function ssMove(d){
   if(d>0 && ssStep===3){ submitSellSub(); return; }
-  if(d>0 && ssStep===2 && !document.getElementById('ss-2').value.trim()){ toast('تعداد را وارد کن'); return; }
+  if(d>0 && ssStep===2){ var m=ssCur().f.filter(function(x){return x[4]&&!document.getElementById('ssf-'+x[0]).value.trim()})[0]; if(m){ toast(m[1]+' را وارد کن'); return; } }
   ssStep=Math.max(1,Math.min(3,ssStep+d)); ssShow();
 }
 async function submitSellSub(){
   var u=DB.user; if(!u){go('auth');return}
-  var v=SELL_SUB_FIELDS.map(function(x,i){return document.getElementById('ss-'+i).value.trim()});
+  var c=ssCur(), g=function(i){return document.getElementById('ss-'+i).value.trim()};
   var num=function(t){return Number(String(t).replace(/[^\d]/g,''))};
-  if(!v[2]){ssStep=2;ssShow();toast('تعداد را وارد کن');return}
-  if(!num(v[5])){ssStep=3;ssShow();toast('قیمت را وارد کن');return}
-  if(!v[7]){ssStep=3;ssShow();toast('منطقه را وارد کن');return}
-  if(!v[0]){ssStep=1;ssShow();toast('آنچه می‌خواهید بفروشید را بنویسید');return}
-  if(!v[1]){ssStep=1;ssShow();toast('توضیح تخصصی را وارد کن');return}
-  var title=v[0];
+  var V={}; c.f.forEach(function(x){V[x[0]]=document.getElementById('ssf-'+x[0]).value.trim()});
+  var price=num(document.getElementById('ss-price').value), region=document.getElementById('ss-region').value.trim(), note=document.getElementById('ss-note').value.trim();
+  if(!g(0)){ssStep=1;ssShow();toast('آنچه می‌خواهید بفروشید را بنویسید');return}
+  if(!g(1)){ssStep=1;ssShow();toast('توضیح تخصصی را وارد کن');return}
+  var miss=c.f.filter(function(x){return x[4]&&!V[x[0]]})[0];
+  if(miss){ssStep=2;ssShow();toast(miss[1]+' را وارد کن');return}
+  if(!price){ssStep=3;ssShow();toast('قیمت را وارد کن');return}
+  if(!region){ssStep=3;ssShow();toast('منطقه را وارد کن');return}
+  var title=g(0), qn=num(V.qty||'');
+  var lines=['دسته: '+g(8),'توضیح: '+g(1)].concat(c.f.filter(function(x){return x[0]!=='qty'&&V[x[0]]}).map(function(x){return x[1].replace(/\s*\(.*\)/,'')+': '+V[x[0]]}));
+  if(note) lines.push('توضیحات: '+note);
   var item={ id:'L'+Date.now(), sellerName:u.name, sellerPhone:u.phone, categoryId:'livestock', title:title,
-    qty:v[2]+' رأس', qtyNum:num(v[2]), price:num(v[5]), region:v[7], desc:['دسته: '+v[8],'توضیح: '+v[1],num(v[3])?'وزن تقریبی: '+num(v[3])+' کیلو':'',num(v[4])?'سن: '+num(v[4])+' ماه':'',v[6]?'گواهی سلامت/واکسن: '+v[6]:'',document.getElementById('ss-note').value.trim()?'توضیحات: '+document.getElementById('ss-note').value.trim():''].filter(Boolean).join('\n'),
-    breed:v[1], weight:num(v[3])||null, age:num(v[4])||null, vaccine:v[6], photos:(window._tempListingPhotos||[]).slice(), location:null, productKey:productKey(title), createdAt:Date.now() };
+    qty:qn?(qn+c.unit):'', qtyNum:qn, price:price, region:region, desc:lines.join('\n'),
+    breed:g(1), weight:num(V.weight||'')||null, age:num(V.age||'')||null, vaccine:V.health||V.license||'', photos:(window._tempListingPhotos||[]).slice(), location:null, productKey:productKey(title), createdAt:Date.now() };
   var all=DB.listings; all.push(item); DB.listings=all;
   window._tempListingPhotos=[];
   try { await api.createListing(item); toast('✓ آگهی منتشر شد'); } catch(e){ toast('⚠ آگهی محلی ذخیره شد'); }
