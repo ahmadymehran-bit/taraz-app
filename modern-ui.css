@@ -2287,3 +2287,13 @@ html, body, *, *::before, *::after { scrollbar-width: none !important; -ms-overf
 #screen-jobs .jb-search input:focus,
 #screen-jobs .jb-search input:focus-visible{background:transparent!important;border:0!important;box-shadow:none!important;outline:none!important}
 
+
+/* ============ داشبورد مدیریت: خوانایی ============ */
+#screen-admin .stats-box{background:#fff !important;}
+#screen-admin .stat-item{background:#f3faf5 !important;border:1px solid #cfe5d6 !important;}
+#screen-admin .stat-val{color:#0f3d24 !important;font-weight:900;}
+#screen-admin .stat-lbl{color:#3d5f4b !important;}
+#screen-admin .card{background:#fff !important;color:#14301f !important;}
+#screen-admin .card small{color:#4a6b57 !important;}
+#screen-admin .card b{color:#14301f !important;}
+#screen-admin .empty{color:#e8f5ec !important;}
