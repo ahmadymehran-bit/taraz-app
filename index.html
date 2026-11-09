@@ -362,6 +362,7 @@
       <div class="pf-row" onclick="enablePushNotifications()"><span class="pf-chev">‹</span><span class="pf-row-t">اعلان‌ها و پیام‌های جدید</span><span class="pf-row-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg></span></div>
       <div class="pf-row" onclick="go('missions-list')"><span class="pf-chev">‹</span><span class="pf-row-t">مدیریت مأموریت‌ها</span><span class="pf-row-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg></span></div>
       <div class="pf-row" onclick="openProfileSection('listings')"><span class="pf-chev">‹</span><span class="pf-row-t">ویرایش آگهی‌های من</span><span class="pf-row-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4.5L19 9.5a2.1 2.1 0 0 0-3-3L5.5 17 4 20z"/><path d="M14 7l3 3"/></svg></span></div>
+      <div class="pf-row" id="pf-admin-row" style="display:none" onclick="openAdminDashboard()"><span class="pf-chev">‹</span><span class="pf-row-t">👑 داشبورد مدیریت</span></div>
       <div class="pf-row" onclick="logout()"><span class="pf-chev">‹</span><span class="pf-row-t">خروج از حساب</span><span class="pf-row-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5.5A1.5 1.5 0 0 1 4 19.5v-15A1.5 1.5 0 0 1 5.5 3H9"/><path d="M16 17l5-5-5-5M21 12H9"/></svg></span></div>
     </div>
 
@@ -652,7 +653,7 @@
   <div class="toast" id="toast"></div>
 </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="script.js?v=5"></script>
+<script src="script.js?v=6"></script>
 <script src="jobs-globe.js"></script>
 <script src="availability.js?v=77"></script>
 <script src="ready-pro.js?v=8"></script>

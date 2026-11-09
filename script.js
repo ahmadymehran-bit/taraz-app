@@ -1237,6 +1237,7 @@ if(nameEl) nameEl.textContent = u.name; if(phoneEl) phoneEl.textContent = faDigi
 var r = await avgRating(u.phone); var starsEl = document.getElementById('profile-stars');
 if(starsEl){ var n = r.count > 0 ? Math.round(r.avg) : 0; var h=''; for(var si=1;si<=5;si++){ h += '<span class="'+(si<=n?'on':'off')+'">★</span>'; } starsEl.innerHTML = h; }
 var myListings = DB.listings.filter(function(l){ return l.sellerPhone === u.phone; });
+var adminRow = document.getElementById('pf-admin-row'); if(adminRow) adminRow.style.display = (u.phone === ADMIN_PHONE) ? '' : 'none';
 var c1 = document.getElementById('cnt-listings'); if(c1) c1.textContent = faDigits(myListings.length) + ' آگهی';
 var cFav = document.getElementById('cnt-favorites'); if(cFav) cFav.textContent = faDigits(_favoritesCache.length) + ' آگهی';
 renderProfileStats();
@@ -2877,4 +2878,10 @@ async function jbSearch(e,fromChip){
     stt.textContent=qRaw?'موردی برای «'+qRaw+'» پیدا نشد':'عبارتی برای جستجو وارد کنید';
   }
   _jb.busy=false;
+}
+
+function openAdminDashboard(){
+  if(!DB.user || DB.user.phone !== ADMIN_PHONE){ toast('دسترسی غیرمجاز'); return; }
+  renderAdminPanel();
+  go('admin');
 }
