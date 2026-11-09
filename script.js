@@ -1547,12 +1547,14 @@ document.addEventListener('click', function(e) {
 async function renderAdminPanel() {
   try {
     // گرفتن آمار کلی از بک‌اند
-    var statsRes = await fetch(API_BASE + '/api/admin/stats').then(r => r.json());
+    var statsRes = await fetch(API_BASE + '/api/admin/stats', { headers: authHeaders() }).then(r => r.json());
     
     if (statsRes) {
       document.getElementById('admin-stat-users').textContent = faDigits(statsRes.users || 0);
       document.getElementById('admin-stat-listings').textContent = faDigits(statsRes.listings || 0);
       document.getElementById('admin-stat-convs').textContent = faDigits(statsRes.conversations || 0);
+      var ids = { 'admin-stat-users-today': 'users_today', 'admin-stat-listings-today': 'listings_today', 'admin-stat-users-week': 'users_week', 'admin-stat-listings-week': 'listings_week', 'admin-stat-capacities': 'capacities' };
+      Object.keys(ids).forEach(function(id) { var el = document.getElementById(id); if (el) el.textContent = faDigits(statsRes[ids[id]] || 0); });
     }
 
     // گرفتن لیست آگهی‌ها برای نمایش و حذف
